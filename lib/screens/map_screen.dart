@@ -1,6 +1,19 @@
+// lib/screens/map_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+
+// Importamos nuestros archivos locales
+import '../models/building.dart';
+import '../data/building_data.dart';
+import '../widgets/app_drawer.dart';
+import '../services/building_info_sheet.dart';
+import '../widgets/map_markers.dart';
+import '../widgets/search_and_filter_bar.dart'; // Asegúrate de que esta importación sea correcta
+
+// NUEVOS IMPORTS DE MODULARIZACIÓN
+// import '../widgets/map_controls.dart'; // Si lo eliminaste, asegúrate de que no esté aquí.
+import '../widgets/search_results_list.dart';
 
 class MapScreen extends StatefulWidget {
   const MapScreen({super.key});
@@ -10,54 +23,145 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
-  final mapController = MapController();
+  final MapController mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
-  bool _showSearch = false;
+  final FocusNode _searchFocusNode = FocusNode();
+  bool _isSearchVisible = false;
+  double _currentZoom = 18;
 
-  final List<Map<String, dynamic>> buildings = [
-    {
-      'name': '401 - El Viejo',
-      'info': 'auditorio juan bautista, cafetería minka, sala oasis',
-      'coords': LatLng(4.637040, -74.082983),
-    },
-    // Aquí puedes añadir más edificios fácilmente
-  ];
+  List<Building> _filteredBuildings = [];
+  String? _selectedCategory = 'Todos';
 
-  List<Map<String, dynamic>> _searchResults = [];
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
-  void _updateSearchResults(String query) {
-    final lowerQuery = query.toLowerCase();
-    setState(() {
-      _searchResults = buildings.where((b) =>
-      b['name'].toLowerCase().contains(lowerQuery) ||
-          b['info'].toLowerCase().contains(lowerQuery)).toList();
+  List<LatLng> _routePoints = [];
+
+  @override
+  void initState() {
+    super.initState();
+
+    mapController.mapEventStream.listen((event) {
+      if (event is MapEventMove || event is MapEventMoveEnd) {
+        setState(() {
+          _currentZoom = mapController.camera.zoom;
+        });
+      }
+    });
+    _updateFilteredBuildings(); // Asegura que todos los edificios se carguen al inicio
+    _searchFocusNode.addListener(() {
+      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {
+        // Opcional: ocultar la barra si está vacía y pierde el foco
+      }
     });
   }
 
-  void _goToBuilding(Map<String, dynamic> building) {
+  @override
+  void dispose() {
+    mapController.dispose();
+    _searchController.dispose();
+    _searchFocusNode.dispose();
+    super.dispose();
+  }
+
+  // === MODIFICACIÓN CLAVE: Búsqueda también en el campo 'info' ===
+  void _updateFilteredBuildings() {
+    final lowerQuery = _searchController.text.toLowerCase();
     setState(() {
-      _showSearch = false;
+      _filteredBuildings = allBuildings.where((b) {
+        bool matchesQuery = b.name.toLowerCase().contains(lowerQuery) ||
+            b.info.toLowerCase().contains(lowerQuery); // <--- Búsqueda también en info
+        bool matchesCategory = true;
+        if (_selectedCategory != null && _selectedCategory != 'Todos') {
+          matchesCategory = b.category.toLowerCase() == _selectedCategory!.toLowerCase();
+        }
+        return matchesQuery && matchesCategory;
+      }).toList();
+    });
+  }
+
+  void _onSearchQueryChanged(String query) {
+    _searchController.text = query;
+    _updateFilteredBuildings();
+  }
+
+  void _onCategorySelected(String category) {
+    setState(() {
+      _selectedCategory = category;
+    });
+    _updateFilteredBuildings();
+  }
+
+  void _toggleSearchVisibility() {
+    setState(() {
+      _isSearchVisible = !_isSearchVisible;
+      if (!_isSearchVisible) {
+        _searchController.clear();
+        _selectedCategory = 'Todos'; // Reinicia la categoría
+        _searchFocusNode.unfocus();
+        _updateFilteredBuildings(); // Vuelve a mostrar todos los edificios si no hay búsqueda
+      } else {
+        _searchFocusNode.requestFocus();
+      }
+      _clearRouteAndInstructions();
+    });
+  }
+
+  void _onMarkerTapped(Building building) {
+    _clearSearchState();
+    _clearRouteAndInstructions();
+    mapController.move(building.coords, 20);
+    showBuildingInfo(context, building);
+  }
+
+  void _navigateToHome() {
+    Navigator.pushReplacementNamed(context, '/');
+  }
+
+  void _navigateToMap() {
+    _clearSearchState();
+    _clearRouteAndInstructions();
+    mapController.move(LatLng(4.637040, -74.082983), 18);
+    _scaffoldKey.currentState?.closeDrawer();
+  }
+
+  void _clearRouteAndInstructions() {
+    setState(() {
+      _routePoints = [];
+    });
+  }
+
+  void _clearSearchState() {
+    setState(() {
+      _isSearchVisible = false;
       _searchController.clear();
-      _searchResults = [];
+      _selectedCategory = 'Todos';
+      _searchFocusNode.unfocus();
+      _updateFilteredBuildings();
     });
-    mapController.move(building['coords'], 20);
-    _showBuildingInfo(context, building);
   }
 
-  void _showBuildingInfo(BuildContext context, Map<String, dynamic> building) {
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (context) => ElViejoInfo(),
+  void _onMyLocationButtonPressed() {
+    mapController.move(LatLng(4.637040, -74.082983), 18);
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(content: Text('Centrando mapa en la Universidad Nacional.')),
     );
+    _clearRouteAndInstructions();
+    if (Navigator.of(context).canPop()) {
+      Navigator.of(context).pop();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
+      drawer: AppDrawer(
+        selectedCategory: _selectedCategory,
+        categories: buildingCategories,
+        onCategorySelected: _onCategorySelected,
+        onNavigateToMap: _navigateToMap,
+        onNavigateToHome: _navigateToHome,
+      ),
       body: Stack(
         children: [
           FlutterMap(
@@ -65,170 +169,135 @@ class _MapScreenState extends State<MapScreen> {
             options: MapOptions(
               initialCenter: LatLng(4.637040, -74.082983),
               initialZoom: 18,
-              minZoom: 12,
-              maxZoom: 25,
+              minZoom: 9,
+              maxZoom: 20,
               interactionOptions: const InteractionOptions(flags: InteractiveFlag.all),
               cameraConstraint: CameraConstraint.contain(
                 bounds: LatLngBounds(
-                  LatLng(4.6310, -74.0895),
-                  LatLng(4.6425, -74.0770),
+                  LatLng(4.4, -74.25),
+                  LatLng(4.8, -74.00),
                 ),
               ),
-              onTap: (_, __) => Navigator.of(context).pop(),
+              onTap: (tapPosition, latLng) {
+                _clearRouteAndInstructions();
+                if (Navigator.of(context).canPop()) {
+                  Navigator.of(context).pop();
+                }
+                if (_isSearchVisible) {
+                  _toggleSearchVisibility();
+                }
+              },
             ),
             children: [
               TileLayer(
-                urlTemplate: 'https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                subdomains: ['a', 'b', 'c'],
+                urlTemplate: 'https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}.png',
+                subdomains: ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.example.mapadefinitivo',
               ),
-              MarkerLayer(
-                markers: buildings.map((building) {
-                  return Marker(
-                    point: building['coords'],
-                    width: 30,
-                    height: 30,
-                    child: GestureDetector(
-                      onTap: () => _showBuildingInfo(context, building),
-                      child: const Icon(
-                        Icons.location_on,
-                        size: 30,
-                        color: Colors.red,
-                      ),
+              PolylineLayer(
+                polylines: [
+                  if (_routePoints.isNotEmpty)
+                    Polyline(
+                      points: _routePoints,
+                      color: Colors.blue,
+                      strokeWidth: 6.0,
+                      borderStrokeWidth: 2.0,
+                      borderColor: Colors.black,
                     ),
-                  );
-                }).toList(),
+                ],
+              ),
+              MarkerLayer(
+                markers: [],
+              ),
+              MapBuildingMarkers(
+                buildings: _filteredBuildings,
+                currentZoom: _currentZoom,
+                onMarkerTap: _onMarkerTapped,
               ),
             ],
           ),
+          // === CONTROLES DEL MAPA (BOTONES DE MENÚ Y LUPA) ===
           Positioned(
-            top: 40,
-            right: 20,
+            top: MediaQuery.of(context).padding.top + 10,
+            left: 10,
             child: FloatingActionButton(
+              heroTag: 'menuButton',
+              mini: true,
               backgroundColor: Colors.white,
-              onPressed: () => setState(() => _showSearch = !_showSearch),
-              child: const Icon(Icons.search, color: Colors.black),
+              onPressed: () => _scaffoldKey.currentState?.openDrawer(),
+              child: const Icon(Icons.menu, color: Colors.black),
             ),
           ),
-          if (_showSearch)
+          Positioned(
+            top: MediaQuery.of(context).padding.top + 10,
+            right: 10,
+            child: FloatingActionButton(
+              heroTag: 'searchButton',
+              mini: true,
+              backgroundColor: Colors.white,
+              onPressed: _toggleSearchVisibility,
+              child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Colors.black),
+            ),
+          ),
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 20.0, bottom: 30.0),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  FloatingActionButton(
+                    heroTag: 'myLocationButton',
+                    mini: true,
+                    backgroundColor: Colors.white,
+                    onPressed: _onMyLocationButtonPressed,
+                    child: const Icon(Icons.gps_fixed, color: Colors.black),
+                  ),
+                  const SizedBox(height: 10),
+                  FloatingActionButton(
+                    heroTag: 'backButton',
+                    backgroundColor: Colors.white,
+                    onPressed: () {
+                      if (Navigator.of(context).canPop()) {
+                        Navigator.of(context).pop();
+                      } else {
+                        Navigator.pushReplacementNamed(context, '/');
+                      }
+                      _clearRouteAndInstructions();
+                    },
+                  ),
+                ],
+              ),
+            ),
+          ),
+          // === BARRA DE BÚSQUEDA Y LISTA DE RESULTADOS ===
+          if (_isSearchVisible)
             Positioned(
-              top: 100,
-              left: 20,
-              right: 20,
+              top: MediaQuery.of(context).padding.top + 10 + 50, // Ajusta para estar debajo de los FABs
+              left: 16, // Posiciona desde la izquierda, dejando margen
+              right: 16, // Posiciona desde la derecha, dejando margen
               child: Column(
                 children: [
-                  Material(
-                    elevation: 4,
-                    borderRadius: BorderRadius.circular(12),
-                    child: TextField(
-                      controller: _searchController,
-                      onChanged: _updateSearchResults,
-                      decoration: const InputDecoration(
-                        hintText: 'Buscar edificio o sitio...',
-                        contentPadding: EdgeInsets.all(12),
-                        border: OutlineInputBorder(borderSide: BorderSide.none),
-                      ),
-                    ),
+                  SearchAndFilterBar(
+                    searchController: _searchController,
+                    searchFocusNode: _searchFocusNode,
+                    categories: buildingCategories,
+                    selectedCategory: _selectedCategory,
+                    onSearchChanged: _onSearchQueryChanged,
+                    onCategorySelected: _onCategorySelected,
                   ),
-                  const SizedBox(height: 8),
-                  if (_searchResults.isNotEmpty)
-                    Material(
-                      elevation: 2,
-                      borderRadius: BorderRadius.circular(8),
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        itemCount: _searchResults.length,
-                        itemBuilder: (context, index) {
-                          final result = _searchResults[index];
-                          return ListTile(
-                            title: Text(result['name']),
-                            subtitle: Text(result['info']),
-                            onTap: () => _goToBuilding(result),
-                          );
-                        },
-                      ),
-                    ),
+                  SearchResultsList(
+                    filteredBuildings: _filteredBuildings,
+                    onBuildingSelected: (building) {
+                      mapController.move(building.coords, 19);
+                      _clearSearchState();
+                      showBuildingInfo(context, building);
+                    },
+                  ),
                 ],
               ),
             ),
         ],
-      ),
-    );
-  }
-}
-
-class ElViejoInfo extends StatelessWidget {
-  const ElViejoInfo({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return DraggableScrollableSheet(
-      expand: false,
-      initialChildSize: 0.5,
-      minChildSize: 0.4,
-      maxChildSize: 0.95,
-      builder: (_, controller) => SingleChildScrollView(
-        controller: controller,
-        child: Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(child: Image.asset("assets/images/401.jpg", fit: BoxFit.cover)),
-              const SizedBox(height: 12),
-              const Text("401 - El Viejo - Julio Garavito", style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
-              const SizedBox(height: 8),
-              const Text("Edificio histórico de Ingeniería declarado Bien de Interés Cultural en 1995."),
-              const SizedBox(height: 16),
-              const ExpansionTile(
-                title: Text("Historia del edificio"),
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text(
-                      "Construido en 1945 por Leopoldo Rother, integrado al plan urbanístico de Karl Brunner de 1932. El diseño prioriza la naturaleza y la funcionalidad académica.",
-                    ),
-                  ),
-                ],
-              ),
-              const ExpansionTile(
-                title: Text("Primer Piso"),
-                children: [
-                  ListTile(title: Text("Auditorios Juan Bautista Gómez y Carlos Barbieri")),
-                  ListTile(title: Text("Cafetería Minka y dispensadores")),
-                  ListTile(title: Text("Préstamos, baños, cargadores, dispensador de condones")),
-                  ListTile(title: Text("Oficina de apoyo a bienestar")),
-                ],
-              ),
-              const ExpansionTile(
-                title: Text("Segundo Piso"),
-                children: [
-                  ListTile(title: Text("Vicedecanatura académica e investigación")),
-                  ListTile(title: Text("Oficinas PYP, Secretaría de decanatura, salón de consejo")),
-                  ListTile(title: Text("Baños hombres y mujeres")),
-                ],
-              ),
-              const ExpansionTile(
-                title: Text("Tercer Piso"),
-                children: [
-                  ListTile(title: Text("Centro de impresión y salones de estudio")),
-                  ListTile(title: Text("Sala oasis y aula insignia")),
-                  ListTile(title: Text("Vicedecanatura de bienestar")),
-                ],
-              ),
-              const ExpansionTile(
-                title: Text("Contacto"),
-                children: [
-                  Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-                    child: Text("Oficina de Bienestar, primer piso."),
-                  ),
-                ],
-              ),
-              const SizedBox(height: 20),
-            ],
-          ),
-        ),
       ),
     );
   }
