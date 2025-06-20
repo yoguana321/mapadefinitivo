@@ -84,9 +84,9 @@ class _BuildingMarkerState extends State<BuildingMarker> with SingleTickerProvid
         animation: _controller,
         builder: (context, child) {
           return Opacity(
-            opacity: _animation.value,
+            opacity: _animation.value.clamp(0.0, 1.0),
             child: Transform.scale(
-              scale: _animation.value,
+              scale: _animation.value.clamp(0.0, 2.0),
               alignment: Alignment.bottomCenter,
               child: OverflowBox(
                 maxWidth: double.infinity,
