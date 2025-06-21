@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'dart:ui'; // Importante para BackdropFilter
+
+// CONTROL DE LA BARRA LATERAL (SIDEBARD)
 
 // Definición de callbacks para la navegación y el filtro
 typedef FilterCategorySelected = void Function(String category);
@@ -28,16 +31,49 @@ class AppDrawer extends StatelessWidget {
       child: ListView(
         padding: EdgeInsets.zero,
         children: <Widget>[
-          const DrawerHeader(
-            decoration: BoxDecoration(
-              color: Colors.blueAccent,
-            ),
-            child: Text(
-              'Menú Mi UNAL',
-              style: TextStyle(
-                color: Colors.white,
-                fontSize: 24,
+          Container(
+            height: 180, // Ajusta la altura que desees
+            decoration: const BoxDecoration(
+              image: DecorationImage(
+                image: AssetImage('assets/images/CAMPUS_SLIDEBAR.jpg'),
+                fit: BoxFit.cover,
               ),
+            ),
+            child: Stack(
+              children: [
+                // Puedes agregar más elementos encima si deseas
+                Align(
+                  alignment: Alignment.bottomLeft,
+                  child: Padding(
+                    padding: const EdgeInsets.all(16.0),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(8.0),
+                      child: BackdropFilter(
+                        filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
+                        child: Container(
+                          color: Colors.black.withOpacity(0.3),
+                          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                          child: const Text(
+                            'M.I UNAL',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 24,
+                              fontWeight: FontWeight.bold,
+                              shadows: [
+                                Shadow(
+                                  blurRadius: 3.0,
+                                  color: Colors.black,
+                                  offset: Offset(1.0, 1.0),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           ListTile(
@@ -45,7 +81,7 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Pantalla de Inicio'),
             onTap: () {
               Navigator.pop(context);
-              onNavigateToHome(); // Llama al callback para navegar a Home
+              onNavigateToHome();
             },
           ),
           ListTile(
@@ -53,10 +89,10 @@ class AppDrawer extends StatelessWidget {
             title: const Text('Ver Mapa'),
             onTap: () {
               Navigator.pop(context);
-              onNavigateToMap(); // Llama al callback para navegar al Mapa
+              onNavigateToMap();
             },
           ),
-          const Divider(), // Separador visual
+          const Divider(),
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
             child: Text(
@@ -64,7 +100,6 @@ class AppDrawer extends StatelessWidget {
               style: Theme.of(context).textTheme.titleMedium,
             ),
           ),
-          // Mapea las categorías a ListTiles con Radio buttons
           ...categories.map((category) {
             return ListTile(
               title: Text(category),
@@ -72,15 +107,15 @@ class AppDrawer extends StatelessWidget {
                 value: category,
                 groupValue: selectedCategory,
                 onChanged: (String? value) {
-                  Navigator.pop(context); // Cierra el drawer después de seleccionar
+                  Navigator.pop(context);
                   if (value != null) {
-                    onCategorySelected(value); // Notifica al padre sobre la categoría seleccionada
+                    onCategorySelected(value);
                   }
                 },
               ),
               onTap: () {
-                Navigator.pop(context); // Cierra el drawer
-                onCategorySelected(category); // Notifica al padre
+                Navigator.pop(context);
+                onCategorySelected(category);
               },
             );
           }),

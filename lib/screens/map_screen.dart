@@ -1,18 +1,14 @@
-// lib/screens/map_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-// Importamos nuestros archivos locales
+// Importaciones locales
 import '../models/building.dart';
 import '../data/building_data.dart';
 import '../widgets/app_drawer.dart';
 import '../services/building_info_sheet.dart';
 import '../widgets/map_markers.dart';
-import '../widgets/search_and_filter_bar.dart'; // Asegúrate de que esta importación sea correcta
-
-// NUEVOS IMPORTS DE MODULARIZACIÓN
-// import '../widgets/map_controls.dart'; // Si lo eliminaste, asegúrate de que no esté aquí.
+import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
 
 class MapScreen extends StatefulWidget {
@@ -28,12 +24,9 @@ class _MapScreenState extends State<MapScreen> {
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchVisible = false;
   double _currentZoom = 18;
-
   List<Building> _filteredBuildings = [];
   String? _selectedCategory = 'Todos';
-
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-
   List<LatLng> _routePoints = [];
 
   @override
@@ -47,11 +40,9 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
     });
-    _updateFilteredBuildings(); // Asegura que todos los edificios se carguen al inicio
+    _updateFilteredBuildings();
     _searchFocusNode.addListener(() {
-      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {
-        // Opcional: ocultar la barra si está vacía y pierde el foco
-      }
+      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {}
     });
   }
 
@@ -63,13 +54,11 @@ class _MapScreenState extends State<MapScreen> {
     super.dispose();
   }
 
-  // === MODIFICACIÓN CLAVE: Búsqueda también en el campo 'info' ===
   void _updateFilteredBuildings() {
     final lowerQuery = _searchController.text.toLowerCase();
     setState(() {
       _filteredBuildings = allBuildings.where((b) {
-        bool matchesQuery = b.name.toLowerCase().contains(lowerQuery) ||
-            b.info.toLowerCase().contains(lowerQuery); // <--- Búsqueda también en info
+        bool matchesQuery = b.name.toLowerCase().contains(lowerQuery) || b.info.toLowerCase().contains(lowerQuery);
         bool matchesCategory = true;
         if (_selectedCategory != null && _selectedCategory != 'Todos') {
           matchesCategory = b.category.toLowerCase() == _selectedCategory!.toLowerCase();
@@ -96,9 +85,9 @@ class _MapScreenState extends State<MapScreen> {
       _isSearchVisible = !_isSearchVisible;
       if (!_isSearchVisible) {
         _searchController.clear();
-        _selectedCategory = 'Todos'; // Reinicia la categoría
+        _selectedCategory = 'Todos';
         _searchFocusNode.unfocus();
-        _updateFilteredBuildings(); // Vuelve a mostrar todos los edificios si no hay búsqueda
+        _updateFilteredBuildings();
       } else {
         _searchFocusNode.requestFocus();
       }
@@ -216,7 +205,8 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ],
           ),
-          // === CONTROLES DEL MAPA (BOTONES DE MENÚ Y LUPA) ===
+
+          // Botones menú y búsqueda
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
             left: 10,
@@ -239,6 +229,8 @@ class _MapScreenState extends State<MapScreen> {
               child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Colors.black),
             ),
           ),
+
+          // Botones abajo a la derecha
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -257,6 +249,7 @@ class _MapScreenState extends State<MapScreen> {
                   FloatingActionButton(
                     heroTag: 'backButton',
                     backgroundColor: Colors.white,
+                    child: const Icon(Icons.map, color: Colors.black),
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
                         Navigator.of(context).pop();
@@ -270,12 +263,40 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-          // === BARRA DE BÚSQUEDA Y LISTA DE RESULTADOS ===
+
+          // === BRÚJULA DINÁMICA ===
+          Align(
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 80.0, bottom:20.0),
+              child: StreamBuilder<MapEvent>(
+                stream: mapController.mapEventStream,
+                builder: (context, snapshot) {
+                  final rotation = snapshot.data?.camera.rotation ?? 0.0;
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset('assets/images/cruceta.png', width: 148),
+                      Positioned(
+                        right: 8,
+                        child: Transform.rotate(
+                          angle: -rotation,
+                          child: Image.asset('assets/images/señalador.png', width: 126),
+                        ),
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ),
+          ),
+
+          // Barra de búsqueda
           if (_isSearchVisible)
             Positioned(
-              top: MediaQuery.of(context).padding.top + 10 + 50, // Ajusta para estar debajo de los FABs
-              left: 16, // Posiciona desde la izquierda, dejando margen
-              right: 16, // Posiciona desde la derecha, dejando margen
+              top: MediaQuery.of(context).padding.top + 60,
+              left: 16,
+              right: 16,
               child: Column(
                 children: [
                   SearchAndFilterBar(
