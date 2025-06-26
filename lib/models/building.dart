@@ -2,7 +2,6 @@
 import 'package:flutter/material.dart'; // Para IconData
 import 'package:latlong2/latlong.dart'; // Para LatLng
 import 'room.dart';
-import 'professor.dart';
 
 class Building {
   final String id;

@@ -2,8 +2,8 @@
 import 'package:flutter/material.dart'; // Importa para IconData
 import 'package:latlong2/latlong.dart';
 import '../models/building.dart'; // Ruta correcta relativa a lib/data
-import '../models/room.dart';     // Ruta correcta relativa a lib/data
-import '../models/professor.dart'; // Ruta correcta relativa a lib/data
+// Ruta correcta relativa a lib/data
+// Ruta correcta relativa a lib/data
 
 // Importa los archivos de datos específicos de cada edificio
 // ¡IMPORTANTE! Asegúrate que estas rutas sean correctas para tu proyecto

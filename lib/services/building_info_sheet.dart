@@ -2,7 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/building.dart';
 import '../models/room.dart';
-import '../models/professor.dart'; // Importar Professor para usar en las tarjetas de profesores
+// Importar Professor para usar en las tarjetas de profesores
 
 // La función principal para mostrar el bottom sheet
 Future<void> showBuildingInfo(BuildContext context, Building building) async {
@@ -21,9 +21,8 @@ class _BuildingInfoSheetContent extends StatefulWidget {
   final Building building;
 
   const _BuildingInfoSheetContent({
-    Key? key,
     required this.building,
-  }) : super(key: key);
+  });
 
   @override
   State<_BuildingInfoSheetContent> createState() => _BuildingInfoSheetContentState();
@@ -122,12 +121,12 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                           primaryTabColor,
                         );
                       } else if (tab == 'Servicios Especiales') {
-                        // Filtramos los servicios que deben ir en esta pestaña
+                        // Aquí, por tu solicitud, esta sección se mostrará vacía o con un mensaje.
                         return _buildSpecialServicesTab(widget.building, scrollController, primaryTabColor);
                       } else {
                         // Para las pestañas de pisos, filtramos las habitaciones que no son servicios generales
                         final roomsOnFloor = widget.building.rooms
-                            ?.where((room) => room.floor == tab && (room.isServiceRoom ?? false) == false) // Asegúrate que NO son servicios generales
+                            ?.where((room) => room.floor == tab && (room.isServiceRoom ?? false) == false)
                             .toList() ?? [];
                         return _buildRoomsList(roomsOnFloor, scrollController, primaryTabColor);
                       }
@@ -253,7 +252,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- FUNCIÓN _buildGeneralInfoTab ACTUALIZADA CON TARJETAS Y SERVICIOS DESTACADOS ---
+  // --- FUNCIÓN _buildGeneralInfoTab ACTUALIZADA: Eliminando Cards y ajustando "Servicios Destacados" ---
   Widget _buildGeneralInfoTab(
       Building building,
       ScrollController scrollController,
@@ -265,86 +264,117 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
       controller: scrollController,
       padding: const EdgeInsets.all(16.0),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start, // Alineación a la izquierda para todo
         children: [
-          // Sección de Servicios Destacados
-          _buildQuickAccessButtons(building, accentColor),
+          // Sección de Servicios Destacados (Ahora vacía/con mensaje)
+          _buildQuickAccessButtons(building, accentColor), // Esta función ahora regresará SizedBox.shrink() o un mensaje
           const SizedBox(height: 20), // Espacio después de los botones de acceso rápido
 
-          _infoCard(
-            icon: Icons.info_outline,
-            title: 'Información general',
-            content: building.info,
-            accentColor: accentColor,
+          // --- Información General (SIN Card) ---
+          Row(
+            children: [
+              Icon(Icons.info_outline, color: accentColor),
+              const SizedBox(width: 8),
+              Text(
+                'Información general',
+                style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+              ),
+            ],
           ),
-          const SizedBox(height: 12), // Espacio entre tarjetas
+          const SizedBox(height: 8),
+          Text(
+            building.info,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          const SizedBox(height: 20),
+
+          // --- Historia del edificio (SIN Card, pero manteniendo expandible) ---
           if (building.history != null && building.history!.isNotEmpty) ...[
-            _expandableCard(
-              icon: Icons.history,
-              title: 'Historia del edificio',
-              content: building.history!,
-              expanded: isHistoryExpanded,
-              onToggle: toggleHistory,
-              accentColor: accentColor,
+            Row(
+              children: [
+                Icon(Icons.history, color: accentColor),
+                const SizedBox(width: 8),
+                Text(
+                  'Historia del edificio',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const SizedBox(height: 12), // Espacio entre tarjetas
+            const SizedBox(height: 8),
+            AnimatedSize(
+              duration: const Duration(milliseconds: 300),
+              curve: Curves.easeInOut,
+              child: Text(
+                building.history!,
+                maxLines: isHistoryExpanded ? null : 4,
+                overflow: isHistoryExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                style: Theme.of(context).textTheme.bodyMedium,
+              ),
+            ),
+            if (building.history!.length > 200) // Puedes ajustar este umbral
+              Align(
+                alignment: Alignment.centerLeft,
+                child: TextButton(
+                  onPressed: toggleHistory,
+                  style: TextButton.styleFrom(
+                    foregroundColor: accentColor,
+                    padding: EdgeInsets.zero,
+                    minimumSize: Size.zero,
+                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
+                  ),
+                  child: Text(isHistoryExpanded ? 'Ver menos...' : 'Ver más...'),
+                ),
+              ),
+            const SizedBox(height: 20),
           ],
+
+          // --- Horario (SIN Card) ---
           if (building.hours != null && building.hours!.isNotEmpty) ...[
-            _infoCard(
-              icon: Icons.access_time,
-              title: 'Horario',
-              content: building.hours!,
-              accentColor: accentColor,
+            Row(
+              children: [
+                Icon(Icons.access_time, color: accentColor),
+                const SizedBox(width: 8),
+                Text(
+                  'Horario',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-            const SizedBox(height: 12), // Espacio entre tarjetas
+            const SizedBox(height: 8),
+            Text(
+              building.hours!,
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            const SizedBox(height: 20),
           ],
+
+          // --- Contacto (SIN Card) ---
           if (building.contactInfo != null && building.contactInfo!.isNotEmpty)
-            _infoCard(
-              icon: Icons.phone,
-              title: 'Contacto',
-              content: building.contactInfo!,
-              accentColor: accentColor,
+            Row(
+              children: [
+                Icon(Icons.phone, color: accentColor),
+                const SizedBox(width: 8),
+                Text(
+                  'Contacto',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                ),
+              ],
             ),
-          // No se necesita SizedBox al final de la última tarjeta
+          const SizedBox(height: 8),
+          Text(
+            building.contactInfo!,
+            style: Theme.of(context).textTheme.bodyMedium,
+          ),
+          // No se necesita SizedBox al final de la última sección si no hay más elementos.
         ],
       ),
     );
   }
 
-  // --- NUEVA FUNCIÓN PARA BOTONES DE ACCESO RÁPIDO (MÉTODO DE LA CLASE) ---
+  // --- FUNCIÓN _buildQuickAccessButtons (AHORA VACÍA/CON MENSAJE) ---
   Widget _buildQuickAccessButtons(Building building, Color accentColor) {
-    // Filtra los servicios comunes que quieres destacar
-    final List<Room> commonServices = building.rooms
-        ?.where((room) =>
-    (room.isServiceRoom ?? false) &&
-        (room.name!.toLowerCase().contains('aseo') || // Cambiado de ?? false a directamente
-            room.name!.toLowerCase().contains('baño') || // Cambiado de ?? false a directamente
-            room.name!.toLowerCase().contains('cafetería') || // Cambiado de ?? false a directamente
-            room.name!.toLowerCase().contains('enfermería') || // Cambiado de ?? false a directamente
-            room.name!.toLowerCase().contains('centro de impresión') || // Cambiado de ?? false a directamente
-            room.name!.toLowerCase().contains('préstamos'))) // Cambiado de ?? false a directamente
-        .toList() ?? [];
-
-    if (commonServices.isEmpty) {
-      return const SizedBox.shrink(); // No muestra nada si no hay servicios comunes
-    }
-
-    // Mapea los nombres a los íconos para los botones
-    IconData _getServiceIcon(String? serviceName) {
-      if (serviceName == null) return Icons.info_outline;
-      if (serviceName.toLowerCase().contains('aseo') || serviceName.toLowerCase().contains('baño')) {
-        return Icons.wc;
-      } else if (serviceName.toLowerCase().contains('cafetería')) {
-        return Icons.restaurant_menu;
-      } else if (serviceName.toLowerCase().contains('enfermería')) {
-        return Icons.local_hospital;
-      } else if (serviceName.toLowerCase().contains('centro de impresión')) {
-        return Icons.print;
-      } else if (serviceName.toLowerCase().contains('préstamos')) {
-        return Icons.gamepad; // O Icons.library_books si es más de libros
-      }
-      return Icons.info_outline;
-    }
-
+    // Por tu solicitud, esta sección no mostrará ningún botón ni servicio destacado.
+    // Solo mostrará un mensaje o se ocultará completamente.
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -353,152 +383,31 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
           style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
         ),
         const SizedBox(height: 10),
-        SizedBox(
-          height: 90, // Altura fija para el carrusel de botones
-          child: ListView.builder(
-            scrollDirection: Axis.horizontal,
-            itemCount: commonServices.length,
-            itemBuilder: (context, index) {
-              final service = commonServices[index];
-              return Padding(
-                padding: const EdgeInsets.only(right: 12.0),
-                child: Column(
-                  children: [
-                    CircleAvatar(
-                      radius: 28,
-                      // CAMBIO AQUÍ: Usar .withAlpha para reemplazar .withOpacity obsoleto
-                      backgroundColor: accentColor.withAlpha((255 * 0.1).round()),
-                      child: Icon(_getServiceIcon(service.name), color: accentColor, size: 30),
-                    ),
-                    const SizedBox(height: 6),
-                    Flexible( // Usar Flexible para evitar desbordamiento del texto
-                      child: Text(
-                        service.name?.split(' ').first ?? 'Servicio', // Solo la primera palabra para el botón
-                        style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w500),
-                        textAlign: TextAlign.center,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            },
+        Center(
+          child: Text(
+            'Esta sección no mostrará servicios destacados por ahora.',
+            style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey),
+            textAlign: TextAlign.center,
           ),
         ),
       ],
     );
+    // Si quisieras que se ocultara completamente si no hay nada, podrías hacer:
+    // return const SizedBox.shrink();
   }
 
-  // --- FUNCIONES AUXILIARES PARA LAS TARJETAS (MÉTODOS DE LA CLASE) ---
-  Widget _infoCard({
-    required IconData icon,
-    required String title,
-    required String content,
-    required Color accentColor,
-  }) {
-    return Card(
-      margin: EdgeInsets.zero, // El margen se manejará con SizedBox en el Column padre
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Row(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, size: 28, color: accentColor),
-            const SizedBox(width: 12),
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  // CAMBIO AQUÍ: Eliminado 'const' si el color no es constante
-                  Text(
-                    title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                  const SizedBox(height: 6),
-                  // --- ACCESIBILIDAD VISUAL: Color del texto. Eliminado 'const'
-                  Text(content, style: TextStyle(fontSize: 14, color: Colors.grey[800])),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
-  Widget _expandableCard({
-    required IconData icon,
-    required String title,
-    required String content,
-    required bool expanded,
-    required VoidCallback onToggle,
-    required Color accentColor,
-  }) {
-    final bool showToggle = content.length > 200; // Puedes ajustar este umbral
-
-    return Card(
-      margin: EdgeInsets.zero, // El margen se manejará con SizedBox en el Column padre
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 2,
-      child: Padding(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Icon(icon, size: 28, color: accentColor),
-                const SizedBox(width: 12),
-                Expanded(
-                  child: Text(
-                    title,
-                    style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 10),
-            // --- MEJORA UX: AnimatedSize para la historia expandible ---
-            AnimatedSize(
-              duration: const Duration(milliseconds: 300),
-              curve: Curves.easeInOut,
-              child: Text(
-                content,
-                maxLines: expanded ? null : 4,
-                overflow: expanded ? TextOverflow.visible : TextOverflow.ellipsis,
-                // --- ACCESIBILIDAD VISUAL: Color del texto. Eliminado 'const'
-                style: TextStyle(fontSize: 14, color: Colors.grey[800]),
-              ),
-            ),
-            if (showToggle)
-              Align(
-                alignment: Alignment.centerLeft,
-                child: TextButton(
-                  onPressed: onToggle,
-                  style: TextButton.styleFrom(
-                    foregroundColor: accentColor,
-                    padding: EdgeInsets.zero,
-                    minimumSize: Size.zero,
-                    tapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                  ),
-                  child: Text(expanded ? 'Ver menos...' : 'Ver más...'),
-                ),
-              ),
-          ],
-        ),
-      ),
-    );
-  }
+  // --- FUNCIONES AUXILIARES _infoCard y _expandableCard ELIMINADAS ---
+  // Ya que su lógica se ha integrado directamente en _buildGeneralInfoTab.
+  // Si en otro lugar de tu código las estabas llamando, necesitarás ajustar ese lugar.
 
   // Widget para construir la pestaña de Servicios Especiales (MÉTODO DE LA CLASE)
+  // Aquí se mostrarán los servicios que NO son aulas y NO son los "destacados" del general.
   Widget _buildSpecialServicesTab(Building building, ScrollController scrollController, Color accentColor) {
-    // Filtramos las salas que son servicios y que tienen 'General' como piso.
+    // Filtrar los servicios que son isServiceRoom, pero NO están en un piso específico (ej. los que eran 'General' en tu data original)
+    // O podrías poner aquí los servicios que tienen el campo 'specialService: true' si lo agregaras a Room.
     final List<Room> specialServices = building.rooms
-        ?.where((room) => (room.isServiceRoom ?? false) && room.floor == 'General')
+        ?.where((room) => (room.isServiceRoom ?? false) && (room.floor == 'General' || room.floor.isEmpty)) // Puedes ajustar la condición para tus "servicios especiales"
         .toList() ?? [];
 
     if (specialServices.isEmpty) {
@@ -508,7 +417,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         child: const Center(
           child: Padding(
             padding: EdgeInsets.all(16.0),
-            child: Text('No hay servicios generales o especiales listados para este edificio.'),
+            child: Text('No hay servicios especiales listados para este edificio en esta sección.'),
           ),
         ),
       );
@@ -521,11 +430,11 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            'Servicios Generales y Especiales',
+            'Servicios Generales y Especiales', // O solo 'Servicios Especiales'
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          ...specialServices.map((room) => _buildRoomTile(room, accentColor)).toList(),
+          ...specialServices.map((room) => _buildRoomTile(room, accentColor)),
         ],
       ),
     );
@@ -558,14 +467,11 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
   // Widget auxiliar para mostrar una Room (Aula, Oficina, Servicio) de forma unificada (MÉTODO DE LA CLASE)
   Widget _buildRoomTile(Room room, Color accentColor) {
     IconData icon;
-    // Eliminado 'subtitleText' ya que no se usa directamente
-    // String subtitleText = '';
-
     // Lógica para el icono:
     if (room.isServiceRoom ?? false) {
       if (room.name?.toLowerCase().contains('cuarto técnico') ?? false) {
         icon = Icons.handyman;
-      } else if (room.name!.toLowerCase().contains('aseo') || room.name!.toLowerCase().contains('baño')) { // Cambiado '?? false'
+      } else if (room.name!.toLowerCase().contains('aseo') || room.name!.toLowerCase().contains('baño')) {
         icon = Icons.wc;
       } else if (room.name?.toLowerCase().contains('préstamos') ?? false) {
         icon = Icons.gamepad;
@@ -636,16 +542,16 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                   leading: CircleAvatar(
                     // Aquí podrías usar professor.imageUrl si lo tuvieras, por ahora un placeholder
-                    child: Text(professor.name.isNotEmpty ? professor.name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white)),
-                    // CAMBIO AQUÍ: Usar .withAlpha para reemplazar .withOpacity obsoleto
                     backgroundColor: accentColor.withAlpha((255 * 0.7).round()),
+                    // Aquí podrías usar professor.imageUrl si lo tuvieras, por ahora un placeholder
+                    child: Text(professor.name.isNotEmpty ? professor.name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white)),
                   ),
                   title: Text(professor.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
                   // CAMBIO AQUÍ: Usar professor.roomNumber
                   subtitle: Text(professor.roomNumber ?? 'Sin aula asignada', style: TextStyle(fontSize: 12, color: Colors.grey[700])),
                 ),
               );
-            }).toList(),
+            }),
           ],
         ),
       );

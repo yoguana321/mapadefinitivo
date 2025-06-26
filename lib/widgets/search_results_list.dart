@@ -1,4 +1,5 @@
 /// lib/widgets/search_results_list.dart
+library;
 import 'package:flutter/material.dart';
 import '../models/building.dart'; // Asegúrate de importar tu modelo Building
 

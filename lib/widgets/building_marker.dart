@@ -100,7 +100,10 @@ class _BuildingMarkerState extends State<BuildingMarker>
 
   @override
   Widget build(BuildContext context) {
-    final Color bgColor = getCategoryColor(widget.building.category);
+    // ESTA ES LA LÍNEA CLAVE QUE HEMOS CAMBIADO:
+    // Ahora usa el markerColor definido en el objeto Building.
+    final Color? bgColor = widget.building.markerColor;
+
     final IconData icon = getCategoryIcon(widget.building.category);
     final bool showText = widget.currentZoom >= _zoomThresholdForText;
 
@@ -119,7 +122,7 @@ class _BuildingMarkerState extends State<BuildingMarker>
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
                   decoration: BoxDecoration(
-                    color: bgColor.withOpacity(0.9),
+                    color: bgColor?.withOpacity(0.9), // Usará el color del edificio
                     borderRadius: BorderRadius.circular(24),
                     boxShadow: const [
                       BoxShadow(
@@ -153,7 +156,7 @@ class _BuildingMarkerState extends State<BuildingMarker>
             width: 8,
             height: 8,
             decoration: BoxDecoration(
-              color: bgColor.withOpacity(0.9),
+              color: bgColor?.withOpacity(0.9), // Usará el color del edificio para el círculo inferior
               shape: BoxShape.circle,
               boxShadow: const [
                 BoxShadow(

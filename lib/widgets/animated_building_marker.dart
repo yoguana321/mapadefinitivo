@@ -1,12 +1,14 @@
 // lib/widgets/animated_building_marker.dart
 import 'package:flutter/material.dart';
 import '../models/building.dart';
-import '../utils/category_utils.dart'; // Asegúrate de que esta ruta sea correcta para getCategoryColor
+// Quita esta importación si getCategoryColor no se usa más aquí
+// import '../utils/category_utils.dart'; // Asegúrate de que esta ruta sea correcta para getCategoryColor
+
 
 class AnimatedBuildingMarker extends StatefulWidget {
   final Building building;
   final double currentZoom;
-  final VoidCallback onTap; // Usaremos VoidCallback para simplificar el tap
+  final VoidCallback onTap;
 
   const AnimatedBuildingMarker({
     super.key,
@@ -25,7 +27,6 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
   late Animation<double> _scaleAnimation;
   late Animation<double> _opacityAnimation;
 
-  // Umbral de zoom para mostrar el texto del marcador (ajusta si es necesario)
   static const double _zoomThresholdForText = 16.5;
 
   @override
@@ -43,7 +44,6 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
 
     _opacityAnimation = Tween<double>(begin: 0.0, end: 1.0).animate(_controller);
 
-    // Si el zoom inicial ya es suficiente, animar la aparición del texto
     if (widget.currentZoom >= _zoomThresholdForText) {
       _controller.forward();
     }
@@ -62,25 +62,27 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
     final bool newShowText = widget.currentZoom >= _zoomThresholdForText;
 
     if (newShowText && !oldShowText) {
-      _controller.forward(); // Animación para mostrar texto
+      _controller.forward();
     } else if (!newShowText && oldShowText) {
-      _controller.reverse(); // Animación para ocultar texto
+      _controller.reverse();
     }
   }
 
   @override
   Widget build(BuildContext context) {
-    final Color markerColor = getCategoryColor(widget.building.category);
-    final IconData markerIcon = widget.building.icon; // El icono del building model
+    // CAMBIO AQUÍ: Usamos directamente el markerColor del objeto Building
+    final Color markerColor = widget.building.markerColor ?? Colors.black; // Asegurarse de un color por defecto si es nulo
+
+    final IconData markerIcon = widget.building.icon;
     final bool showText = widget.currentZoom >= _zoomThresholdForText;
 
     return GestureDetector(
-      onTap: widget.onTap, // Conecta el tap al callback proporcionado
+      onTap: widget.onTap,
       child: SizedBox(
-        width: 150, // Ancho suficiente para el texto más largo
-        height: 100, // Alto suficiente para el texto + pin
+        width: 150,
+        height: 100,
         child: Stack(
-          alignment: Alignment.bottomCenter, // Alinea el contenido a la parte inferior central
+          alignment: Alignment.bottomCenter,
           children: [
             // El "pin" inferior (el círculo y la línea)
             Positioned(
@@ -92,7 +94,7 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
                     width: 25,
                     height: 25,
                     decoration: BoxDecoration(
-                      color: markerColor,
+                      color: markerColor, // Ahora usará Colors.red.shade700, Colors.teal.shade700, etc.
                       shape: BoxShape.circle,
                       border: Border.all(color: Colors.white, width: 2),
                       boxShadow: const [
@@ -112,7 +114,7 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
                   Container(
                     width: 3,
                     height: 12,
-                    color: markerColor,
+                    color: markerColor, // Usará el color del edificio
                   ),
                 ],
               ),
@@ -120,8 +122,7 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
             // La etiqueta de texto flotante (animada)
             if (showText)
               Positioned(
-                // Posiciona la etiqueta por encima del pin
-                bottom: 40, // Ajusta esta altura si el texto se superpone demasiado con otros elementos
+                bottom: 40,
                 child: FadeTransition(
                   opacity: _opacityAnimation,
                   child: ScaleTransition(
@@ -129,7 +130,7 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
                     child: Container(
                       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                       decoration: BoxDecoration(
-                        color: markerColor.withOpacity(0.9),
+                        color: markerColor.withOpacity(0.9), // Usará el color del edificio
                         borderRadius: BorderRadius.circular(10),
                         boxShadow: const [
                           BoxShadow(
@@ -140,12 +141,12 @@ class _AnimatedBuildingMarkerState extends State<AnimatedBuildingMarker>
                         ],
                       ),
                       child: ConstrainedBox(
-                        constraints: const BoxConstraints(maxWidth: 100), // Limita el ancho del texto
+                        constraints: const BoxConstraints(maxWidth: 100),
                         child: Text(
-                          widget.building.name, // Muestra el nombre completo del edificio
+                          widget.building.shortName, // Cambié a shortName porque parece más apropiado para la etiqueta del marcador
                           textAlign: TextAlign.center,
-                          maxLines: 2, // Permite hasta 2 líneas de texto
-                          overflow: TextOverflow.ellipsis, // Si excede, pone "..."
+                          maxLines: 2,
+                          overflow: TextOverflow.ellipsis,
                           style: const TextStyle(
                             fontSize: 11,
                             color: Colors.white,

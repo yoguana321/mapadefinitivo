@@ -52,7 +52,7 @@ dev_dependencies:
 
 flutter_icons:
   android: true
-  image_path: "assets/images/mapp.jpg"
+  image_path: "assets/images/logoun.png"
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 
