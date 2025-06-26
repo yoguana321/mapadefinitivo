@@ -1,3 +1,4 @@
+// lib/screens/splash_screen.dart
 import 'package:flutter/material.dart';
 
 class SplashScreen extends StatefulWidget {
@@ -14,7 +15,11 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late Animation<Offset> _buttonSlideAnimation;
   late Animation<double> _textOpacityAnimation;
 
-  final Color greenMain = const Color(0xFF92B23B); // Verde que mantenemos
+  // Nuevos Colores UNAL refinados para el degradado
+  final Color unalDarkGreen = const Color(0xFF2E7D32); // Un verde oscuro más institucional (casi el del botón anterior)
+  final Color unalReddishBrown = const Color(0xFF6D1B1B); // Un rojo/marrón oscuro (vinotinto)
+  final Color unalLightReddishBrown = const Color(0xFFC7B3B3); // Versión más clara del vinotinto
+  final Color unalSoftGreen = const Color(0xFF8BC34A); // Un verde medio, amigable
 
   @override
   void initState() {
@@ -35,7 +40,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
 
     _buttonSlideAnimation = Tween<Offset>(
       begin: const Offset(0, 0.8),
-      end: Offset(0, -0.2),
+      end: const Offset(0, -0.2),
     ).animate(
       CurvedAnimation(parent: _controller, curve: const Interval(0.6, 1.0, curve: Curves.easeOutBack)),
     );
@@ -53,7 +58,6 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
     super.dispose();
   }
 
-  // Animación por letra individual (igual)
   Widget _buildAnimatedText() {
     const String text = "Tu U en un sólo lugar";
     final List<Widget> letters = [];
@@ -76,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           child: Text(
             char,
             style: const TextStyle(
-              color: Colors.black,
+              color: Colors.white, // Texto en blanco para contrastar con el fondo oscuro/medio
               fontSize: 18,
               fontStyle: FontStyle.italic,
               letterSpacing: 0.5,
@@ -104,81 +108,73 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
       body: AnimatedBuilder(
         animation: _controller,
         builder: (context, child) {
-          return Stack(
-            children: [
-              // Fondo dividido:
-          Column(
-          children: [
-          Container(
-          height: size.height * 1,
+          return Container(
             width: size.width,
+            height: size.height,
             decoration: BoxDecoration(
               gradient: LinearGradient(
-                begin: Alignment.topCenter,  // Ahora empieza desde arriba
-                end: Alignment.bottomCenter, // Hacia abajo
+                begin: Alignment.topCenter, // De arriba hacia abajo
+                end: Alignment.bottomCenter,
                 colors: [
-                  Colors.white,  // Blanco arriba
-                  greenMain,     // Verde abajo
+                  unalLightReddishBrown.withOpacity(0.8), // Un vinotinto claro con algo de transparencia para suavizar
+                  unalSoftGreen.withOpacity(0.8), // Un verde suave con algo de transparencia
                 ],
+                stops: const [0.0, 1.0], // Cubre todo el rango
               ),
             ),
-          ),
-          ],
-          ),
-              // Elementos animados:
-              Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    FadeTransition(
-                      opacity: _logoOpacityAnimation,
-                      child: ScaleTransition(
-                        scale: _logoScaleAnimation,
-                        child: Image.asset(
-                          'assets/images/UNAL2.png',
-                          width: 250,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(height: 50),
-                    SlideTransition(
-                      position: _buttonSlideAnimation,
-                      child: ElevatedButton.icon(
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Colors.white,
-                          foregroundColor: const Color(0xFF2E7D32),
-                          padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(30),
-                          ),
-                          elevation: 10,
-                          shadowColor: Colors.black.withOpacity(0.4),
-                        ),
-                        onPressed: () {
-                          Navigator.pushReplacementNamed(context, '/map');
-                        },
-                        icon: const Icon(Icons.travel_explore, size: 24),
-                        label: const Text(
-                          "Explorar Campus",
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                            letterSpacing: 0.8,
+            child: Stack(
+              children: [
+                Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      FadeTransition(
+                        opacity: _logoOpacityAnimation,
+                        child: ScaleTransition(
+                          scale: _logoScaleAnimation,
+                          child: Image.asset(
+                            'assets/images/UNAL2.png', // Asegúrate de que esta es la ruta correcta de tu logo
+                            width: 250,
                           ),
                         ),
                       ),
-                    ),
-                    const SizedBox(height: 30),
-                    _buildAnimatedText(),
-                  ],
+                      const SizedBox(height: 50),
+                      SlideTransition(
+                        position: _buttonSlideAnimation,
+                        child: ElevatedButton.icon(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.white.withOpacity(0.9), // Fondo del botón casi blanco con ligera transparencia
+                            foregroundColor: unalDarkGreen, // Texto y icono en el verde oscuro de la UNAL
+                            side: BorderSide(color: unalDarkGreen, width: 1.5), // Borde en verde oscuro
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 16),
+                            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(30)),
+                            elevation: 8,
+                            shadowColor: Colors.black.withOpacity(0.4),
+                          ),
+                          onPressed: () {
+                            Navigator.pushReplacementNamed(context, '/map');
+                          },
+                          icon: const Icon(Icons.travel_explore, size: 24),
+                          label: const Text(
+                            "Explorar Campus",
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              letterSpacing: 0.8,
+                            ),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 30),
+                      _buildAnimatedText(),
+                    ],
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           );
         },
       ),
     );
   }
 }
-
-

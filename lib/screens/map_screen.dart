@@ -1,8 +1,8 @@
+// lib/screens/map_screen.dart
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
-// Importaciones locales
 import '../models/building.dart';
 import '../data/building_data.dart';
 import '../widgets/app_drawer.dart';
@@ -24,6 +24,7 @@ class _MapScreenState extends State<MapScreen> {
   final FocusNode _searchFocusNode = FocusNode();
   bool _isSearchVisible = false;
   double _currentZoom = 18;
+  LatLng _currentCenter = LatLng(4.637040, -74.082983);
   List<Building> _filteredBuildings = [];
   String? _selectedCategory = 'Todos';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
@@ -37,12 +38,15 @@ class _MapScreenState extends State<MapScreen> {
       if (event is MapEventMove || event is MapEventMoveEnd) {
         setState(() {
           _currentZoom = mapController.camera.zoom;
+          _currentCenter = mapController.camera.center;
         });
       }
     });
     _updateFilteredBuildings();
     _searchFocusNode.addListener(() {
-      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {}
+      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {
+        // Puedes agregar lógica aquí si quieres hacer algo cuando el campo de búsqueda pierde el foco y está vacío
+      }
     });
   }
 
@@ -58,7 +62,9 @@ class _MapScreenState extends State<MapScreen> {
     final lowerQuery = _searchController.text.toLowerCase();
     setState(() {
       _filteredBuildings = allBuildings.where((b) {
-        bool matchesQuery = b.name.toLowerCase().contains(lowerQuery) || b.info.toLowerCase().contains(lowerQuery);
+        // *** CAMBIO CLAVE AQUÍ: Usamos el nuevo campo searchableContent ***
+        bool matchesQuery = b.searchableContent.contains(lowerQuery);
+
         bool matchesCategory = true;
         if (_selectedCategory != null && _selectedCategory != 'Todos') {
           matchesCategory = b.category.toLowerCase() == _selectedCategory!.toLowerCase();
@@ -98,8 +104,8 @@ class _MapScreenState extends State<MapScreen> {
   void _onMarkerTapped(Building building) {
     _clearSearchState();
     _clearRouteAndInstructions();
-    mapController.move(building.coords, 20);
-    showBuildingInfo(context, building);
+    mapController.move(building.coords, 20); // Zoom in on the building
+    showBuildingInfo(context, building); // Open the detailed info sheet
   }
 
   void _navigateToHome() {
@@ -195,18 +201,14 @@ class _MapScreenState extends State<MapScreen> {
                     ),
                 ],
               ),
-              MarkerLayer(
-                markers: [],
-              ),
               MapBuildingMarkers(
                 buildings: _filteredBuildings,
                 currentZoom: _currentZoom,
                 onMarkerTap: _onMarkerTapped,
+                center: _currentCenter,
               ),
             ],
           ),
-
-          // Botones menú y búsqueda
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
             left: 10,
@@ -229,8 +231,6 @@ class _MapScreenState extends State<MapScreen> {
               child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Colors.black),
             ),
           ),
-
-          // Botones abajo a la derecha
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
@@ -263,16 +263,16 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-
-          // === BRÚJULA DINÁMICA ===
           Align(
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.only(right: 80.0, bottom:20.0),
+              padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
               child: StreamBuilder<MapEvent>(
                 stream: mapController.mapEventStream,
                 builder: (context, snapshot) {
-                  final rotation = snapshot.data?.camera.rotation ?? 0.0;
+                  final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
+                  final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
+
                   return Stack(
                     alignment: Alignment.center,
                     children: [
@@ -280,7 +280,7 @@ class _MapScreenState extends State<MapScreen> {
                       Positioned(
                         right: 8,
                         child: Transform.rotate(
-                          angle: -rotation,
+                          angle: rotationRadians,
                           child: Image.asset('assets/images/señalador.png', width: 126),
                         ),
                       ),
@@ -290,8 +290,6 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-
-          // Barra de búsqueda
           if (_isSearchVisible)
             Positioned(
               top: MediaQuery.of(context).padding.top + 60,

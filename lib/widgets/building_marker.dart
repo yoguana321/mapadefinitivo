@@ -1,10 +1,43 @@
+// lib/widgets/building_marker.dart
 import 'package:flutter/material.dart';
 import '../models/building.dart';
-import 'dart:ui'; // Para Offset si Material no lo incluye
+// Asegúrate de que las rutas sean correctas si getCategoryColor y getCategoryIcon
+// están en un archivo de utilidades separado. Si no, puedes definirlas aquí.
+
+// Estas funciones pueden estar en un archivo como utils/category_utils.dart
+// Si no lo tienes, puedes copiarlas aquí por simplicidad.
+Color getCategoryColor(String category) {
+  switch (category) {
+    case 'Facultad': return Colors.brown;
+    case 'Aulas y Oficinas': return Colors.blue;
+    case 'Auditorio': return Colors.red;
+    case 'Biblioteca': return Colors.purple;
+    case 'Comedor': return Colors.orange;
+    case 'Oficinas': return Colors.grey;
+    case 'Servicios': return Colors.green;
+    case 'Cafeterías': return Colors.brown[600]!; // Color más oscuro para cafeterías
+    default: return Colors.black;
+  }
+}
+
+IconData getCategoryIcon(String category) {
+  switch (category) {
+    case 'Facultad': return Icons.school;
+    case 'Aulas y Oficinas': return Icons.business;
+    case 'Auditorio': return Icons.music_note;
+    case 'Biblioteca': return Icons.local_library;
+    case 'Comedor': return Icons.restaurant;
+    case 'Oficinas': return Icons.business_center;
+    case 'Servicios': return Icons.medical_services;
+    case 'Cafeterías': return Icons.local_cafe;
+    default: return Icons.location_on;
+  }
+}
+
 
 class BuildingMarker extends StatefulWidget {
   final Building building;
-  final Function(Building) onTap;
+  final VoidCallback onTap;
   final double currentZoom;
 
   const BuildingMarker({
@@ -18,23 +51,45 @@ class BuildingMarker extends StatefulWidget {
   State<BuildingMarker> createState() => _BuildingMarkerState();
 }
 
-class _BuildingMarkerState extends State<BuildingMarker> with SingleTickerProviderStateMixin {
-  late AnimationController _controller;
-  late Animation<double> _animation;
+class _BuildingMarkerState extends State<BuildingMarker>
+    with SingleTickerProviderStateMixin {
+  late final AnimationController _controller;
+  late final Animation<double> _fadeAnimation;
+  late final Animation<double> _scaleAnimation;
+
+  static const double _zoomThresholdForText = 17.0;
 
   @override
   void initState() {
     super.initState();
     _controller = AnimationController(
       vsync: this,
-      duration: const Duration(milliseconds: 500),
+      duration: const Duration(milliseconds: 250),
     );
 
-    _animation = Tween<double>(begin: 0.0, end: 1.0).animate(
-      CurvedAnimation(parent: _controller, curve: Curves.easeOutBack),
+    _fadeAnimation = CurvedAnimation(
+      parent: _controller,
+      curve: Curves.easeInOut,
     );
 
-    _controller.forward();
+    _scaleAnimation = Tween<double>(begin: 0.8, end: 1.0).animate(_fadeAnimation);
+
+    if (widget.currentZoom >= _zoomThresholdForText) {
+      _controller.forward();
+    }
+  }
+
+  @override
+  void didUpdateWidget(covariant BuildingMarker oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final bool oldShowText = oldWidget.currentZoom >= _zoomThresholdForText;
+    final bool newShowText = widget.currentZoom >= _zoomThresholdForText;
+
+    if (newShowText && !oldShowText) {
+      _controller.forward();
+    } else if (!newShowText && oldShowText) {
+      _controller.reverse();
+    }
   }
 
   @override
@@ -43,109 +98,73 @@ class _BuildingMarkerState extends State<BuildingMarker> with SingleTickerProvid
     super.dispose();
   }
 
-  Map<String, Object> _getCategoryIconAndColor(String category) {
-    switch (category) {
-      case 'Cafeterías':
-        return {'icon': Icons.local_cafe, 'color': Colors.brown.shade600};
-      case 'Bibliotecas':
-        return {'icon': Icons.book, 'color': Colors.deepPurple};
-      case 'Auditorios':
-        return {'icon': Icons.mic, 'color': Colors.red.shade700};
-      case 'Comedor':
-        return {'icon': Icons.restaurant, 'color': Colors.orange.shade700};
-      case 'Facultad':
-        return {'icon': Icons.school, 'color': Colors.blue.shade700};
-      case 'Oficinas':
-        return {'icon': Icons.business, 'color': Colors.grey.shade700};
-      case 'Aulas y Oficinas':
-        return {'icon': Icons.meeting_room, 'color': Colors.teal.shade700};
-      case 'Servicios':
-        return {'icon': Icons.medical_services, 'color': Colors.green.shade700};
-      default:
-        return {'icon': Icons.location_on, 'color': Colors.blue};
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final categoryData = _getCategoryIconAndColor(widget.building.category);
-    final icon = categoryData['icon'] as IconData;
-    final color = categoryData['color'] as Color;
-
-    double iconSize = 30 + (widget.currentZoom - 15) * 2;
-    iconSize = iconSize.clamp(24, 48);
-
-    double fontSize = 10 + (widget.currentZoom - 15) * 0.8;
-    fontSize = fontSize.clamp(8, 16);
+    final Color bgColor = getCategoryColor(widget.building.category);
+    final IconData icon = getCategoryIcon(widget.building.category);
+    final bool showText = widget.currentZoom >= _zoomThresholdForText;
 
     return GestureDetector(
-      onTap: () => widget.onTap(widget.building),
-      child: AnimatedBuilder(
-        animation: _controller,
-        builder: (context, child) {
-          return Opacity(
-            opacity: _animation.value.clamp(0.0, 1.0),
-            child: Transform.scale(
-              scale: _animation.value.clamp(0.0, 2.0),
-              alignment: Alignment.bottomCenter,
-              child: OverflowBox(
-                maxWidth: double.infinity,
-                maxHeight: double.infinity,
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    // Flecha apuntando al punto exacto
-                    Transform.translate(
-                      offset: const Offset(0, 5),
-                      child: Icon(
-                        Icons.arrow_drop_down,
-                        size: iconSize * 0.6,
-                        color: color,
+      onTap: widget.onTap,
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        // Por defecto, Column alinea sus hijos en el top-center si no se especifica alignment.
+        // Esto significa que el punto del marcador estará abajo, y el chip arriba.
+        children: [
+          if (showText)
+            FadeTransition(
+              opacity: _fadeAnimation,
+              child: ScaleTransition(
+                scale: _scaleAnimation,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+                  decoration: BoxDecoration(
+                    color: bgColor.withOpacity(0.9),
+                    borderRadius: BorderRadius.circular(24),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Colors.black26,
+                        blurRadius: 6,
+                        offset: Offset(0, 2),
                       ),
-                    ),
-                    // Ícono de categoría
-                    Icon(
-                      icon,
-                      size: iconSize,
-                      color: color,
-                      shadows: const [
-                        BoxShadow(
-                          color: Colors.black54,
-                          blurRadius: 4,
-                          offset: Offset(2, 2),
-                        ),
-                      ],
-                    ),
-                    // Nombre del edificio
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 3),
-                      decoration: BoxDecoration(
-                        color: Colors.black54,
-                        borderRadius: BorderRadius.circular(5),
-                      ),
-                      child: Text(
-                        widget.building.name,
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
+                    ],
+                  ),
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Icon(icon, size: 16, color: Colors.white),
+                      const SizedBox(width: 6),
+                      Text(
+                        widget.building.shortName,
+                        style: const TextStyle(
+                          fontSize: 12,
                           color: Colors.white,
-                          fontWeight: FontWeight.bold,
-                          fontSize: fontSize,
-                          shadows: const [
-                            Shadow(
-                              blurRadius: 2.0,
-                              color: Colors.black,
-                              offset: Offset(1.0, 1.0),
-                            ),
-                          ],
+                          fontWeight: FontWeight.w500,
                         ),
                       ),
-                    ),
-                  ],
+                    ],
+                  ),
                 ),
               ),
             ),
-          );
-        },
+
+          const SizedBox(height: 4),
+          Container(
+            width: 8,
+            height: 8,
+            decoration: BoxDecoration(
+              color: bgColor.withOpacity(0.9),
+              shape: BoxShape.circle,
+              boxShadow: const [
+                BoxShadow(
+                  color: Colors.black38,
+                  blurRadius: 2,
+                  offset: Offset(0, 1),
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

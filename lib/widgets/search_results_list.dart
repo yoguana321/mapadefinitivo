@@ -1,4 +1,4 @@
-// lib/widgets/search_results_list.dart
+/// lib/widgets/search_results_list.dart
 import 'package:flutter/material.dart';
 import '../models/building.dart'; // Asegúrate de importar tu modelo Building
 
@@ -33,10 +33,13 @@ class SearchResultsList extends StatelessWidget {
             itemBuilder: (context, index) {
               final result = filteredBuildings[index];
               return ListTile(
-                leading: const Icon(Icons.location_on),
+                leading: Icon(result.icon), // Usar el icono del Building model
                 title: Text(result.name),
-                subtitle: Text(result.info),
-                // onBuildingSelected(result) ahora solo informará a MapScreen que se seleccionó
+                subtitle: Text(
+                  result.shortName, // ¡Cambiado de result.info a result.shortName!
+                  maxLines: 2, // Limita a 2 líneas
+                  overflow: TextOverflow.ellipsis, // Añade "..." si el texto es muy largo
+                ),
                 onTap: () => onBuildingSelected(result),
               );
             },
