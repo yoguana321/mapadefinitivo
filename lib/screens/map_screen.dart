@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
+import 'package:mapadefinitivo/screens/favorites_screen.dart';
 
 import '../models/building.dart';
 import '../data/building_data.dart';
@@ -11,8 +12,11 @@ import '../widgets/map_markers.dart';
 import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
 
+
 class MapScreen extends StatefulWidget {
-  const MapScreen({super.key});
+  final Building? initialBuilding; // <-- esto es nuevo
+
+  const MapScreen({super.key, this.initialBuilding});
 
   @override
   State<MapScreen> createState() => _MapScreenState();
@@ -33,7 +37,13 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
-
+    if (widget.initialBuilding != null) {
+      // Espera a que el mapa esté listo para moverse
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        mapController.move(widget.initialBuilding!.coords, 18);
+        showBuildingInfo(context, widget.initialBuilding!); // Esta función ya la tienes
+      });
+    }
     mapController.mapEventStream.listen((event) {
       if (event is MapEventMove || event is MapEventMoveEnd) {
         setState(() {
@@ -118,6 +128,12 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(LatLng(4.637040, -74.082983), 18);
     _scaffoldKey.currentState?.closeDrawer();
   }
+  void _navigateToFavorites() {
+    Navigator.push(
+      context,
+      MaterialPageRoute(builder: (context) => const FavoritesScreen()),
+    );
+  }
 
   void _clearRouteAndInstructions() {
     setState(() {
@@ -136,11 +152,18 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _onMyLocationButtonPressed() {
+    // Centra el mapa en las coordenadas específicas con zoom 18
     mapController.move(LatLng(4.637040, -74.082983), 18);
+
+    // Restaura la rotación a 0 grados
+    mapController.rotate(0);
+
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Centrando mapa en la Universidad Nacional.')),
     );
+
     _clearRouteAndInstructions();
+
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
@@ -156,6 +179,7 @@ class _MapScreenState extends State<MapScreen> {
         onCategorySelected: _onCategorySelected,
         onNavigateToMap: _navigateToMap,
         onNavigateToHome: _navigateToHome,
+        onNavigateToFavorites: _navigateToFavorites,
       ),
       body: Stack(
         children: [
@@ -263,33 +287,34 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ),
           ),
-          Align(
-            alignment: Alignment.bottomRight,
-            child: Padding(
-              padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
-              child: StreamBuilder<MapEvent>(
-                stream: mapController.mapEventStream,
-                builder: (context, snapshot) {
-                  final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
-                  final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
 
-                  return Stack(
-                    alignment: Alignment.center,
-                    children: [
-                      Image.asset('assets/images/cruceta.png', width: 148),
-                      Positioned(
-                        right: 8,
-                        child: Transform.rotate(
-                          angle: rotationRadians,
-                          child: Image.asset('assets/images/señalador.png', width: 126),
-                        ),
-                      ),
-                    ],
-                  );
-                },
+          Align( //BRUJULA
+              alignment: Alignment.bottomRight,
+              child: Padding(
+                  padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
+                  child: StreamBuilder<MapEvent>(
+                    stream: mapController.mapEventStream,
+                    builder: (context, snapshot) {
+                      final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
+                      final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
+
+                      return Stack(
+                        alignment: Alignment.center,
+                        children: [
+                          Image.asset('assets/images/cruceta.png', width: 148),
+                          Positioned(
+                            right: 8,
+                            child: Transform.rotate(
+                              angle: rotationRadians,
+                              child: Image.asset('assets/images/señalador.png', width: 126),
+                            ),
+                          ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-          ),
           if (_isSearchVisible)
             Positioned(
               top: MediaQuery.of(context).padding.top + 60,

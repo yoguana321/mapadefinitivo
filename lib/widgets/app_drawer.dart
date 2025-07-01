@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Importante para BackdropFilter
 
-// CONTROL DE LA BARRA LATERAL (SIDEBARD)
+// CONTROL DE LA BARRA LATERAL (SLIDEBARD)
 
 // Definición de callbacks para la navegación y el filtro
 typedef FilterCategorySelected = void Function(String category);
 typedef NavigateToMap = void Function();
 typedef NavigateToHome = void Function();
+typedef NavigateToFavorites = void Function();
 
 // Widget para el cajón de navegación (Drawer) de la aplicación
 class AppDrawer extends StatelessWidget {
@@ -15,6 +16,7 @@ class AppDrawer extends StatelessWidget {
   final FilterCategorySelected onCategorySelected;
   final NavigateToMap onNavigateToMap;
   final NavigateToHome onNavigateToHome;
+  final NavigateToFavorites onNavigateToFavorites;
 
   const AppDrawer({
     super.key,
@@ -23,6 +25,7 @@ class AppDrawer extends StatelessWidget {
     required this.onCategorySelected,
     required this.onNavigateToMap,
     required this.onNavigateToHome,
+    required this.onNavigateToFavorites,
   });
 
   @override
@@ -52,7 +55,7 @@ class AppDrawer extends StatelessWidget {
 
                         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                         child: Container(
-                          color: Colors.black.withOpacity(0.3),
+                          color: Colors.black.withAlpha(77), // 77/255 ≈ 0.3
                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           child: const Text(
                             'M.I UNAL',
@@ -91,6 +94,14 @@ class AppDrawer extends StatelessWidget {
             onTap: () {
               Navigator.pop(context);
               onNavigateToMap();
+            },
+          ),
+          ListTile(
+            leading: const Icon(Icons.star),
+            title: const Text('Favoritos'),
+            onTap: () {
+              Navigator.pop(context);
+              onNavigateToFavorites();
             },
           ),
           const Divider(),

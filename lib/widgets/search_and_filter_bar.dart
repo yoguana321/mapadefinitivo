@@ -1,7 +1,7 @@
-// lib/widgets/search_and_filter_bar.dart
 import 'package:flutter/material.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-class SearchAndFilterBar extends StatelessWidget {
+class SearchAndFilterBar extends StatefulWidget {
   final TextEditingController searchController;
   final FocusNode searchFocusNode;
   final List<String> categories;
@@ -20,61 +20,108 @@ class SearchAndFilterBar extends StatelessWidget {
   });
 
   @override
+  State<SearchAndFilterBar> createState() => _SearchAndFilterBarState();
+}
+
+class _SearchAndFilterBarState extends State<SearchAndFilterBar> {
+  late stt.SpeechToText _speech;
+  bool _isListening = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _speech = stt.SpeechToText();
+  }
+
+  void _toggleListening() async {
+    if (!_isListening) {
+      bool available = await _speech.initialize(
+        onStatus: (status) => print('Status: $status'),
+        onError: (error) => print('Error: $error'),
+      );
+      if (available) {
+        setState(() => _isListening = true);
+        _speech.listen(
+          onResult: (result) {
+            final recognized = result.recognizedWords;
+            widget.searchController.text = recognized;
+            widget.onSearchChanged(recognized);
+          },
+        );
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('No se pudo acceder al micrófono')),
+        );
+      }
+    } else {
+      setState(() => _isListening = false);
+      _speech.stop();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // Barra de Búsqueda
         Material(
           elevation: 4,
           borderRadius: BorderRadius.circular(8),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: TextField(
-              controller: searchController,
-              focusNode: searchFocusNode,
+              controller: widget.searchController,
+              focusNode: widget.searchFocusNode,
               decoration: InputDecoration(
-                hintText: 'Buscar edificio o aula...', // Actualizado el hint
+                hintText: 'Buscar edificio o aula...',
                 prefixIcon: const Icon(Icons.search),
-                suffixIcon: searchController.text.isNotEmpty
-                    ? IconButton(
-                  icon: const Icon(Icons.clear),
-                  onPressed: () {
-                    searchController.clear();
-                    onSearchChanged(''); // Notifica que la búsqueda se ha limpiado
-                    searchFocusNode.requestFocus(); // Mantener el foco
-                  },
-                )
-                    : null,
+                suffixIcon: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    if (widget.searchController.text.isNotEmpty)
+                      IconButton(
+                        icon: const Icon(Icons.clear),
+                        onPressed: () {
+                          widget.searchController.clear();
+                          widget.onSearchChanged('');
+                          widget.searchFocusNode.requestFocus();
+                        },
+                      ),
+                    IconButton(
+                      icon: Icon(
+                        _isListening ? Icons.mic : Icons.mic_none,
+                        color: _isListening ? Colors.red : null,
+                      ),
+                      onPressed: _toggleListening,
+                    ),
+                  ],
+                ),
                 border: InputBorder.none,
               ),
-              onChanged: onSearchChanged,
+              onChanged: widget.onSearchChanged,
             ),
           ),
         ),
-        const SizedBox(height: 8), // Espacio entre la barra de búsqueda y el filtro
-
-        // Filtro de categoría con Chips
+        const SizedBox(height: 8),
         SizedBox(
-          height: 40, // Altura fija para los chips
+          height: 40,
           child: ListView.builder(
             scrollDirection: Axis.horizontal,
-            itemCount: categories.length,
+            itemCount: widget.categories.length,
             itemBuilder: (context, index) {
-              final category = categories[index];
+              final category = widget.categories[index];
               return Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 4.0),
                 child: ChoiceChip(
                   label: Text(category),
-                  selected: selectedCategory == category,
+                  selected: widget.selectedCategory == category,
                   onSelected: (bool selected) {
                     if (selected) {
-                      onCategorySelected(category);
+                      widget.onCategorySelected(category);
                     }
                   },
-                  selectedColor: Theme.of(context).primaryColor.withOpacity(0.2), // Color cuando está seleccionado
-                  // backgroundColor: Colors.white, // Puedes definir un color de fondo si lo deseas
-                  // shadowColor: Colors.black, // Color de sombra
-                  elevation: 2, // Sombra para que se vean como "cuadros"
+                  selectedColor:
+                  Theme.of(context).primaryColor.withOpacity(0.2),
+                  elevation: 2,
                 ),
               );
             },

@@ -45,5 +45,10 @@
 	<true/>
 	<key>UIApplicationSupportsIndirectInputEvents</key>
 	<true/>
+	<key>NSMicrophoneUsageDescription</key>
+    <string>Necesitamos acceder al micrófono para usar el dictado por voz.</string>
+    <key>NSSpeechRecognitionUsageDescription</key>
+    <string>Permiso necesario para convertir voz en texto durante la búsqueda.</string>
+
 </dict>
 </plist>

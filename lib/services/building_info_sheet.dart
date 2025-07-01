@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import '../models/building.dart';
 import '../models/room.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 // Importar Professor para usar en las tarjetas de profesores
 
 // La función principal para mostrar el bottom sheet
@@ -143,11 +144,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
 
   // --- FUNCIÓN DE ENCABEZADO MEJORADA (MÉTODO DE LA CLASE) ---
   Widget _buildHeader(BuildContext context, Building building, Color primaryTabColor) {
-    return ClipRRect(
-      borderRadius: const BorderRadius.vertical(top: Radius.circular(20)),
-      child: Stack(
-        children: [
-          // Imagen de fondo
+    return Stack(
+      children: [
+        // imagen, gradiente, contenido...
+        // Imagen de fondo
           SizedBox(
             height: 200,
             width: double.infinity,
@@ -206,49 +206,74 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                 ),
                 const SizedBox(height: 6),
                 Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                      decoration: BoxDecoration(
-                        color: primaryTabColor.withOpacity(0.85),
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Text(
-                        building.category,
-                        style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    if (building.isAccessible == true)
-                      GestureDetector(
-                        onTap: () {
-                          showDialog(
-                            context: context,
-                            builder: (BuildContext context) {
-                              return AlertDialog(
-                                title: const Text('Accesibilidad'),
-                                content: const Text(
-                                  'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
-                                ),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () => Navigator.of(context).pop(),
-                                    child: const Text('Entendido'),
-                                  ),
-                                ],
+                    Row(
+                      children: [
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                          decoration: BoxDecoration(
+                            color: primaryTabColor.withOpacity(0.85),
+                            borderRadius: BorderRadius.circular(20),
+                          ),
+                          child: Text(
+                            building.category,
+                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
+                          ),
+                        ),
+                        const SizedBox(width: 8),
+                        if (building.isAccessible == true)
+                          GestureDetector(
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: const Text('Accesibilidad'),
+                                    content: const Text(
+                                      'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
+                                    ),
+                                    actions: [
+                                      TextButton(
+                                        onPressed: () => Navigator.of(context).pop(),
+                                        child: const Text('Entendido'),
+                                      ),
+                                    ],
+                                  );
+                                },
                               );
                             },
-                          );
-                        },
-                        child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
-                      ),
+                            child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
+                          ),
+                      ],
+                    ),
+                    FutureBuilder<SharedPreferences>(
+                      future: SharedPreferences.getInstance(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) return const SizedBox.shrink();
+                        final prefs = snapshot.data!;
+                        final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
+
+                        return IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.star : Icons.star_border,
+                            color: Colors.amber,
+                          ),
+                          onPressed: () async {
+                            final newValue = !isFavorite;
+                            await prefs.setBool('fav_${building.id}', newValue);
+                            Navigator.pop(context);
+                            showBuildingInfo(context, building);
+                          },
+                        );
+                      },
+                    ),
                   ],
                 ),
               ],
             ),
-          ),
+           )
         ],
-      ),
     );
   }
 
