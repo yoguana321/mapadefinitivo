@@ -9,7 +9,7 @@ class Room {
   final bool? isServiceRoom; // true si es un baño, cafetería, etc.
   final List<Professor>? professors; // Lista de profesores asociados a esta sala
   final String? description; // NUEVO: Campo opcional para una descripción corta de la sala
-
+  final String? contactInfo;
   Room({
     required this.id,
     required this.number,
@@ -18,6 +18,7 @@ class Room {
     this.isServiceRoom = false,
     this.professors,
     this.description, // Incluir en el constructor
+    this.contactInfo,
   });
   factory Room.fromMap(Map<String, dynamic> map) {
     return Room(

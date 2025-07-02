@@ -1,4 +1,5 @@
 // lib/screens/map_screen.dart
+
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
@@ -14,7 +15,7 @@ import '../widgets/search_results_list.dart';
 
 
 class MapScreen extends StatefulWidget {
-  final Building? initialBuilding; // <-- esto es nuevo
+  final Building? initialBuilding;
 
   const MapScreen({super.key, this.initialBuilding});
 
@@ -34,21 +35,24 @@ class _MapScreenState extends State<MapScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   List<LatLng> _routePoints = [];
 
+  // NUEVO: Variable para almacenar la rotación actual del mapa
+  double _currentMapRotation = 0.0;
+
   @override
   void initState() {
     super.initState();
     if (widget.initialBuilding != null) {
-      // Espera a que el mapa esté listo para moverse
       WidgetsBinding.instance.addPostFrameCallback((_) {
         mapController.move(widget.initialBuilding!.coords, 18);
-        showBuildingInfo(context, widget.initialBuilding!); // Esta función ya la tienes
+        showBuildingInfo(context, widget.initialBuilding!);
       });
     }
     mapController.mapEventStream.listen((event) {
-      if (event is MapEventMove || event is MapEventMoveEnd) {
+      if (event is MapEventMove || event is MapEventMoveEnd || event is MapEventRotate || event is MapEventRotateEnd) {
         setState(() {
           _currentZoom = mapController.camera.zoom;
           _currentCenter = mapController.camera.center;
+          _currentMapRotation = mapController.camera.rotation; // ¡AQUÍ SE ACTUALIZA LA ROTACIÓN!
         });
       }
     });
@@ -72,7 +76,6 @@ class _MapScreenState extends State<MapScreen> {
     final lowerQuery = _searchController.text.toLowerCase();
     setState(() {
       _filteredBuildings = allBuildings.where((b) {
-        // *** CAMBIO CLAVE AQUÍ: Usamos el nuevo campo searchableContent ***
         bool matchesQuery = b.searchableContent.contains(lowerQuery);
 
         bool matchesCategory = true;
@@ -152,18 +155,12 @@ class _MapScreenState extends State<MapScreen> {
   }
 
   void _onMyLocationButtonPressed() {
-    // Centra el mapa en las coordenadas específicas con zoom 18
     mapController.move(LatLng(4.637040, -74.082983), 18);
-
-    // Restaura la rotación a 0 grados
     mapController.rotate(0);
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(content: Text('Centrando mapa en la Universidad Nacional.')),
     );
-
     _clearRouteAndInstructions();
-
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
@@ -190,7 +187,12 @@ class _MapScreenState extends State<MapScreen> {
               initialZoom: 18,
               minZoom: 9,
               maxZoom: 20,
-              interactionOptions: const InteractionOptions(flags: InteractiveFlag.all),
+              // Lógica para bloquear la rotación en zoom alto
+              interactionOptions: InteractionOptions(
+                flags: (_currentZoom >= 19.5 && mapController.camera.rotation != 0.0)
+                    ? InteractiveFlag.drag | InteractiveFlag.pinchZoom // Permite drag y zoom, pero bloquea rotación si muy cerca y rotado
+                    : InteractiveFlag.all, // Permite todo en otros zooms o si el mapa está sin rotar
+              ),
               cameraConstraint: CameraConstraint.contain(
                 bounds: LatLngBounds(
                   LatLng(4.4, -74.25),
@@ -230,6 +232,7 @@ class _MapScreenState extends State<MapScreen> {
                 currentZoom: _currentZoom,
                 onMarkerTap: _onMarkerTapped,
                 center: _currentCenter,
+                mapRotation: _currentMapRotation, // ¡AQUÍ SE PASA LA ROTACIÓN AL WIDGET DE MARCADORES!
               ),
             ],
           ),
@@ -288,33 +291,33 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          Align( //BRUJULA
-              alignment: Alignment.bottomRight,
-              child: Padding(
-                  padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
-                  child: StreamBuilder<MapEvent>(
-                    stream: mapController.mapEventStream,
-                    builder: (context, snapshot) {
-                      final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
-                      final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
+          Align( // BRUJULA - SE MANTIENE EXACTAMENTE IGUAL, NO NECESITA CAMBIOS
+            alignment: Alignment.bottomRight,
+            child: Padding(
+              padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
+              child: StreamBuilder<MapEvent>(
+                stream: mapController.mapEventStream,
+                builder: (context, snapshot) {
+                  final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
+                  final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
 
-                      return Stack(
-                        alignment: Alignment.center,
-                        children: [
-                          Image.asset('assets/images/cruceta.png', width: 148),
-                          Positioned(
-                            right: 8,
-                            child: Transform.rotate(
-                              angle: rotationRadians,
-                              child: Image.asset('assets/images/señalador.png', width: 126),
-                            ),
-                          ),
-                        ],
-                      );
-                    },
-                  ),
-                ),
+                  return Stack(
+                    alignment: Alignment.center,
+                    children: [
+                      Image.asset('assets/images/cruceta.png', width: 148),
+                      Positioned(
+                        right: 8,
+                        child: Transform.rotate(
+                          angle: rotationRadians,
+                          child: Image.asset('assets/images/señalador.png', width: 126),
+                        ),
+                      ),
+                    ],
+                  );
+                },
               ),
+            ),
+          ),
           if (_isSearchVisible)
             Positioned(
               top: MediaQuery.of(context).padding.top + 60,

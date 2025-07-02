@@ -6,7 +6,7 @@ class Professor {
   final String? email; // Opcional
   final String? officeHours; // Opcional
   final String? roomNumber; // Opcional, para indicar su aula principal
-
+  final String? role;
   Professor({
     required this.id,
     required this.name,
@@ -14,6 +14,7 @@ class Professor {
     this.email,
     this.officeHours,
     this.roomNumber,
+    this.role,
   });
 
   factory Professor.fromMap(Map<String, dynamic> map) {
