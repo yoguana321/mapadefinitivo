@@ -1,16 +1,13 @@
-# mapadefinitivo
+# APP MiUnal - GPS
 
 A new Flutter project.
 
-## Getting Started
-
-This project is a starting point for a Flutter application.
-
-A few resources to get you started if this is your first Flutter project:
-
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
-
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,********
-samples, guidance on mobile development, and a full API reference.
+## Integrantes
+-Juan Felipe Durán Garrido
+-Miranda Campos Díaz 
+-David Felpe Gelves
+-Daniel Cuesta
+-Nicolas Gamez
+## Descripción
+La app MI Unal es un mapa interactivo de la Universidad Nacional de Colombia que provee un acceso sencillo a información de la U. El anexo a este es un sistema de dirección con una 
+ESP 32 y una pantalla digital que enseña la ruta más rapida a un punto seleccionado en el mapa.
