@@ -1,7 +1,4 @@
 # APP MiUnal - GPS
-
-A new Flutter project.
-
 ## Integrantes
 -Juan Felipe Durán Garrido
 -Miranda Campos Díaz 
