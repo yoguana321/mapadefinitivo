@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapadefinitivo/screens/favorites_screen.dart';
-
 import '../models/building.dart';
 import '../data/building_data.dart';
 import '../widgets/app_drawer.dart';
@@ -12,7 +11,8 @@ import '../services/building_info_sheet.dart';
 import '../widgets/map_markers.dart';
 import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
 
 class MapScreen extends StatefulWidget {
   final Building? initialBuilding;
@@ -24,6 +24,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  LatLng? _currentLocation;
   final MapController mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -33,14 +34,14 @@ class _MapScreenState extends State<MapScreen> {
   List<Building> _filteredBuildings = [];
   String? _selectedCategory = 'Todos';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<LatLng> _routePoints = [];
 
   // NUEVO: Variable para almacenar la rotación actual del mapa
   double _currentMapRotation = 0.0;
-
+  late StreamSubscription<Position>? _positionStream;
   @override
   void initState() {
     super.initState();
+    _listenToLocation();
     if (widget.initialBuilding != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         mapController.move(widget.initialBuilding!.coords, 18);
@@ -64,11 +65,35 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
+  void _listenToLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return;
+    }
+    if (permission == LocationPermission.deniedForever) return;
+
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      ),
+    ).listen((Position position) {
+      setState(() {
+        _currentLocation = LatLng(position.latitude, position.longitude);
+      });
+    });
+  }
   @override
   void dispose() {
+    _positionStream?.cancel();
     mapController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _positionStream?.cancel();
     super.dispose();
   }
 
@@ -140,7 +165,6 @@ class _MapScreenState extends State<MapScreen> {
 
   void _clearRouteAndInstructions() {
     setState(() {
-      _routePoints = [];
     });
   }
 
@@ -154,17 +178,46 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _onMyLocationButtonPressed() {
-    mapController.move(LatLng(4.637040, -74.082983), 18);
+  Future<void> _onMyLocationButtonPressed() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Activa los servicios de ubicación.')),
+      );
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    final position = await Geolocator.getCurrentPosition();
+    final currentLatLng = LatLng(position.latitude, position.longitude);
+    setState(() {
+      _currentCenter = currentLatLng;
+    });
+
+    mapController.move(currentLatLng, 18);
     mapController.rotate(0);
+
     ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Centrando mapa en la Universidad Nacional.')),
+      const SnackBar(content: Text('Ubicación actual')),
     );
+
     _clearRouteAndInstructions();
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -215,15 +268,20 @@ class _MapScreenState extends State<MapScreen> {
                 subdomains: ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.example.mapadefinitivo',
               ),
-              PolylineLayer(
-                polylines: [
-                  if (_routePoints.isNotEmpty)
-                    Polyline(
-                      points: _routePoints,
-                      color: Colors.blue,
-                      strokeWidth: 6.0,
-                      borderStrokeWidth: 2.0,
-                      borderColor: Colors.black,
+              MarkerLayer(
+                markers: [
+                  if (_currentLocation != null)
+                    Marker(
+                      point: _currentLocation!,
+                      width: 20,
+                      height: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue.withOpacity(0.8),
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -292,6 +350,12 @@ class _MapScreenState extends State<MapScreen> {
           ),
 
           Align( // BRUJULA - SE MANTIENE EXACTAMENTE IGUAL, NO NECESITA CAMBIOS
+            //⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠛⢉⢉⠉⠉⠻⣿⣿⣿⣿⣿⣿
+            //⣿⣿⣿⣿⡿⠁⠄⣳⢷⣿⣿⣿⣿⡿⣝⠖⠄⣿⣿⣿⣿⣿
+            //⣿⣿⣿⣿⡿⠁⠄⣳⢷⣿⣿⣿⣿⡿⣝⠖⠄⣿⣿⣿⣿⣿
+            //⣿⣿⠄⢜⢾⣾⣿⣿⣟⣗⢯⡪⡳⡀⢸⣿⣿⣿⣿⣿⣿⣿
+            //⣿⣿⡇⢀⢗⣿⣿⣿⣿⡿⣞⡵⡣⣊⢸⣿⣿⣿⣿⣿⣿⣿
+            //⣿⣿⣿⣿⡆⢘⡺⣽⢿⣻⣿⣗⡷⣹⢩⢃⢿⣿⣿⣿⣿⣿
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
