@@ -125,19 +125,31 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   ),
                 ),
                 _buildHeader(context, widget.building, primaryTabColor, widget.currentLocation, widget.onRouteCalculated),
-                if (widget.onNavigatePressed != null)
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                    child: ElevatedButton.icon(
-                      onPressed: widget.onNavigatePressed,
-                      icon: const Icon(Icons.directions_walk),
-                      label: const Text("Ir allá"),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.blueAccent,
-                        foregroundColor: Colors.white,
-                      ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                  child: ElevatedButton.icon(
+                    onPressed: () {
+                      if (widget.currentLocation.latitude == 0 && widget.currentLocation.longitude == 0) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(content: Text('Activa la ubicación para calcular la ruta.')),
+                        );
+                        return;
+                      }
+                      _calculateRoute(
+                        context,
+                        widget.currentLocation,
+                        widget.building,
+                        widget.onRouteCalculated,
+                      );
+                    },
+                    icon: const Icon(Icons.directions_walk),
+                    label: const Text("Ir allá"),
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.blueAccent,
+                      foregroundColor: Colors.white,
                     ),
                   ),
+                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   alignment: Alignment.centerLeft,

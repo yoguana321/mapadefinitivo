@@ -39,7 +39,7 @@ class _MapScreenState extends State<MapScreen> {
 
   // NUEVO: Variable para almacenar la rotación actual del mapa
   double _currentMapRotation = 0.0;
-  late StreamSubscription<Position>? _positionStream;
+  StreamSubscription<Position>? _positionStream;
   @override
   void initState() {
     super.initState();
@@ -74,6 +74,23 @@ class _MapScreenState extends State<MapScreen> {
         // Puedes agregar lógica aquí si quieres hacer algo cuando el campo de búsqueda pierde el foco y está vacío
       }
     });
+  }
+  Future<void> _checkAndRestartLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return;
+    }
+
+    if (permission == LocationPermission.deniedForever) return;
+
+    // Si llega hasta aquí, entonces tiene permisos y GPS activo
+    // Reinicia el stream
+    _positionStream?.cancel(); // Cancela el anterior si existía
+    _listenToLocation();
   }
   void _handleRouteUpdate(List<LatLng> route) {
     setState(() {
@@ -157,23 +174,16 @@ class _MapScreenState extends State<MapScreen> {
     _clearSearchState();
     _clearRouteAndInstructions();
     mapController.move(building.coords, 20);
-
-    if (_currentLocation != null) {
-      showBuildingInfo(
-        context,
-        building,
-        currentLocation: _currentLocation!,
-        onRouteCalculated: (route) {
-          setState(() {
-            _routeLine = route;
-          });
-        },
-      );
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Ubicación no disponible')),
-      );
-    }
+    showBuildingInfo(
+      context,
+      building,
+      currentLocation: _currentLocation ?? LatLng(0, 0),
+      onRouteCalculated: (route) {
+        setState(() {
+          _routeLine = route;
+        });
+      },
+    );
   }
   void _navigateToHome() {
     Navigator.pushReplacementNamed(context, '/');
@@ -386,7 +396,10 @@ class _MapScreenState extends State<MapScreen> {
                     heroTag: 'myLocationButton',
                     mini: true,
                     backgroundColor: Colors.white,
-                    onPressed: _onMyLocationButtonPressed,
+                    onPressed: () async {
+                      await _checkAndRestartLocation();
+                      await _onMyLocationButtonPressed();
+                    },
                     child: const Icon(Icons.gps_fixed, color: Colors.black),
                   ),
                   const SizedBox(height: 10),
