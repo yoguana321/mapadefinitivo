@@ -4,6 +4,8 @@ import 'package:latlong2/latlong.dart'; // Para LatLng
 import 'room.dart';
 
 class Building {
+  final double latitude;
+  final double longitude;
   final String id;
   final String name;
   final String shortName;
@@ -20,6 +22,7 @@ class Building {
   final Color? markerColor;
   final String _searchableContent;
 
+
   Building({
     required this.id,
     required this.name,
@@ -30,6 +33,8 @@ class Building {
     required this.category,
     required this.icon,
     required this.imageUrl,
+    required this.latitude,
+    required this.longitude,
     this.rooms,
     this.hours,
     this.contactInfo,

@@ -23,6 +23,8 @@ import '../data/building_details_specific/building_412_details_data.dart';
 final Building building401 = Building(
   id: '401',
   name: '401 - EL VIEJO - JULIO GARAVITO',
+  latitude: 4.637285408330863,
+  longitude: -74.0828508734894,
   shortName: '401 - El Viejo',
   category: 'Facultad',
   coords: LatLng(4.637288, -74.082766),
@@ -39,6 +41,8 @@ final Building building401 = Building(
 final Building building404 = Building(
   id: '404',
   name: '404 - YU TAKEUCHI',
+  latitude: 4.637727019949239,
+  longitude: -74.08244855272129,
   shortName: '404 - Yu Takeuchi',
   category: 'Facultad', // O 'Ciencias' si creas esa categoría
   coords: LatLng(4.637783, -74.082551), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 404!
@@ -56,6 +60,8 @@ final Building building404 = Building(
 final Building building453 = Building(
   id: '453',
   name: '453 - GUILLERMINA URIBE BONE',
+  latitude: 4.638534102540316,
+  longitude: -74.08369625638383,
   shortName: '453 - Guillermina Uribe BC',
   category: 'Aulas y Oficinas',
   coords: LatLng(4.638467, -74.083820),
@@ -72,6 +78,8 @@ final Building building453 = Building(
 final Building buildingCYT = Building(
   id: 'cyt',
   name: 'CYT - Ciencia y Tecnología',
+  latitude: 4.638033035156299,
+  longitude: -74.08468415090802,
   shortName: 'CYT',
   category: 'Aulas y Oficinas', // O puedes crear una categoría 'Ciencia y Tecnología' si es muy específica
   coords: LatLng(4.638037, -74.084622), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL CYT!
@@ -88,6 +96,8 @@ final Building buildingCYT = Building(
 final Building building411 = Building(
   id: '411',
   name: '411 - Laboratorios DE INGENIERÍA',
+  latitude: 4.639241422613168,
+  longitude: -74.08261348560043,
   shortName: '411 - lab de Ing.',
   category: 'Facultad', // O 'Laboratorio' si creas esa categoría
   coords: LatLng(4.639266, -74.082567), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 411!
@@ -104,6 +114,8 @@ final Building building411 = Building(
 final Building building412 = Building(
   id: '412',
   name: '412 - LABORATORIOS INGENIERÍA QUÍMICA',
+  latitude: 4.638824368769169,
+  longitude: -74.08313919853724,
   shortName: '412 - Ing. Química',
   category: 'Laboratorios', // O puedes crear 'Facultad' si lo prefieres así
   coords: LatLng(4.638906, -74.083144), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 412!
@@ -121,6 +133,8 @@ final Building building412 = Building(
 final Building auditorioLeonDeGreiff = Building(
   id: 'leon',
   name: 'Auditorio León De Greiff',
+  latitude: 4.635742883986345,
+  longitude: -74.08230380511843,
   shortName: 'Auditorio León de Greiff',
   category: 'Auditorio',
   coords: LatLng(4.635708, -74.082302),
@@ -137,6 +151,8 @@ final Building auditorioLeonDeGreiff = Building(
 final Building building406 = Building(
   id: '406',
   name: '406 - FACULTAD DE INGENIERÍA (IEI)',
+  latitude: 4.638300377692954,
+  longitude: -74.0824579174865,
   shortName: '406 - IEI',
   category: 'Facultad',
   coords: LatLng(4.638438, -74.082522), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 406!
@@ -153,6 +169,8 @@ final Building building406 = Building(
 final Building building407 = Building(
   id: '407',
   name: '407 - Postgrado en materiales',
+  latitude: 4.639034412612558,
+  longitude: -74.08212749221583,
   shortName: '407 - Posgrado',
   category: 'Facultad', // O 'Posgrado' si creas esa categoría
   coords: LatLng(4.639192, -74.082074), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 407!
@@ -169,6 +187,8 @@ final Building building407 = Building(
 final Building bibliotecaCentral = Building(
   id: 'bibcentral',
   name: 'Biblioteca Central Gabriel García Márquez',
+  latitude: 4.635341559247392,
+  longitude: -74.0832473319507,
   shortName: 'Biblioteca Central Gabriel G.',
   category: 'Biblioteca',
   coords: LatLng(4.635299, -74.083259),
@@ -185,6 +205,8 @@ final Building bibliotecaCentral = Building(
 final Building building310 = Building(
   id: '310',
   name: '310 - FACULTAD DE ECONOMÍA',
+  latitude: 4.637090964604831,
+  longitude: -74.0808573104446,
   shortName: '310 - Economía',
   category: 'Facultad',
   coords: LatLng(4.637245, -74.080835), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 310!

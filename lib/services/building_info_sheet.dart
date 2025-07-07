@@ -3,28 +3,73 @@ import 'package:flutter/material.dart';
 import '../models/building.dart';
 import '../models/room.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-// Importar Professor para usar en las tarjetas de profesores
+import 'package:latlong2/latlong.dart';
+import '../services/routing_service.dart';
+import '../services/building_info_sheet.dart' as info_sheet;
 
-// La función principal para mostrar el bottom sheet
-Future<void> showBuildingInfo(BuildContext context, Building building) async {
-  await showModalBottomSheet(
+void showBuildingInfo(
+    BuildContext context,
+    Building building, {
+      required LatLng currentLocation,
+      required Function(List<LatLng>) onRouteCalculated,
+    }) {
+  showModalBottomSheet(
     context: context,
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return _BuildingInfoSheetContent(building: building);
+      return _BuildingInfoSheetContent(
+        building: building,
+        currentLocation: currentLocation,
+        onRouteCalculated: onRouteCalculated,
+        onNavigatePressed: () {
+          _calculateRoute(context, currentLocation, building, onRouteCalculated);
+        },
+      );
     },
   );
 }
 
-// StatefulWidget para manejar el estado interno (como la expansión de historia)
+void _calculateRoute(
+    BuildContext context,
+    LatLng currentLocation,
+    Building building,
+    Function(List<LatLng>) onRouteCalculated,
+    ) async {
+  try {
+    print('Calculando ruta desde $currentLocation hacia ${building.name}');
+
+    final route = await fetchRouteFromOSRM(
+      currentLocation,
+      LatLng(building.latitude, building.longitude),
+    );
+
+    if (route.isEmpty) {
+      print('Ruta vacía, usando línea recta');
+      onRouteCalculated([currentLocation, LatLng(building.latitude, building.longitude)]);
+    } else {
+      print('Ruta encontrada con ${route.length} puntos');
+      onRouteCalculated(route);
+    }
+  } catch (e) {
+    print('Error al calcular ruta: $e');
+    onRouteCalculated([currentLocation, LatLng(building.latitude, building.longitude)]);
+  } finally {
+    Navigator.pop(context);
+  }
+}
 class _BuildingInfoSheetContent extends StatefulWidget {
   final Building building;
+  final VoidCallback? onNavigatePressed;
+  final LatLng currentLocation;
+  final Function(List<LatLng>) onRouteCalculated;
 
   const _BuildingInfoSheetContent({
     required this.building,
+    this.onNavigatePressed,
+    required this.currentLocation,
+    required this.onRouteCalculated,
   });
-
   @override
   State<_BuildingInfoSheetContent> createState() => _BuildingInfoSheetContentState();
 }
@@ -34,11 +79,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
 
   @override
   Widget build(BuildContext context) {
-    // Generar la lista de pisos dinámicamente y ordenarla
     final List<String> floors = widget.building.rooms
         ?.map((room) => room.floor)
-        .where((floor) => floor != 'General' && floor.isNotEmpty) // Filtrar 'General' y vacíos para pisos
-        .toSet() // Para obtener pisos únicos
+        .where((floor) => floor != 'General' && floor.isNotEmpty)
+        .toSet()
         .toList() ?? [];
     floors.sort((a, b) {
       final numA = int.tryParse(a.replaceAll('Piso ', ''));
@@ -46,13 +90,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
       if (numA != null && numB != null) {
         return numA.compareTo(numB);
       }
-      return a.compareTo(b); // Orden alfabético si no son números (ej. 'Sótano' vs 'Piso 1')
+      return a.compareTo(b);
     });
 
-    // Añadir 'Servicios Especiales' como una de las pestañas
     final List<String> tabs = ['General', 'Servicios Especiales', ...floors];
-
-    // Determinar el color principal del TabBar (del markerColor del edificio)
     final Color primaryTabColor = widget.building.markerColor ?? Theme.of(context).primaryColor;
 
     return DraggableScrollableSheet(
@@ -70,7 +111,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
             ),
             child: Column(
               children: [
-                // Handle para arrastrar la hoja
                 Container(
                   height: 16,
                   width: double.infinity,
@@ -84,15 +124,25 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                     ),
                   ),
                 ),
-                // --- ENCABEZADO MEJORADO ---
-                _buildHeader(context, widget.building, primaryTabColor),
-
-                // Contenido principal: TabBar (Distribución por Pisos) y TabBarView
+                _buildHeader(context, widget.building, primaryTabColor, widget.currentLocation, widget.onRouteCalculated),
+                if (widget.onNavigatePressed != null)
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
+                    child: ElevatedButton.icon(
+                      onPressed: widget.onNavigatePressed,
+                      icon: const Icon(Icons.directions_walk),
+                      label: const Text("Ir allá"),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.blueAccent,
+                        foregroundColor: Colors.white,
+                      ),
+                    ),
+                  ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   alignment: Alignment.centerLeft,
                   child: Text(
-                    'Detalles y Ubicaciones', // Título más generalizado para las pestañas
+                    'Detalles y Ubicaciones',
                     style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[800]),
                   ),
                 ),
@@ -111,6 +161,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                     children: tabs.map((tab) {
                       if (tab == 'General') {
                         return _buildGeneralInfoTab(
+                          context,
                           widget.building,
                           scrollController,
                           _isHistoryExpanded,
@@ -122,10 +173,8 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                           primaryTabColor,
                         );
                       } else if (tab == 'Servicios Especiales') {
-                        // Aquí, por tu solicitud, esta sección se mostrará vacía o con un mensaje.
                         return _buildSpecialServicesTab(widget.building, scrollController, primaryTabColor);
                       } else {
-                        // Para las pestañas de pisos, filtramos las habitaciones que no son servicios generales
                         final roomsOnFloor = widget.building.rooms
                             ?.where((room) => room.floor == tab && (room.isServiceRoom ?? false) == false)
                             .toList() ?? [];
@@ -142,143 +191,155 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- FUNCIÓN DE ENCABEZADO MEJORADA (MÉTODO DE LA CLASE) ---
-  Widget _buildHeader(BuildContext context, Building building, Color primaryTabColor) {
+  Widget _buildHeader(
+      BuildContext context,
+      Building building,
+      Color primaryTabColor,
+      LatLng currentLocation,
+      Function(List<LatLng>) onRouteCalculated,
+      )
+  {
     return Stack(
       children: [
-        // imagen, gradiente, contenido...
-        // Imagen de fondo
-          SizedBox(
-            height: 200,
-            width: double.infinity,
-            child: Image.asset(
-              building.imageUrl,
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Image.asset('assets/images/placeholder.jpg', fit: BoxFit.cover),
-            ),
+        SizedBox(
+          height: 200,
+          width: double.infinity,
+          child: Image.asset(
+            building.imageUrl,
+            fit: BoxFit.cover,
+            errorBuilder: (context, error, stackTrace) =>
+                Image.asset('assets/images/placeholder.jpg', fit: BoxFit.cover),
           ),
-          // Capa de degradado doble
-          Positioned.fill(
-            child: Container(
-              decoration: BoxDecoration(
-                gradient: LinearGradient(
-                  colors: [
-                    Colors.black.withOpacity(0.6),
-                    Colors.transparent,
-                    Colors.black.withOpacity(0.4),
-                  ],
-                  begin: Alignment.topCenter,
-                  end: Alignment.bottomCenter,
-                ),
+        ),
+        Positioned.fill(
+          child: Container(
+            decoration: BoxDecoration(
+              gradient: LinearGradient(
+                colors: [
+                  Colors.black.withOpacity(0.6),
+                  Colors.transparent,
+                  Colors.black.withOpacity(0.4),
+                ],
+                begin: Alignment.topCenter,
+                end: Alignment.bottomCenter,
               ),
             ),
           ),
-          // Botón de cerrar flotante
-          Positioned(
-            top: MediaQuery.of(context).padding.top + 12,
-            right: 12,
-            child: CircleAvatar(
-              backgroundColor: Colors.black54,
-              child: IconButton(
-                icon: const Icon(Icons.close, color: Colors.white),
-                onPressed: () => Navigator.pop(context),
-                tooltip: 'Cerrar',
-              ),
+        ),
+        Positioned(
+          top: MediaQuery.of(context).padding.top + 12,
+          right: 12,
+          child: CircleAvatar(
+            backgroundColor: Colors.black54,
+            child: IconButton(
+              icon: const Icon(Icons.close, color: Colors.white),
+              onPressed: () => Navigator.pop(context),
+              tooltip: 'Cerrar',
             ),
           ),
-          // Contenido textual superpuesto
-          Positioned(
-            bottom: 16,
-            left: 16,
-            right: 16,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  building.name,
-                  style: const TextStyle(
-                    fontSize: 22,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    shadows: [Shadow(blurRadius: 4, color: Colors.black)],
-                  ),
+        ),
+        Positioned(
+          bottom: 16,
+          left: 16,
+          right: 16,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                building.name,
+                style: const TextStyle(
+                  fontSize: 22,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                  shadows: [Shadow(blurRadius: 4, color: Colors.black)],
                 ),
-                const SizedBox(height: 6),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Row(
-                      children: [
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                          decoration: BoxDecoration(
-                            color: primaryTabColor.withOpacity(0.85),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Text(
-                            building.category,
-                            style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
-                          ),
+              ),
+              const SizedBox(height: 6),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                        decoration: BoxDecoration(
+                          color: primaryTabColor.withOpacity(0.85),
+                          borderRadius: BorderRadius.circular(20),
                         ),
-                        const SizedBox(width: 8),
-                        if (building.isAccessible == true)
-                          GestureDetector(
-                            onTap: () {
-                              showDialog(
-                                context: context,
-                                builder: (BuildContext context) {
-                                  return AlertDialog(
-                                    title: const Text('Accesibilidad'),
-                                    content: const Text(
-                                      'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
+                        child: Text(
+                          building.category,
+                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      if (building.isAccessible == true)
+                        GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (BuildContext context) {
+                                return AlertDialog(
+                                  title: const Text('Accesibilidad'),
+                                  content: const Text(
+                                    'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () => Navigator.of(context).pop(),
+                                      child: const Text('Entendido'),
                                     ),
-                                    actions: [
-                                      TextButton(
-                                        onPressed: () => Navigator.of(context).pop(),
-                                        child: const Text('Entendido'),
-                                      ),
-                                    ],
-                                  );
-                                },
-                              );
-                            },
-                            child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
-                          ),
-                      ],
-                    ),
-                    FutureBuilder<SharedPreferences>(
-                      future: SharedPreferences.getInstance(),
-                      builder: (context, snapshot) {
-                        if (!snapshot.hasData) return const SizedBox.shrink();
-                        final prefs = snapshot.data!;
-                        final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
-
-                        return IconButton(
-                          icon: Icon(
-                            isFavorite ? Icons.star : Icons.star_border,
-                            color: Colors.amber,
-                          ),
-                          onPressed: () async {
-                            final newValue = !isFavorite;
-                            await prefs.setBool('fav_${building.id}', newValue);
-                            Navigator.pop(context);
-                            showBuildingInfo(context, building);
+                                  ],
+                                );
+                              },
+                            );
                           },
-                        );
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-           )
-        ],
+                          child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
+                        ),
+                    ],
+                  ),
+                  FutureBuilder<SharedPreferences>(
+                    future: SharedPreferences.getInstance(),
+                    builder: (context, snapshot) {
+                      if (!snapshot.hasData) return const SizedBox.shrink();
+                      final prefs = snapshot.data!;
+                      final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
+
+                      return IconButton(
+                        icon: Icon(
+                          isFavorite ? Icons.star : Icons.star_border,
+                          color: Colors.amber,
+                        ),
+                        onPressed: () async {
+                          final newValue = !isFavorite;
+                          await prefs.setBool('fav_${building.id}', newValue);
+                          Navigator.pop(context);
+
+                          // Vuelve a abrir el modal en el siguiente frame (para evitar conflicto con el anterior que se cierra)
+                          WidgetsBinding.instance.addPostFrameCallback((_) {
+                            showBuildingInfo(
+                              context,
+                              widget.building,
+                              currentLocation: widget.currentLocation,
+                              onRouteCalculated: widget.onRouteCalculated,
+                            );
+                          });
+                        }
+                      );
+                    },
+                  ),
+                ],
+              ),
+            ],
+          ),
+        )
+      ],
     );
   }
 
+
   // --- FUNCIÓN _buildGeneralInfoTab ACTUALIZADA: Eliminando Cards y ajustando "Servicios Destacados" ---
   Widget _buildGeneralInfoTab(
+      BuildContext context,
       Building building,
       ScrollController scrollController,
       bool isHistoryExpanded,
@@ -292,7 +353,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         crossAxisAlignment: CrossAxisAlignment.start, // Alineación a la izquierda para todo
         children: [
           // Sección de Servicios Destacados (Ahora vacía/con mensaje)
-          _buildQuickAccessButtons(building, accentColor), // Esta función ahora regresará SizedBox.shrink() o un mensaje
+          _buildQuickAccessButtons(context, building, accentColor), // Esta función ahora regresará SizedBox.shrink() o un mensaje
           const SizedBox(height: 20), // Espacio después de los botones de acceso rápido
 
           // --- Información General (SIN Card) ---
@@ -372,7 +433,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
             ),
             const SizedBox(height: 20),
           ],
-
           // --- Contacto (SIN Card) ---
           if (building.contactInfo != null && building.contactInfo!.isNotEmpty)
             Row(
@@ -397,9 +457,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
   }
 
   // --- FUNCIÓN _buildQuickAccessButtons (AHORA VACÍA/CON MENSAJE) ---
-  Widget _buildQuickAccessButtons(Building building, Color accentColor) {
-    // Por tu solicitud, esta sección no mostrará ningún botón ni servicio destacado.
-    // Solo mostrará un mensaje o se ocultará completamente.
+  Widget _buildQuickAccessButtons(BuildContext context, Building building, Color accentColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -417,9 +475,8 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         ),
       ],
     );
-    // Si quisieras que se ocultara completamente si no hay nada, podrías hacer:
-    // return const SizedBox.shrink();
   }
+
 
 
   // --- FUNCIONES AUXILIARES _infoCard y _expandableCard ELIMINADAS ---

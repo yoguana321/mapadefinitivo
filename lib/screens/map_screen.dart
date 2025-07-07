@@ -13,6 +13,7 @@ import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
+import '../services/routing_service.dart';
 
 class MapScreen extends StatefulWidget {
   final Building? initialBuilding;
@@ -24,6 +25,7 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  List<LatLng> _routeLine = [];
   LatLng? _currentLocation;
   final MapController mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
@@ -42,10 +44,19 @@ class _MapScreenState extends State<MapScreen> {
   void initState() {
     super.initState();
     _listenToLocation();
-    if (widget.initialBuilding != null) {
+    if (widget.initialBuilding != null && _currentLocation != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         mapController.move(widget.initialBuilding!.coords, 18);
-        showBuildingInfo(context, widget.initialBuilding!);
+        showBuildingInfo(
+          context,
+          widget.initialBuilding!,
+          currentLocation: _currentLocation!,
+          onRouteCalculated: (route) {
+            setState(() {
+              _routeLine = route;
+            });
+          },
+        );
       });
     }
     mapController.mapEventStream.listen((event) {
@@ -64,7 +75,11 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
   }
-
+  void _handleRouteUpdate(List<LatLng> route) {
+    setState(() {
+      _routeLine = route;
+    });
+  }
   void _listenToLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
@@ -102,7 +117,6 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _filteredBuildings = allBuildings.where((b) {
         bool matchesQuery = b.searchableContent.contains(lowerQuery);
-
         bool matchesCategory = true;
         if (_selectedCategory != null && _selectedCategory != 'Todos') {
           matchesCategory = b.category.toLowerCase() == _selectedCategory!.toLowerCase();
@@ -139,13 +153,28 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _onMarkerTapped(Building building) {
+  Future<void> _onMarkerTapped(Building building) async {
     _clearSearchState();
     _clearRouteAndInstructions();
-    mapController.move(building.coords, 20); // Zoom in on the building
-    showBuildingInfo(context, building); // Open the detailed info sheet
-  }
+    mapController.move(building.coords, 20);
 
+    if (_currentLocation != null) {
+      showBuildingInfo(
+        context,
+        building,
+        currentLocation: _currentLocation!,
+        onRouteCalculated: (route) {
+          setState(() {
+            _routeLine = route;
+          });
+        },
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Ubicación no disponible')),
+      );
+    }
+  }
   void _navigateToHome() {
     Navigator.pushReplacementNamed(context, '/');
   }
@@ -268,6 +297,16 @@ class _MapScreenState extends State<MapScreen> {
                 subdomains: ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.example.mapadefinitivo',
               ),
+              if (_routeLine.isNotEmpty)
+              PolylineLayer(
+                polylines: [
+                  Polyline(
+                    points: _routeLine,
+                    color: Colors.blue,
+                    strokeWidth: 4.0,
+                  ),
+                ],
+              ),
               MarkerLayer(
                 markers: [
                   if (_currentLocation != null)
@@ -294,6 +333,26 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ],
           ),
+          if (_routeLine.isNotEmpty)
+            Positioned(
+              bottom: 20,
+              left: 20,
+              child: FloatingActionButton(
+                heroTag: 'cancelRouteButton',
+                mini: true,
+                backgroundColor: Colors.redAccent,
+                tooltip: 'Cancelar ruta',
+                onPressed: () {
+                  setState(() {
+                    _routeLine.clear();
+                  });
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Icon(Icons.close),
+              ),
+            ),
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
             left: 10,
@@ -349,13 +408,7 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          Align( // BRUJULA - SE MANTIENE EXACTAMENTE IGUAL, NO NECESITA CAMBIOS
-            //⣿⣿⣿⣿⣿⣿⣿⣿⣿⠟⠛⢉⢉⠉⠉⠻⣿⣿⣿⣿⣿⣿
-            //⣿⣿⣿⣿⡿⠁⠄⣳⢷⣿⣿⣿⣿⡿⣝⠖⠄⣿⣿⣿⣿⣿
-            //⣿⣿⣿⣿⡿⠁⠄⣳⢷⣿⣿⣿⣿⡿⣝⠖⠄⣿⣿⣿⣿⣿
-            //⣿⣿⠄⢜⢾⣾⣿⣿⣟⣗⢯⡪⡳⡀⢸⣿⣿⣿⣿⣿⣿⣿
-            //⣿⣿⡇⢀⢗⣿⣿⣿⣿⡿⣞⡵⡣⣊⢸⣿⣿⣿⣿⣿⣿⣿
-            //⣿⣿⣿⣿⡆⢘⡺⣽⢿⣻⣿⣗⡷⣹⢩⢃⢿⣿⣿⣿⣿⣿
+          Align( // BRUJULA - NO SE MANTIENE EXACTAMENTE IGUAL, SI NECESITA CAMBIOS
             alignment: Alignment.bottomRight,
             child: Padding(
               padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
@@ -402,7 +455,18 @@ class _MapScreenState extends State<MapScreen> {
                     onBuildingSelected: (building) {
                       mapController.move(building.coords, 19);
                       _clearSearchState();
-                      showBuildingInfo(context, building);
+                      if (_currentLocation != null) {
+                        showBuildingInfo(
+                          context,
+                          building,
+                          currentLocation: _currentLocation!,
+                          onRouteCalculated: (route) {
+                            setState(() {
+                              _routeLine = route;
+                            });
+                          },
+                        );
+                      }
                     },
                   ),
                 ],
