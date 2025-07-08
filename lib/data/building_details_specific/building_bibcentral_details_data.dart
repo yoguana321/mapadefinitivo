@@ -6,7 +6,16 @@ import '/models/room.dart';
 // Información General y de Historia de la Biblioteca Central
 const String infoBibCentral = 'La Biblioteca Pública Gabriel García Márquez, antes conocida como Biblioteca Pública Parque El Tunal, es un centro de información y estudio especializado en literatura latinoamericana. Alberga una vasta colección y múltiples espacios para la comunidad universitaria y el público.'; //
 const String historyBibCentral = 'La Biblioteca Pública Gabriel García Márquez abrió sus puertas el 10 de mayo de 2001 como Biblioteca Pública Parque El Tunal. El 18 de junio de 2014, fue renombrada en honor al escritor, cuentista, periodista, guionista, novelista y Premio Nobel de Literatura colombiano. Está especializada en literatura latinoamericana y lleva el nombre del Premio Nobel, quien residió en Barcelona de 1967 a 1975.';
-const String hoursBibCentral = 'Horario de Lunes a Viernes: [Revisar Horario Real], Sábados: [Revisar Horario Real], Domingos: [Revisar Horario Real]'; // Revisa los horarios reales de la biblioteca.
+const Map<String, String> hoursBibCentral = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfoBibCentral = 'Atención al Usuario: [Número Real], Correo: [Correo Real]';
 
 final List<Room> roomsBibCentral = [

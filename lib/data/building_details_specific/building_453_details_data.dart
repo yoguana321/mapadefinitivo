@@ -8,8 +8,16 @@ const String info453 =
     'El Edificio 453, conocido como Guillermina Uribe Bone, alberga aulas, oficinas y laboratorios de varias facultades de ingeniería. Es un punto central para la vida académica de pregrado y posgrado.';
 const String history453 =
     'Nombrado en honor a GUILLERMINA URIBE BONE, la primera mujer egresada de la Facultad de Ingeniería de Bogotá. Su construcción se llevó a cabo entre 1969 y 1970 bajo la dirección del arquitecto Francisco Rojas Sánchez, con modificaciones posteriores en 1981 para mejorar su funcionalidad.';
-const String hours453 =
-    'Horario del edificio: Lunes a Viernes 6:00 - 22:00';
+const Map<String, String> hours453 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo453 =
     'Decanatura: [Número Real], Secretaría: [Número Real] (Ajusta los números reales aquí)';
 

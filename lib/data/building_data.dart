@@ -27,7 +27,8 @@ final Building building401 = Building(
   category: 'Facultad',
   coords: LatLng(4.637288, -74.082766),
   icon: Icons.school, // Usas un IconData directo, lo mantenemos.
-  imageUrl: 'assets/images/401.jpg',
+  imageUrls: ['assets/images/401.jpg',
+  ],
   info: info401,
   history: history401,
   contactInfo: contactInfo401,
@@ -43,7 +44,8 @@ final Building building404 = Building(
   category: 'Facultad', // O 'Ciencias' si creas esa categoría
   coords: LatLng(4.637783, -74.082551), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 404!
   icon: Icons.science_outlined, // Un icono que represente ciencia/matemáticas/física
-  imageUrl: 'assets/images/404.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls: ['assets/images/404.jpg',
+  ],// ¡Asegúrate de tener esta imagen en tus assets!
   info: info404,
   history: history404,
   contactInfo: contactInfo404,
@@ -60,7 +62,8 @@ final Building building453 = Building(
   category: 'Aulas y Oficinas',
   coords: LatLng(4.638467, -74.083820),
   icon: Icons.business, // Usas un IconData directo, lo mantenemos.
-  imageUrl: 'assets/images/453.jpg',
+  imageUrls:[ 'assets/images/453.jpg',
+  ],
   info: info453,
   history: history453,
   contactInfo: contactInfo453,
@@ -76,7 +79,8 @@ final Building buildingCYT = Building(
   category: 'Aulas y Oficinas', // O puedes crear una categoría 'Ciencia y Tecnología' si es muy específica
   coords: LatLng(4.638037, -74.084622), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL CYT!
   icon: Icons.science, // O Icons.laptop_mac si es más de computación
-  imageUrl: 'assets/images/cyt.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls: ['assets/images/cyt.jpg',
+  ],
   info: infoCYT,
   history: historyCYT,
   contactInfo: contactInfoCYT,
@@ -92,7 +96,8 @@ final Building building411 = Building(
   category: 'Facultad', // O 'Laboratorio' si creas esa categoría
   coords: LatLng(4.639266, -74.082567), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 411!
   icon: Icons.engineering, // O un icono más específico de laboratorio si lo prefieres
-  imageUrl: 'assets/images/411.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls:[ 'assets/images/411.jpg',
+  ],// ¡Asegúrate de tener esta imagen en tus assets!
   info: info411,
   history: history411,
   contactInfo: contactInfo411,
@@ -108,7 +113,8 @@ final Building building412 = Building(
   category: 'Laboratorios', // O puedes crear 'Facultad' si lo prefieres así
   coords: LatLng(4.638906, -74.083144), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 412!
   icon: Icons.science_outlined, // Un icono que represente laboratorios/química
-  imageUrl: 'assets/images/412.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls: ['assets/images/412.jpg',
+  ], // ¡Asegúrate de tener esta imagen en tus assets!
   info: info412,
   history: history412,
   contactInfo: contactInfo412,
@@ -125,7 +131,8 @@ final Building auditorioLeonDeGreiff = Building(
   category: 'Auditorio',
   coords: LatLng(4.635708, -74.082302),
   icon: Icons.music_note, // Usas un IconData directo, lo mantenemos.
-  imageUrl: 'assets/images/auditorio_leon.jpg',
+  imageUrls:[ 'assets/images/auditorio_leon.jpg',
+  ],
   info: infoAuditorioLeon,
   history: historyAuditorioLeon,
   contactInfo: contactInfoAuditorioLeon,
@@ -141,7 +148,8 @@ final Building building406 = Building(
   category: 'Facultad',
   coords: LatLng(4.638438, -74.082522), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 406!
   icon: Icons.architecture, // O Icons.construction, Icons.factory
-  imageUrl: 'assets/images/406.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls:[ 'assets/images/406.jpg',
+  ],// ¡Asegúrate de tener esta imagen en tus assets!
   info: info406,
   history: history406,
   contactInfo: contactInfo406,
@@ -157,7 +165,8 @@ final Building building407 = Building(
   category: 'Facultad', // O 'Posgrado' si creas esa categoría
   coords: LatLng(4.639192, -74.082074), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 407!
   icon: Icons.school_outlined, // Un icono que represente posgrado o educación
-  imageUrl: 'assets/images/407.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls: ['assets/images/407.jpg',
+  ],// ¡Asegúrate de tener esta imagen en tus assets!
   info: info407,
   history: history407,
   contactInfo: contactInfo407,
@@ -173,7 +182,8 @@ final Building bibliotecaCentral = Building(
   category: 'Biblioteca',
   coords: LatLng(4.635299, -74.083259),
   icon: Icons.local_library, // Usas un IconData directo, lo mantenemos.
-  imageUrl: 'assets/images/biblioteca_central.jpg',
+  imageUrls: ['assets/images/biblioteca_central.jpg',
+  ],
   info: infoBibCentral,
   history: historyBibCentral,
   contactInfo: contactInfoBibCentral,
@@ -189,7 +199,8 @@ final Building building310 = Building(
   category: 'Facultad',
   coords: LatLng(4.637245, -74.080835), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL EDIFICIO 310!
   icon: Icons.business_center_outlined, // Un icono que represente economía/negocios
-  imageUrl: 'assets/images/310.jpg', // ¡Asegúrate de tener esta imagen en tus assets!
+  imageUrls: ['assets/images/310.jpg',
+  ],// ¡Asegúrate de tener esta imagen en tus assets!
   info: info310,
   history: history310,
   contactInfo: contactInfo310,

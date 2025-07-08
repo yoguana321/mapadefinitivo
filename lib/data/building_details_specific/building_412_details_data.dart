@@ -9,7 +9,16 @@ El edificio 412 ha sido un pilar para la docencia e investigación de la carrera
 
 Desde su apertura, ha sido equipado con diversas máquinas y herramientas necesarias para la experimentación y el desarrollo de proyectos de investigación en el campo de la química y los procesos industriales. A lo largo de los años, ha evolucionado para incorporar tecnologías modernas, siendo un espacio clave tanto para los estudiantes de pregrado como de posgrado de la Facultad de Ingeniería.
 ''';
-const String hours412 = 'Horario General del Edificio: Lunes a Viernes 6:00 - 22:00. (Puede variar según el laboratorio o la temporada)';
+const Map<String, String> hours412 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo412 = 'Contacto: Secretaría de Ingeniería Química - Facultad de Ingeniería.'; // Puedes añadir un correo o teléfono real si lo tienes.
 
 

@@ -1,7 +1,7 @@
 // lib/data/building_details_specific/building_cyt_details_data.dart
 
 import '/models/room.dart';
-import '/models/professor.dart'; // Mantener por si acaso, aunque no se usen profesores directamente aquí.
+// Mantener por si acaso, aunque no se usen profesores directamente aquí.
 
 const String infoCYT = 'El Edificio de Ciencia y Tecnología (CYT) es una moderna construcción con enfoque bioclimático, hogar de aulas, laboratorios especializados, y una extensión de la biblioteca.';
 const String historyCYT = '''
@@ -9,7 +9,16 @@ El edificio CYT fue construido como parte de una importante fase de renovación 
 
 Diseñado por el arquitecto Camilo Avellaneda, el CYT se destaca por su avanzada arquitectura bioclimática y sus principios de sostenibilidad. Alberga diversas funciones académicas y de investigación, contribuyendo significativamente a la infraestructura de ciencia y tecnología de la universidad.
 ''';
-const String hoursCYT = 'Horario General: Lunes a Viernes 6:00 - 22:00, Sábados 7:00 - 18:00. Horario de Biblioteca y Auditorio puede variar.';
+const Map<String, String> hoursCYT = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfoCYT = 'Contacto: Oficina de Administración del Edificio CYT. [Número Real], Correo: [Correo Real]';
 
 final List<Room> roomsCYT = [

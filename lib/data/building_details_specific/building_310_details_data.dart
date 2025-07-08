@@ -5,10 +5,16 @@ import '/models/professor.dart';
 
 const String info310 = 'El Edificio 310 es la sede de la Facultad de Ciencias Económicas. Alberga aulas, auditorios, salas de estudio, oficinas administrativas y académicas clave para los programas de Economía, Contaduría Pública y Administración. Cuenta con servicios como fotocopiadoras y restaurante universitario.';
 const String history310 = 'Historia pendiente. Se necesita información sobre la construcción y evolución del edificio 310 de la Facultad de Economía.'; // Puedes añadir más historia si la encuentras.
-const String hours310 = '''
-Horario General del Edificio: Se asume horario diurno extendido. (Ajustar si hay horarios específicos)
-Salas de Estudio: 7:00 am - 7:00 pm
-''';
+const Map<String, String> hours310 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo310 = 'Contacto: Decanatura de la Facultad de Ciencias Económicas. \n\nPrograma de Internacionalización: ori_fcebog@unal.edu.co\nPrácticas y Pasantías: pasancon_fcebog@unal.edu.co\nPrograma de Egresados: egresados_fcebog@unal.edu.co\nTeléfono: 3165000 Ext. 12434';
 
 

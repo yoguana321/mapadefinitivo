@@ -11,7 +11,16 @@ Desde su creación, el edificio 407 ha sido fundamental para el desarrollo acad�
 
 En el año 2019, el edificio fue sometido a una significativa renovación, que incluyó importantes mejoras en su infraestructura y sistemas de ventilación, asegurando un ambiente óptimo para la comunidad académica.
 ''';
-const String hours407 = 'Horario: Lunes a Viernes 6:00 - 22:00.';
+const Map<String, String> hours407 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo407 = 'Contacto: Secretaría de Posgrados de Materiales - Facultad de Ingeniería.'; // Puedes añadir un correo o teléfono real si lo tienes.
 
 final List<Room> rooms407 = [

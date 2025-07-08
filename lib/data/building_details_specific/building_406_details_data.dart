@@ -9,7 +9,16 @@ El Edificio 406, que alberga el Instituto de Ensayos e Investigaciones (IEI) de 
 
 Esta característica le otorgó una importancia vital en el desarrollo de la infraestructura de investigación y ensayo del país, siendo un referente para la ingeniería civil y ambiental. A lo largo de su historia, el 406 ha sido un epicentro de conocimiento y experimentación, contribuyendo significativamente a los avances en diversas áreas de la ingeniería.
 ''';
-const String hours406 = 'Horario de Edificio: Lunes a Viernes 6:00 - 22:00, Sábados 7:00 - 18:00 (Horarios específicos de laboratorios pueden variar).';
+const Map<String, String> hours406 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo406 = 'Contacto IEI: insei_bog@unal.edu.co'; // Usando un correo de tu imagen, puedes añadir más.
 
 final List<Room> rooms406 = [

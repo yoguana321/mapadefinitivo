@@ -12,9 +12,9 @@ class Building {
   final LatLng coords;
   final String category;
   final IconData icon;
-  final String imageUrl;
+  final List<String> imageUrls;
   final List<Room>? rooms;
-  final String? hours;
+  final Map<String, String>? hours;
   final String? contactInfo;
   final bool? isAccessible;
   final Color? markerColor;
@@ -29,7 +29,7 @@ class Building {
     required this.coords,
     required this.category,
     required this.icon,
-    required this.imageUrl,
+    required this.imageUrls,
     this.rooms,
     this.hours,
     this.contactInfo,
@@ -51,7 +51,7 @@ class Building {
       String info,
       String? history,
       List<Room>? rooms,
-      String? hours,
+      Map<String, String>? hours,
       String? contactInfo,
       ) {
     String content = '';
@@ -61,7 +61,10 @@ class Building {
       content += '${history.toLowerCase()} ';
     }
     if (hours != null) {
-      content += '${hours.toLowerCase()} ';
+      hours.forEach((day, time) {
+        content += '${day.toLowerCase()} ';
+        content += '${time.toLowerCase()} ';
+      });
     }
     if (contactInfo != null) {
       content += '${contactInfo.toLowerCase()} ';

@@ -12,7 +12,16 @@ Su creación fue impulsada por la visión del Doctor José Félix Patiño Restre
 
 Desde 2008, ha recibido a importantes artistas nacionales e internacionales. En noviembre de 2023, fue reabierto tras un significativo trabajo de restauración integral y modernización, con apoyo de la Orquesta Filarmónica de Bogotá y la Secretaría de Cultura. En 2024, inició su temporada de conciertos orquestales y corales.
 ''';
-const String hoursAuditorioLeon = 'Horario de eventos: Varía según programación. Consultar cartelera. Para reforzamiento estructural: Obras finalizadas en septiembre de 2023. Dotación finaliza noviembre de 2025.'; // Ajusta según la información más actual.
+const Map<String, String> hoursAuditorioLeon = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfoAuditorioLeon = 'Contacto: Dirección de Patrimonio Cultural UNAL. [Número de contacto real si lo tienes], Correo: [Correo real si lo tienes]';
 
 final List<Room> roomsAuditorioLeon = [

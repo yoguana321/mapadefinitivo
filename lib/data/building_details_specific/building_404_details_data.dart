@@ -9,13 +9,16 @@ El edificio 404, conocido como Yu Takeuchi, rinde homenaje al influyente profeso
 
 Posteriormente, también albergó al Instituto de Psicología. A partir de 1959, se convirtió en la sede del Departamento de Física. Actualmente, este edificio es un espacio compartido por los Departamentos de Matemáticas, Estadística y Física, todos ellos parte de la Facultad de Ciencias, consolidándose como un núcleo fundamental para la investigación y la docencia en estas disciplinas.
 ''';
-const String hours404 = '''
-Horario General del Edificio: Lunes a Viernes 6:00 - 22:00, Sábados 7:00 - 18:00.
-Horario Restaurante y Cafetería:
-  Desayuno: 6:30 - 9:30 am
-  Almuerzo: 11:30 am - 3:00 pm
-  Cena: 5:30 - 7:30 pm
-''';
+const Map<String, String> hours404 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo404 = 'Para información general del edificio, contacte la Secretaría de la Facultad de Ciencias.'; // Puedes añadir más contactos si los tienes.
 
 final List<Room> rooms404 = [

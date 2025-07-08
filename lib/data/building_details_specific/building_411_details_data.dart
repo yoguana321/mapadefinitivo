@@ -9,7 +9,16 @@ El Edificio 411, popularmente conocido como Patios de Ingeniería, se construyó
 
 En años recientes, el edificio ha sido objeto de importantes renovaciones, incorporando mejoras estructurales y tecnológicas que lo modernizan, a la vez que conservan su invaluable valor patrimonial. Hoy en día, el 411 continúa siendo un espacio esencial para la formación académica de alta calidad y la investigación avanzada en diversas ramas de la ingeniería.
 ''';
-const String hours411 = 'Horario: Lunes a Miércoles 7:00 - 22:00 (Salas de práctica abiertas). Jueves a Viernes 7:00 - 14:00.';
+const Map<String, String> hours411 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '07:00 - 02:00',
+  'Viernes': '07:00 - 02:00',
+  'Sábado': '07:00 - 02:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo411 = 'Contacto: Secretaría de la Facultad de Ingeniería. [Número Real], Correo: [Correo Real]';
 
 final List<Room> rooms411 = [

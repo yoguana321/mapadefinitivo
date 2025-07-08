@@ -6,7 +6,16 @@ import '/models/professor.dart';
 // Información General y de Historia del 401
 const String info401 = 'El Edificio Julio Garavito Armero (401), conocido como "El Viejo" de Ingeniería, es un edificio histórico que alberga aulas, laboratorios y oficinas clave. Cuenta con la Cafetería Minka, Salas de Estudio y el Auditorio Juan Bautista Gómez.';
 const String history401 = 'El Edificio 401 de Ingeniería de la Universidad Nacional de Colombia, también conocido como el Edificio Julio Garavito Armero, fue construido en 1945 por el arquitecto Leopoldo Rother. Su diseño se integró en el plan urbanístico de la ciudad universitaria, concebido por Karl Brunner en 1932, que buscaba una estructura organizada con la naturaleza como elemento central. En 1995, fue declarado Bien de Interés Cultural, reconociendo su valor histórico y arquitectónico.';
-const String hours401 = 'Horario del edificio: Lunes a Viernes 6:00 - 22:00, Sábados 7:00 - 18:00';
+const Map<String, String> hours401 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+};
 const String contactInfo401 = 'Contacto de Bienestar Oficina Principal: [Número Real Aquí]';
 
 final List<Room> rooms401 = [
