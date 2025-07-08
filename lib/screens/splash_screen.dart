@@ -133,7 +133,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
                         child: ScaleTransition(
                           scale: _logoScaleAnimation,
                           child: Image.asset(
-                            'assets/images/logoun.png', // Asegúrate de que esta es la ruta correcta de tu logo
+                            'assets/images/UNAL2.png', // Asegúrate de que esta es la ruta correcta de tu logo
                             width: 250,
                           ),
                         ),

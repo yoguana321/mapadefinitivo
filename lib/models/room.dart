@@ -30,16 +30,17 @@ class Room {
     return Room(
       id: map['id'] as String,
       number: map['number'] as String,
-      name: map['name'] as String?, // Asegúrate de que puede ser nulo
+      name: map['name'] as String?,
       floor: map['floor'] as String,
-      isServiceRoom: map['isServiceRoom'] as bool? ?? false, // Lee y usa valor por defecto
+      isServiceRoom: map['isServiceRoom'] as bool? ?? false,
+      // Mapea la lista de profesores correctamente
       professors: (map['professors'] as List<dynamic>?)
           ?.map((profMap) => Professor.fromMap(profMap as Map<String, dynamic>))
           .toList(),
-      description: map['description'] as String?, // Lee la descripción
-      contactInfo: map['contactInfo'] as String?, // Lee la información de contacto
-      capacity: map['capacity'] as String?, // Lee la capacidad
-      equipment: map['equipment'] as String?, // Lee el equipamiento
+      description: map['description'] as String?,
+      contactInfo: map['contactInfo'] as String?,
+      capacity: map['capacity'] as String?,
+      equipment: map['equipment'] as String?,
     );
   }
 
@@ -50,11 +51,39 @@ class Room {
       'name': name,
       'floor': floor,
       'isServiceRoom': isServiceRoom,
+      // Convierte la lista de profesores a un formato que se pueda serializar
       'professors': professors?.map((p) => p.toMap()).toList(),
       'description': description,
       'contactInfo': contactInfo,
       'capacity': capacity,
       'equipment': equipment,
     };
+  }
+
+  // --- Método copyWith para Room ---
+  Room copyWith({
+    String? id,
+    String? number,
+    String? name,
+    String? floor,
+    bool? isServiceRoom,
+    List<Professor>? professors,
+    String? description,
+    String? contactInfo,
+    String? capacity,
+    String? equipment,
+  }) {
+    return Room(
+      id: id ?? this.id,
+      number: number ?? this.number,
+      name: name ?? this.name,
+      floor: floor ?? this.floor,
+      isServiceRoom: isServiceRoom ?? this.isServiceRoom,
+      professors: professors ?? this.professors,
+      description: description ?? this.description,
+      contactInfo: contactInfo ?? this.contactInfo,
+      capacity: capacity ?? this.capacity,
+      equipment: equipment ?? this.equipment,
+    );
   }
 }

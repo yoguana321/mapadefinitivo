@@ -1,10 +1,10 @@
-// lib/services/building_info_sheet.dart
 import 'package:flutter/material.dart';
 import '../models/building.dart';
 import '../models/room.dart';
+import '../models/professor.dart'; // Asegúrate de importar el modelo Professor
 import 'package:shared_preferences/shared_preferences.dart';
 
-// NUEVO: Importar para la galería de imágenes
+// Importar para la galería de imágenes
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 
@@ -12,6 +12,8 @@ import 'package:photo_view/photo_view_gallery.dart';
 import 'package:intl/intl.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// Importar el nuevo widget para editar la sala
+import '../widgets/edit_room_sheet.dart'; // <<-- NUEVA IMPORTACIÓN
 
 // La función principal para mostrar el bottom sheet
 Future<void> showBuildingInfo(BuildContext context, Building building) async {
@@ -20,7 +22,11 @@ Future<void> showBuildingInfo(BuildContext context, Building building) async {
     isScrollControlled: true,
     backgroundColor: Colors.transparent,
     builder: (BuildContext context) {
-      return _BuildingInfoSheetContent(building: building);
+      final Color primaryTabColor = building.markerColor ?? Theme.of(context).primaryColor;
+      return _BuildingInfoSheetContent(
+        building: building,
+        primaryTabColor: primaryTabColor,
+      );
     },
   );
 }
@@ -28,9 +34,11 @@ Future<void> showBuildingInfo(BuildContext context, Building building) async {
 // StatefulWidget para manejar el estado interno (como la expansión de historia)
 class _BuildingInfoSheetContent extends StatefulWidget {
   final Building building;
+  final Color primaryTabColor;
 
   const _BuildingInfoSheetContent({
     required this.building,
+    required this.primaryTabColor,
   });
 
   @override
@@ -39,12 +47,33 @@ class _BuildingInfoSheetContent extends StatefulWidget {
 
 class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
   bool _isHistoryExpanded = false;
+  // Usamos una copia mutable del building para poder actualizar las rooms
+  late Building _currentBuilding;
+
+  @override
+  void initState() {
+    super.initState();
+    _currentBuilding = widget.building; // Inicializar con el building original
+  }
+
+  // Método para manejar la actualización de una Room desde el formulario de edición
+  void _onRoomUpdated(Room updatedRoom) {
+    setState(() {
+      final List<Room> updatedRoomsList = _currentBuilding.rooms!.map((room) {
+        return room.id == updatedRoom.id ? updatedRoom : room; // Reemplazar la sala si el ID coincide
+      }).toList();
+      _currentBuilding = _currentBuilding.copyWith(rooms: updatedRoomsList);
+      // Opcional: Si tienes un sistema de persistencia, guarda los cambios aquí
+      // saveBuilding(_currentBuilding);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    final List<String> floors = widget.building.rooms
+    // Ordenar los pisos numéricamente
+    final List<String> floors = _currentBuilding.rooms // Usa _currentBuilding
         ?.map((room) => room.floor)
-        .where((floor) => floor != 'General' && floor.isNotEmpty)
+        .where((floor) => floor != 'General' && floor != 'Servicios Especiales' && floor.isNotEmpty)
         .toSet()
         .toList() ?? [];
     floors.sort((a, b) {
@@ -57,7 +86,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     });
 
     final List<String> tabs = ['General', 'Servicios Especiales', ...floors];
-    final Color primaryTabColor = widget.building.markerColor ?? Theme.of(context).primaryColor;
+    final Color primaryTabColor = widget.primaryTabColor;
 
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
@@ -74,6 +103,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
             ),
             child: Column(
               children: [
+                // Drag handle
                 Container(
                   height: 16,
                   width: double.infinity,
@@ -87,51 +117,72 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                     ),
                   ),
                 ),
-                // --- ENCABEZADO MEJORADO (Ahora con múltiples imágenes y funcionalidad de galería) ---
-                _buildHeader(context, widget.building, primaryTabColor),
-
-                Container(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                    'Detalles y Ubicaciones',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[800]),
-                  ),
-                ),
-                TabBar(
-                  isScrollable: true,
-                  tabs: tabs.map((tab) => Tab(text: tab)).toList(),
-                  labelColor: primaryTabColor,
-                  unselectedLabelColor: Colors.grey,
-                  indicatorColor: primaryTabColor,
-                  indicatorWeight: 3,
-                  labelStyle: const TextStyle(fontWeight: FontWeight.bold),
-                  unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
-                ),
                 Expanded(
-                  child: TabBarView(
-                    children: tabs.map((tab) {
-                      if (tab == 'General') {
-                        return _buildGeneralInfoTab(
-                          widget.building,
-                          scrollController,
-                          _isHistoryExpanded,
-                              () {
-                            setState(() {
-                              _isHistoryExpanded = !_isHistoryExpanded;
-                            });
-                          },
-                          primaryTabColor,
-                        );
-                      } else if (tab == 'Servicios Especiales') {
-                        return _buildSpecialServicesTab(widget.building, scrollController, primaryTabColor);
-                      } else {
-                        final roomsOnFloor = widget.building.rooms
-                            ?.where((room) => room.floor == tab && (room.isServiceRoom ?? false) == false)
-                            .toList() ?? [];
-                        return _buildRoomsList(roomsOnFloor, scrollController, primaryTabColor);
-                      }
-                    }).toList(),
+                  child: CustomScrollView(
+                    controller: scrollController,
+                    slivers: [
+                      // Sliver para la imagen de encabezado con overlay de texto y galería horizontal
+                      SliverAppBar(
+                        expandedHeight: 280.0,
+                        floating: false,
+                        pinned: false,
+                        backgroundColor: Colors.transparent,
+                        flexibleSpace: FlexibleSpaceBar(
+                          background: _buildHeaderContent(context, _currentBuilding), // Usa _currentBuilding
+                        ),
+                      ),
+                      SliverToBoxAdapter(
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                            'Detalles y Ubicaciones',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                          ),
+                        ),
+                      ),
+                      SliverPersistentHeader(
+                        delegate: _SliverAppBarDelegate(
+                          TabBar(
+                            isScrollable: true,
+                            tabs: tabs.map((tab) => Tab(text: tab)).toList(),
+                            labelColor: primaryTabColor,
+                            unselectedLabelColor: Colors.grey,
+                            indicatorColor: primaryTabColor,
+                            indicatorWeight: 3,
+                            labelStyle: const TextStyle(fontWeight: FontWeight.bold),
+                            unselectedLabelStyle: const TextStyle(fontWeight: FontWeight.normal),
+                          ),
+                        ),
+                        pinned: true,
+                      ),
+                      SliverFillRemaining(
+                        child: TabBarView(
+                          children: tabs.map((tab) {
+                            if (tab == 'General') {
+                              return _buildGeneralInfoTab(
+                                _currentBuilding, // Usa _currentBuilding
+                                scrollController,
+                                _isHistoryExpanded,
+                                    () {
+                                  setState(() {
+                                    _isHistoryExpanded = !_isHistoryExpanded;
+                                  });
+                                },
+                                primaryTabColor,
+                              );
+                            } else if (tab == 'Servicios Especiales') {
+                              return _buildSpecialServicesTab(_currentBuilding, scrollController, primaryTabColor); // Usa _currentBuilding
+                            } else {
+                              final roomsOnFloor = _currentBuilding.rooms // Usa _currentBuilding
+                                  ?.where((room) => room.floor == tab && (room.isServiceRoom ?? false) == false)
+                                  .toList() ?? [];
+                              return _buildRoomsList(roomsOnFloor, scrollController, primaryTabColor);
+                            }
+                          }).toList(),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -142,154 +193,214 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- FUNCIÓN DE ENCABEZADO MEJORADA (MÉTODO DE LA CLASE) ---
-  Widget _buildHeader(BuildContext context, Building building, Color primaryTabColor) {
-    // Usamos la primera imagen de la lista para mostrarla en el encabezado
-    final String displayImageUrl = building.imageUrls.isNotEmpty
-        ? building.imageUrls.first
-        : 'assets/images/placeholder.jpg'; // Imagen por defecto si no hay URLs
+  // --- FUNCIÓN: _buildHeaderContent (SIN CAMBIOS FUNCIONALES MAYORES, USA _currentBuilding) ---
+  Widget _buildHeaderContent(BuildContext context, Building building) {
+    final List<String> displayImageUrls = building.imageUrls.isNotEmpty
+        ? building.imageUrls
+        : ['assets/images/placeholder.jpg'];
+    final String initialImageUrl = displayImageUrls.first;
 
-    return Stack(
-      children: [
-        // Imagen de fondo con GestureDetector para la galería
-        GestureDetector(
-          onTap: () {
-            if (building.imageUrls.isNotEmpty) {
-              _showImageGallery(context, building.imageUrls);
-            }
-          },
-          child: SizedBox(
-            height: 200,
-            width: double.infinity,
-            child: Image.asset(
-              displayImageUrl, // Muestra la primera imagen
-              fit: BoxFit.cover,
-              errorBuilder: (context, error, stackTrace) =>
-                  Image.asset('assets/images/placeholder.jpg', fit: BoxFit.cover),
-            ),
-          ),
-        ),
-        // Capa de degradado doble
-        Positioned.fill(
-          child: Container(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(
-                colors: [
-                  Colors.black.withOpacity(0.6),
-                  Colors.transparent,
-                  Colors.black.withOpacity(0.4),
-                ],
-                begin: Alignment.topCenter,
-                end: Alignment.bottomCenter,
-              ),
-            ),
-          ),
-        ),
-        // Botón de cerrar flotante
-        Positioned(
-          top: MediaQuery.of(context).padding.top + 12,
-          right: 12,
-          child: CircleAvatar(
-            backgroundColor: Colors.black54,
-            child: IconButton(
-              icon: const Icon(Icons.close, color: Colors.white),
-              onPressed: () => Navigator.pop(context),
-              tooltip: 'Cerrar',
-            ),
-          ),
-        ),
-        // Contenido textual superpuesto
-        Positioned(
-          bottom: 16,
-          left: 16,
-          right: 16,
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
+    return FutureBuilder<SharedPreferences>(
+      future: SharedPreferences.getInstance(),
+      builder: (context, snapshot) {
+        final prefs = snapshot.data;
+        final bool isFavorite = prefs?.getBool('fav_${building.id}') ?? false;
+
+        return SizedBox(
+          height: double.infinity,
+          width: double.infinity,
+          child: Stack(
             children: [
-              Text(
-                building.name,
-                style: const TextStyle(
-                  fontSize: 22,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  shadows: [Shadow(blurRadius: 4, color: Colors.black)],
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+                  child: Image.asset(
+                    initialImageUrl,
+                    fit: BoxFit.cover,
+                    errorBuilder: (context, error, stackTrace) =>
+                        Image.asset('assets/images/placeholder.jpg', fit: BoxFit.cover),
+                  ),
                 ),
               ),
-              const SizedBox(height: 6),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
-                        decoration: BoxDecoration(
-                          color: primaryTabColor.withOpacity(0.85),
-                          borderRadius: BorderRadius.circular(20),
-                        ),
-                        child: Text(
-                          building.category,
-                          style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
-                        ),
+              Positioned.fill(
+                child: ClipRRect(
+                  borderRadius: const BorderRadius.vertical(top: Radius.circular(20.0)),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      gradient: LinearGradient(
+                        colors: [
+                          Colors.black.withOpacity(0.6),
+                          Colors.transparent,
+                          Colors.black.withOpacity(0.4),
+                        ],
+                        begin: Alignment.topCenter,
+                        end: Alignment.bottomCenter,
                       ),
-                      const SizedBox(width: 8),
-                      if (building.isAccessible == true)
-                        GestureDetector(
-                          onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: const Text('Accesibilidad'),
-                                  content: const Text(
-                                    'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () => Navigator.of(context).pop(),
-                                      child: const Text('Entendido'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                    ),
+                  ),
+                ),
+              ),
+              Positioned(
+                top: MediaQuery.of(context).padding.top + 12,
+                right: 12,
+                child: CircleAvatar(
+                  backgroundColor: Colors.black54,
+                  child: IconButton(
+                    icon: const Icon(Icons.close, color: Colors.white),
+                    onPressed: () => Navigator.pop(context),
+                    tooltip: 'Cerrar',
+                  ),
+                ),
+              ),
+              Positioned(
+                bottom: 110,
+                left: 16,
+                right: 16,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Text(
+                      building.name,
+                      style: const TextStyle(
+                        fontSize: 22,
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        shadows: [Shadow(blurRadius: 4, color: Colors.black)],
+                      ),
+                    ),
+                    const SizedBox(height: 6),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
+                              decoration: BoxDecoration(
+                                color: (building.markerColor ?? Theme.of(context).primaryColor).withOpacity(0.85),
+                                borderRadius: BorderRadius.circular(20),
+                              ),
+                              child: Text(
+                                building.category,
+                                style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w500, color: Colors.white),
+                              ),
+                            ),
+                            const SizedBox(width: 8),
+                            if (building.isAccessible == true)
+                              GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text('Accesibilidad'),
+                                        content: const Text(
+                                          'Este edificio cuenta con facilidades de acceso para personas con movilidad reducida (ej. ascensores, rampas).',
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () => Navigator.of(context).pop(),
+                                            child: const Text('Entendido'),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
+                              ),
+                          ],
+                        ),
+                        IconButton(
+                          icon: Icon(
+                            isFavorite ? Icons.star : Icons.star_border,
+                            color: Colors.amber,
+                            size: 30,
+                          ),
+                          onPressed: () async {
+                            if (prefs != null) {
+                              final newValue = !isFavorite;
+                              await prefs.setBool('fav_${building.id}', newValue);
+                              setState(() {});
+                            }
                           },
-                          child: const Icon(Icons.accessible_forward, color: Colors.white, size: 22),
+                          tooltip: isFavorite ? 'Remover de favoritos' : 'Añadir a favoritos',
                         ),
-                    ],
-                  ),
-                  FutureBuilder<SharedPreferences>(
-                    future: SharedPreferences.getInstance(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return const SizedBox.shrink();
-                      final prefs = snapshot.data!;
-                      final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
-
-                      return IconButton(
-                        icon: Icon(
-                          isFavorite ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
-                        ),
-                        onPressed: () async {
-                          final newValue = !isFavorite;
-                          await prefs.setBool('fav_${building.id}', newValue);
-                          // For simplicity, we'll just trigger a rebuild by setting state
-                          setState(() {}); // Rebuild to update the favorite icon
-                        },
-                      );
-                    },
-                  ),
-                ],
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+              Positioned(
+                bottom: 0,
+                left: 0,
+                right: 0,
+                child: _buildHorizontalImageGallery(context, displayImageUrls),
               ),
             ],
           ),
-        )
-      ],
+        );
+      },
     );
   }
 
-  // --- NUEVA FUNCIÓN: _showImageGallery ---
-  void _showImageGallery(BuildContext context, List<String> imageUrls) {
+  // --- FUNCIÓN: _buildHorizontalImageGallery (SIN CAMBIOS) ---
+  Widget _buildHorizontalImageGallery(BuildContext context, List<String> imageUrls) {
+    if (imageUrls.length <= 1) {
+      return const SizedBox.shrink();
+    }
+
+    final List<String> galleryThumbnails = imageUrls.sublist(1);
+
+    return Container(
+      height: 80,
+      margin: const EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+      child: ListView.builder(
+        scrollDirection: Axis.horizontal,
+        itemCount: galleryThumbnails.length,
+        itemBuilder: (context, index) {
+          final String imageUrl = galleryThumbnails[index];
+          return Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {
+                _showImageGallery(context, imageUrls, initialIndex: index + 1);
+              },
+              child: ClipRRect(
+                borderRadius: BorderRadius.circular(8.0),
+                child: Image.asset(
+                  imageUrl,
+                  fit: BoxFit.cover,
+                  width: 120,
+                  height: 80,
+                  errorBuilder: (context, error, stackTrace) =>
+                      Container(
+                        width: 120,
+                        height: 80,
+                        color: Colors.grey[300],
+                        child: Icon(Icons.broken_image, color: Colors.grey[600]),
+                      ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  // --- MODIFICADA FUNCIÓN: _showImageGallery (SIN CAMBIOS FUNCIONALES) ---
+  void _showImageGallery(BuildContext context, List<String> imageUrls, {int initialIndex = 0}) {
+    if (imageUrls.isEmpty) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('No hay imágenes para mostrar en la galería.')),
+      );
+      return;
+    }
+
+    print('DEBUG: Abriendo galería con ${imageUrls.length} imágenes, iniciando en índice: $initialIndex');
+
     Navigator.push(
       context,
       MaterialPageRoute(
@@ -297,7 +408,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
           itemCount: imageUrls.length,
           builder: (context, index) {
             return PhotoViewGalleryPageOptions(
-              imageProvider: AssetImage(imageUrls[index]), // Usamos AssetImage para imágenes locales
+              imageProvider: AssetImage(imageUrls[index]),
               minScale: PhotoViewComputedScale.contained * 0.8,
               maxScale: PhotoViewComputedScale.covered * 2,
               heroAttributes: PhotoViewHeroAttributes(tag: imageUrls[index]),
@@ -307,17 +418,17 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
           backgroundDecoration: const BoxDecoration(
             color: Colors.black,
           ),
-          pageController: PageController(), // Se puede inicializar con un índice inicial si se desea
+          pageController: PageController(initialPage: initialIndex),
           onPageChanged: (index) {
-            // Puedes añadir lógica aquí para saber qué imagen se está viendo
+            print('DEBUG: Cambiando a imagen: $index');
           },
-          enableRotation: true, // Permite rotar la imagen
+          enableRotation: true,
         ),
       ),
     );
   }
 
-  // --- FUNCIÓN _buildGeneralInfoTab SIMPLIFICADA (SOLO HORARIO MAP) ---
+  // --- FUNCIÓN _buildGeneralInfoTab (USA _currentBuilding) ---
   Widget _buildGeneralInfoTab(
       Building building,
       ScrollController scrollController,
@@ -333,8 +444,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         children: [
           _buildQuickAccessButtons(building, accentColor),
           const SizedBox(height: 20),
-
-          // Sección de Información General
           Row(
             children: [
               Icon(Icons.info_outline, color: accentColor),
@@ -351,8 +460,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
             style: Theme.of(context).textTheme.bodyMedium,
           ),
           const SizedBox(height: 20),
-
-          // Sección de Historia
           if (building.history != null && building.history!.isNotEmpty) ...[
             Row(
               children: [
@@ -391,23 +498,20 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
               ),
             const SizedBox(height: 20),
           ],
-
-          // --- SECCIÓN DE HORARIO (SOLO NUEVA VERSIÓN - MAP) ---
-          // Solo muestra la sección si 'hours' es un Map<String, String> y no está vacío.
-          // Si no es un Map o está vacío, simplemente no se muestra.
-          if (building.hours is Map<String, String> && (building.hours as Map).isNotEmpty)
+          if (building.hours != null && building.hours is Map<String, String> && (building.hours as Map).isNotEmpty)
             _buildHoursSection(building.hours as Map<String, String>, accentColor),
-          const SizedBox(height: 20), // Este SizedBox se mostrará si la sección de horario se mostró
-
-          // --- SECCIÓN DE CONTACTO (NUEVA VERSIÓN) ---
+          if (building.hours != null && building.hours is Map<String, String> && (building.hours as Map).isNotEmpty)
+            const SizedBox(height: 20),
           if (building.contactInfo != null && building.contactInfo!.isNotEmpty)
             _buildContactSection(building.contactInfo!, accentColor),
-          const SizedBox(height: 20),
+          if (building.contactInfo != null && building.contactInfo!.isNotEmpty)
+            const SizedBox(height: 20),
         ],
       ),
     );
   }
 
+  // --- FUNCIÓN: _buildQuickAccessButtons (SIN CAMBIOS) ---
   Widget _buildQuickAccessButtons(Building building, Color accentColor) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -428,16 +532,13 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- NUEVA FUNCIÓN: _buildHoursSection (para Horario Interactivo) ---
+  // --- FUNCIÓN: _buildHoursSection (SIN CAMBIOS) ---
   Widget _buildHoursSection(Map<String, String> hoursMap, Color accentColor) {
-    // Obtener el día de la semana actual
-    // Usamos el locale 'es' para asegurarnos de que el día esté en español (Lunes, Martes, etc.)
     final DateTime now = DateTime.now();
-    final String currentDay = DateFormat('EEEE', 'es').format(now); // 'es' para español
+    final String currentDay = DateFormat('EEEE', 'es').format(now);
     final String currentDayCapitalized = currentDay.substring(0, 1).toUpperCase() + currentDay.substring(1);
 
     String todayHours = hoursMap[currentDayCapitalized] ?? 'Horario no disponible';
-    bool isOpen = false;
     String statusText = '';
     Color statusColor = Colors.grey;
 
@@ -450,7 +551,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         final String openTimeStr = parts[0];
         final String closeTimeStr = parts[1];
 
-        // Parsear horas y minutos del string
         final openHour = int.parse(openTimeStr.split(':')[0]);
         final openMinute = int.parse(openTimeStr.split(':')[1]);
         final closeHour = int.parse(closeTimeStr.split(':')[0]);
@@ -460,7 +560,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
         final DateTime closeTime = DateTime(now.year, now.month, now.day, closeHour, closeMinute);
 
         if (now.isAfter(openTime) && now.isBefore(closeTime)) {
-          isOpen = true;
           statusText = 'Abierto ahora';
           statusColor = Colors.green.shade700;
           final timeUntilClose = closeTime.difference(now);
@@ -486,7 +585,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
 
     return Card(
       elevation: 2,
-      margin: EdgeInsets.zero, // Eliminar margen de Card si el Column ya lo tiene
+      margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Padding(
         padding: const EdgeInsets.all(16.0),
@@ -522,7 +621,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                // Mostrar el horario de hoy con un estilo normal
                 Text(
                   'Hoy: $todayHours',
                   style: Theme.of(context).textTheme.bodyMedium,
@@ -530,7 +628,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
               ],
             ),
             const SizedBox(height: 10),
-            // Botón para ver horario completo
             TextButton(
               onPressed: () {
                 _showFullScheduleDialog(context, hoursMap, accentColor);
@@ -549,7 +646,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- NUEVA FUNCIÓN: _showFullScheduleDialog (para mostrar el horario detallado) ---
+  // --- FUNCIÓN: _showFullScheduleDialog (SIN CAMBIOS) ---
   void _showFullScheduleDialog(BuildContext context, Map<String, String> hoursMap, Color accentColor) {
     showDialog(
       context: context,
@@ -591,10 +688,8 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // --- NUEVA FUNCIÓN: _buildContactSection (para Contacto con acciones) ---
+  // --- FUNCIÓN: _buildContactSection (SIN CAMBIOS) ---
   Widget _buildContactSection(String contactInfo, Color accentColor) {
-    // Intentar determinar si es un número de teléfono o un email
-    // Implementación simple, puedes hacerla más robusta si es necesario
     bool isPhoneNumber = RegExp(r'^\+?[0-9\s\-\(\)]+$').hasMatch(contactInfo.replaceAll(RegExp(r'\s|-|\(|\)'), ''));
     bool isEmail = contactInfo.contains('@') && contactInfo.contains('.');
 
@@ -628,7 +723,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                 child: TextButton(
                   onPressed: () async {
                     if (isPhoneNumber) {
-                      final url = 'tel:${contactInfo.replaceAll(RegExp(r'\s|-|\(|\)'), '')}'; // Limpia el número para el URL
+                      final url = 'tel:${contactInfo.replaceAll(RegExp(r'\s|-|\(|\)'), '')}';
                       if (await canLaunchUrl(Uri.parse(url))) {
                         await launchUrl(Uri.parse(url));
                       } else {
@@ -671,9 +766,13 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
+  // --- FUNCIÓN: _buildSpecialServicesTab (USA _currentBuilding) ---
   Widget _buildSpecialServicesTab(Building building, ScrollController scrollController, Color accentColor) {
     final List<Room> specialServices = building.rooms
-        ?.where((room) => (room.isServiceRoom ?? false) && (room.floor == 'General' || room.floor.isEmpty))
+        ?.where((room) =>
+    (room.isServiceRoom ?? false) &&
+        (room.floor == 'General' || room.floor == 'Servicios Especiales' || room.floor.isEmpty)
+    )
         .toList() ?? [];
 
     if (specialServices.isEmpty) {
@@ -700,12 +799,13 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
             style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 8),
-          ...specialServices.map((room) => _buildRoomTile(room, accentColor)),
+          ...specialServices.map((room) => _buildRoomTile(room, accentColor)).toList(), // Conviértelo a lista explícitamente
         ],
       ),
     );
   }
 
+  // --- FUNCIÓN: _buildRoomsList (USA _buildRoomTile modificado) ---
   Widget _buildRoomsList(List<Room> rooms, ScrollController scrollController, Color accentColor) {
     if (rooms.isEmpty) {
       return SingleChildScrollView(
@@ -729,14 +829,13 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
-  // Widget auxiliar para mostrar una Room (Aula, Oficina, Servicio) de forma unificada (MÉTODO DE LA CLASE)
-  // AHORA ES CLICKEABLE PARA VER MÁS DETALLES
+  // --- FUNCIÓN: _buildRoomTile (MODIFICADA PARA SER CLICKEABLE) ---
   Widget _buildRoomTile(Room room, Color accentColor) {
     IconData icon;
     if (room.isServiceRoom ?? false) {
       if (room.name?.toLowerCase().contains('cuarto técnico') ?? false) {
         icon = Icons.handyman;
-      } else if (room.name!.toLowerCase().contains('aseo') || room.name!.toLowerCase().contains('baño')) {
+      } else if (room.name!.toLowerCase().contains('aseo') || room.name!.toLowerCase().contains('baño') || room.name!.toLowerCase().contains('wc')) {
         icon = Icons.wc;
       } else if (room.name?.toLowerCase().contains('préstamos') ?? false) {
         icon = Icons.gamepad;
@@ -782,124 +881,89 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
       subtitleWidgets.add(Text(room.description!));
     } else if (room.name != null && room.name != room.number) {
       subtitleWidgets.add(Text(room.name!));
-    } else if (room.number.isNotEmpty) {
+    }
+    if (room.number.isNotEmpty && (room.name == null || room.name == room.number)) {
       subtitleWidgets.add(Text('Número: ${room.number}'));
     }
 
+    // Aquí no se muestra la lista de profesores completa, solo la referencia a ellos
     if (room.professors != null && room.professors!.isNotEmpty) {
       if (subtitleWidgets.isNotEmpty) {
-        subtitleWidgets.add(const SizedBox(height: 8));
+        subtitleWidgets.add(const SizedBox(height: 4));
       }
-      subtitleWidgets.add(
-        Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text('Profesores:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            const SizedBox(height: 4),
-            ...room.professors!.map((professor) {
-              return Card(
-                margin: const EdgeInsets.symmetric(vertical: 4),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                elevation: 0.5,
-                child: ListTile(
-                  contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                  leading: CircleAvatar(
-                    backgroundColor: accentColor.withAlpha((255 * 0.7).round()),
-                    child: Text(professor.name.isNotEmpty ? professor.name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white)),
-                  ),
-                  title: Text(professor.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                  subtitle: Text(professor.roomNumber ?? 'Sin aula asignada', style: TextStyle(fontSize: 12, color: Colors.grey[700])),
-                ),
-              );
-            }),
-          ],
-        ),
-      );
+      subtitleWidgets.add(Text(
+        'Profesores: ${room.professors!.map((p) => p.name).join(', ')}',
+        style: TextStyle(fontSize: 13, color: Colors.grey[700]),
+      ));
     }
 
     return Card(
       margin: const EdgeInsets.only(bottom: 10),
       elevation: 1,
       shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: ListTile(
-        leading: Icon(icon, color: accentColor),
-        title: Text(
-          room.name ?? room.number,
-          style: const TextStyle(fontWeight: FontWeight.bold),
+      child: InkWell( // <<-- USA InkWell para hacerlo clickeable con efecto de tinta
+        onTap: () {
+          // Muestra el BottomSheet de edición cuando se toca el tile
+          showModalBottomSheet(
+            context: context,
+            isScrollControlled: true, // Permite que ocupe casi toda la pantalla
+            backgroundColor: Colors.transparent,
+            builder: (context) => EditRoomSheet(
+              room: room,
+              accentColor: accentColor,
+              onRoomUpdated: _onRoomUpdated, // Pasa el callback para actualizar la Room
+            ),
+          );
+        },
+        child: Padding( // <<-- Envuelve el contenido en Padding para el espacio
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Icon(icon, color: accentColor),
+              const SizedBox(width: 16),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      room.name ?? room.number,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 16),
+                    ),
+                    if (subtitleWidgets.isNotEmpty) ...subtitleWidgets,
+                  ],
+                ),
+              ),
+              const Icon(Icons.edit, color: Colors.grey), // Un pequeño icono para indicar que es editable
+            ],
+          ),
         ),
-        subtitle: subtitleWidgets.isNotEmpty
-            ? Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: subtitleWidgets,
-        )
-            : null,
-        contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-        // --- AÑADIDO: HACE EL TILE CLICKEABLE ---
-        onTap: () => _showRoomDetailsDialog(context, room, accentColor),
       ),
     );
   }
+}
 
-  // --- NUEVA FUNCIÓN: _showRoomDetailsDialog para mostrar detalles de la habitación ---
-  void _showRoomDetailsDialog(BuildContext context, Room room, Color accentColor) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
-          title: Text(
-            room.name ?? room.number,
-            style: TextStyle(color: accentColor, fontWeight: FontWeight.bold),
-          ),
-          content: SingleChildScrollView(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                if (room.number.isNotEmpty)
-                  Padding(
-                    padding: const EdgeInsets.only(bottom: 8.0),
-                    child: Text('Número: ${room.number}', style: const TextStyle(fontWeight: FontWeight.w600)),
-                  ),
-                if (room.description != null && room.description!.isNotEmpty) ...[
-                  const Text('Descripción:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(room.description!),
-                  const SizedBox(height: 10),
-                ],
-                if (room.capacity != null && room.capacity!.isNotEmpty) ...[
-                  const Text('Capacidad:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(room.capacity!),
-                  const SizedBox(height: 10),
-                ],
-                if (room.equipment != null && room.equipment!.isNotEmpty) ...[
-                  const Text('Equipamiento:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(room.equipment!),
-                  const SizedBox(height: 10),
-                ],
-                if (room.contactInfo != null && room.contactInfo!.isNotEmpty) ...[
-                  const Text('Contacto de la sala:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  Text(room.contactInfo!),
-                  const SizedBox(height: 10),
-                ],
-                if (room.professors != null && room.professors!.isNotEmpty) ...[
-                  const Text('Profesores Asociados:', style: TextStyle(fontWeight: FontWeight.bold)),
-                  const SizedBox(height: 4),
-                  ...room.professors!.map((professor) => Padding(
-                    padding: const EdgeInsets.symmetric(vertical: 2.0),
-                    child: Text('${professor.name} (${professor.roomNumber ?? 'N/A'})'),
-                  )),
-                ],
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: Text('Cerrar', style: TextStyle(color: accentColor)),
-            ),
-          ],
-        );
-      },
+// Delegate para la SliverPersistentHeader para mantener la TabBar pegada (SIN CAMBIOS)
+class _SliverAppBarDelegate extends SliverPersistentHeaderDelegate {
+  _SliverAppBarDelegate(this._tabBar);
+
+  final TabBar _tabBar;
+
+  @override
+  double get minExtent => _tabBar.preferredSize.height;
+  @override
+  double get maxExtent => _tabBar.preferredSize.height;
+
+  @override
+  Widget build(BuildContext context, double shrinkOffset, bool overlapsContent) {
+    return Container(
+      color: Theme.of(context).canvasColor,
+      child: _tabBar,
     );
+  }
+
+  @override
+  bool shouldRebuild(_SliverAppBarDelegate oldDelegate) {
+    return false;
   }
 }

@@ -27,7 +27,10 @@ final Building building401 = Building(
   category: 'Facultad',
   coords: LatLng(4.637288, -74.082766),
   icon: Icons.school, // Usas un IconData directo, lo mantenemos.
-  imageUrls: ['assets/images/401.jpg',
+  imageUrls: [
+    'assets/images/401.jpg',
+    'assets/images/4001.jpg',
+    'assets/images/sal401.jpg'
   ],
   info: info401,
   history: history401,
@@ -80,6 +83,7 @@ final Building buildingCYT = Building(
   coords: LatLng(4.638037, -74.084622), // <-- ¡AJUSTA ESTAS COORDENADAS A LA UBICACIÓN REAL DEL CYT!
   icon: Icons.science, // O Icons.laptop_mac si es más de computación
   imageUrls: ['assets/images/cyt.jpg',
+    'assets/images/cyt2.jpg',
   ],
   info: infoCYT,
   history: historyCYT,
