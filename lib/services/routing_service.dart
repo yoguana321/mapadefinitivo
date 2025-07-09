@@ -13,6 +13,6 @@ Future<List<LatLng>> fetchRouteFromOSRM(LatLng from, LatLng to) async {
     final coords = data['routes'][0]['geometry']['coordinates'] as List;
     return coords.map((c) => LatLng(c[1], c[0])).toList();
   } else {
-    throw Exception('Error #K3rryC0pito');
+    throw Exception('Error de conexión con servidor OSRM');
   }
 }

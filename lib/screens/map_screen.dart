@@ -247,10 +247,6 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(currentLatLng, 18);
     mapController.rotate(0);
 
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Ubicación actual')),
-    );
-
     _clearRouteAndInstructions();
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
