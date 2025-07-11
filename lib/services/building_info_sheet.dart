@@ -8,6 +8,7 @@ import '../services/routing_service.dart';
 import '../services/building_info_sheet.dart' as info_sheet;
 
 void showBuildingInfo(
+
     BuildContext context,
     Building building, {
       required LatLng currentLocation,
@@ -29,7 +30,6 @@ void showBuildingInfo(
     },
   );
 }
-
 void _calculateRoute(
     BuildContext context,
     LatLng currentLocation,
@@ -76,7 +76,42 @@ class _BuildingInfoSheetContent extends StatefulWidget {
 
 class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
   bool _isHistoryExpanded = false;
+  bool isFavorite = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _loadFavoriteStatus();
+  }
+
+  Future<void> _loadFavoriteStatus() async {
+    final prefs = await SharedPreferences.getInstance();
+    final fav = prefs.getBool('fav_${widget.building.id}') ?? false;
+    setState(() {
+      isFavorite = fav;
+    });
+  }
+
+  Future<void> _toggleFavorite(String buildingId) async {
+    final prefs = await SharedPreferences.getInstance();
+    final newValue = !isFavorite;
+    await prefs.setBool('fav_$buildingId', newValue);
+    setState(() {
+      isFavorite = newValue;
+    });
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        content: Text(
+          isFavorite
+              ? '${widget.building.shortName} fue agregado a favoritos'
+              : '${widget.building.shortName} fue eliminado de favoritos',
+        ),
+        duration: const Duration(seconds: 2),
+        behavior: SnackBarBehavior.floating,
+      ),
+    );
+  }
   @override
   Widget build(BuildContext context) {
     final List<String> floors = widget.building.rooms
@@ -125,37 +160,12 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   ),
                 ),
                 _buildHeader(context, widget.building, primaryTabColor, widget.currentLocation, widget.onRouteCalculated),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 12.0),
-                  child: ElevatedButton.icon(
-                    onPressed: () {
-                      if (widget.currentLocation.latitude == 0 && widget.currentLocation.longitude == 0) {
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Activa la ubicación para calcular la ruta.')),
-                        );
-                        return;
-                      }
-                      _calculateRoute(
-                        context,
-                        widget.currentLocation,
-                        widget.building,
-                        widget.onRouteCalculated,
-                      );
-                    },
-                    icon: const Icon(Icons.directions_walk),
-                    label: const Text("Ir allá"),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.blueAccent,
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ),
                 Container(
                   padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                   alignment: Alignment.centerLeft,
                   child: Text(
                     'Detalles y Ubicaciones',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.grey[800]),
+                    style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
                 TabBar(
@@ -309,35 +319,63 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                         ),
                     ],
                   ),
-                  FutureBuilder<SharedPreferences>(
-                    future: SharedPreferences.getInstance(),
-                    builder: (context, snapshot) {
-                      if (!snapshot.hasData) return const SizedBox.shrink();
-                      final prefs = snapshot.data!;
-                      final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
-
-                      return IconButton(
-                        icon: Icon(
-                          isFavorite ? Icons.star : Icons.star_border,
-                          color: Colors.amber,
-                        ),
-                        onPressed: () async {
-                          final newValue = !isFavorite;
-                          await prefs.setBool('fav_${building.id}', newValue);
-                          Navigator.pop(context);
-
-                          // Vuelve a abrir el modal en el siguiente frame (para evitar conflicto con el anterior que se cierra)
-                          WidgetsBinding.instance.addPostFrameCallback((_) {
-                            showBuildingInfo(
-                              context,
-                              widget.building,
-                              currentLocation: widget.currentLocation,
-                              onRouteCalculated: widget.onRouteCalculated,
+                  Row(
+                    children: [
+                      ElevatedButton.icon(
+                        onPressed: () {
+                          if (currentLocation.latitude == 0 && currentLocation.longitude == 0) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(content: Text('Activa la ubicación para calcular la ruta.')),
                             );
-                          });
-                        }
-                      );
-                    },
+                            return;
+                          }
+                          _calculateRoute(
+                            context,
+                            currentLocation,
+                            building,
+                            onRouteCalculated,
+                          );
+                        },
+                        icon: const Icon(Icons.directions_walk),
+                        label: const Text("Ir"),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.blueAccent,
+                          foregroundColor: Colors.white,
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          textStyle: const TextStyle(fontSize: 14),
+                        ),
+                      ),
+                      const SizedBox(width: 8),
+                      FutureBuilder<SharedPreferences>(
+                        future: SharedPreferences.getInstance(),
+                        builder: (context, snapshot) {
+                          if (!snapshot.hasData) return const SizedBox.shrink();
+                          final prefs = snapshot.data!;
+                          final isFavorite = prefs.getBool('fav_${building.id}') ?? false;
+
+                          return IconButton(
+                            icon: Icon(
+                              isFavorite ? Icons.star : Icons.star_border,
+                              color: Colors.amber,
+                            ),
+                            onPressed: () async {
+                              final newValue = !isFavorite;
+                              await prefs.setBool('fav_${building.id}', newValue);
+                              Navigator.pop(context);
+                              WidgetsBinding.instance.addPostFrameCallback((_) {
+                                showBuildingInfo(
+                                  context,
+                                  building,
+                                  currentLocation: currentLocation,
+                                  onRouteCalculated: onRouteCalculated,
+                                );
+                              });
+                            },
+                            tooltip: isFavorite ? 'Eliminar de favoritos' : 'Agregar a favoritos',
+                          );
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

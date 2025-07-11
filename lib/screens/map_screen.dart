@@ -195,11 +195,30 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(LatLng(4.637040, -74.082983), 18);
     _scaffoldKey.currentState?.closeDrawer();
   }
-  void _navigateToFavorites() {
-    Navigator.push(
+  void _navigateToFavorites() async {
+    final selectedBuilding = await Navigator.push<Building?>(
       context,
       MaterialPageRoute(builder: (context) => const FavoritesScreen()),
     );
+
+    if (selectedBuilding != null) {
+      // Mueve el mapa al edificio seleccionado
+      mapController.move(selectedBuilding.coords, 18);
+
+      // Muestra la hoja de información
+      if (_currentLocation != null) {
+        showBuildingInfo(
+          context,
+          selectedBuilding,
+          currentLocation: _currentLocation!,
+          onRouteCalculated: (route) {
+            setState(() {
+              _routeLine = route;
+            });
+          },
+        );
+      }
+    }
   }
 
   void _clearRouteAndInstructions() {
@@ -365,9 +384,9 @@ class _MapScreenState extends State<MapScreen> {
             child: FloatingActionButton(
               heroTag: 'menuButton',
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-              child: const Icon(Icons.menu, color: Colors.black),
+              child:  Icon(Icons.menu, color: Theme.of(context).iconTheme.color),
             ),
           ),
           Positioned(
@@ -376,9 +395,9 @@ class _MapScreenState extends State<MapScreen> {
             child: FloatingActionButton(
               heroTag: 'searchButton',
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               onPressed: _toggleSearchVisibility,
-              child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Colors.black),
+              child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Theme.of(context).iconTheme.color),
             ),
           ),
           Align(
@@ -391,18 +410,18 @@ class _MapScreenState extends State<MapScreen> {
                   FloatingActionButton(
                     heroTag: 'myLocationButton',
                     mini: true,
-                    backgroundColor: Colors.white,
+                    backgroundColor: Theme.of(context).colorScheme.background,
                     onPressed: () async {
                       await _checkAndRestartLocation();
                       await _onMyLocationButtonPressed();
                     },
-                    child: const Icon(Icons.gps_fixed, color: Colors.black),
+                    child: Icon(Icons.gps_fixed, color: Theme.of(context).iconTheme.color),
                   ),
                   const SizedBox(height: 10),
                   FloatingActionButton(
                     heroTag: 'backButton',
-                    backgroundColor: Colors.white,
-                    child: const Icon(Icons.map, color: Colors.black),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    child: Icon(Icons.map, color: Theme.of(context).iconTheme.color),
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
                         Navigator.of(context).pop();
@@ -417,10 +436,10 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          Align( // BRUJULA - NO SE MANTIENE EXACTAMENTE IGUAL, SI NECESITA CAMBIOS
+          Align( // BRUJULA
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
+              padding: const EdgeInsets.only(right: 0, bottom: 140.0),
               child: StreamBuilder<MapEvent>(
                 stream: mapController.mapEventStream,
                 builder: (context, snapshot) {
@@ -430,12 +449,12 @@ class _MapScreenState extends State<MapScreen> {
                   return Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset('assets/images/cruceta.png', width: 148),
+                      Image.asset('assets/images/cruceta.png', width: 100),
                       Positioned(
-                        right: 8,
+                        right: 23,
                         child: Transform.rotate(
                           angle: rotationRadians,
-                          child: Image.asset('assets/images/señalador.png', width: 126),
+                          child: Image.asset('assets/images/señalador.png', width: 52.5,),
                         ),
                       ),
                     ],
@@ -486,3 +505,4 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
+
