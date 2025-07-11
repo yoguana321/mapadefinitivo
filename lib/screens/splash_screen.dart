@@ -16,10 +16,10 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
   late Animation<double> _textOpacityAnimation;
 
   // Nuevos Colores UNAL refinados para el degradado
-  final Color unalDarkGreen = const Color(0xFF2E7D32); // Un verde oscuro más institucional (casi el del botón anterior)
-  final Color unalReddishBrown = const Color(0xFF6D1B1B); // Un rojo/marrón oscuro (vinotinto)
-  final Color unalLightReddishBrown = const Color(0xFFC7B3B3); // Versión más clara del vinotinto
-  final Color unalSoftGreen = const Color(0xFF8BC34A); // Un verde medio, amigable
+  final Color unalDarkGreen = const Color(0xFF762330); // Un verde oscuro más institucional (casi el del botón anterior)
+  final Color unalReddishBrown = const Color(0xFFFFFFFF); // Un rojo/marrón oscuro (vinotinto)
+  final Color unalLightReddishBrown = const Color(0xFFFFFFFF); // Versión más clara del vinotinto
+  final Color unalSoftGreen = const Color(0xFFFFFFFF); // Un verde medio, amigable
 
   @override
   void initState() {
@@ -80,7 +80,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
           child: Text(
             char,
             style: const TextStyle(
-              color: Colors.white, // Texto en blanco para contrastar con el fondo oscuro/medio
+              color: Colors.black, // Texto en blanco para contrastar con el fondo oscuro/medio
               fontSize: 18,
               fontStyle: FontStyle.italic,
               letterSpacing: 0.5,

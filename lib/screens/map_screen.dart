@@ -4,7 +4,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapadefinitivo/screens/favorites_screen.dart';
-
 import '../models/building.dart';
 import '../data/building_data.dart';
 import '../widgets/app_drawer.dart';
@@ -12,7 +11,9 @@ import '../services/building_info_sheet.dart';
 import '../widgets/map_markers.dart';
 import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
-
+import 'package:geolocator/geolocator.dart';
+import 'dart:async';
+import '../services/routing_service.dart';
 
 class MapScreen extends StatefulWidget {
   final Building? initialBuilding;
@@ -24,6 +25,8 @@ class MapScreen extends StatefulWidget {
 }
 
 class _MapScreenState extends State<MapScreen> {
+  List<LatLng> _routeLine = [];
+  LatLng? _currentLocation;
   final MapController mapController = MapController();
   final TextEditingController _searchController = TextEditingController();
   final FocusNode _searchFocusNode = FocusNode();
@@ -33,18 +36,27 @@ class _MapScreenState extends State<MapScreen> {
   List<Building> _filteredBuildings = [];
   String? _selectedCategory = 'Todos';
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  List<LatLng> _routePoints = [];
 
   // NUEVO: Variable para almacenar la rotación actual del mapa
   double _currentMapRotation = 0.0;
-
+  StreamSubscription<Position>? _positionStream;
   @override
   void initState() {
     super.initState();
-    if (widget.initialBuilding != null) {
+    _listenToLocation();
+    if (widget.initialBuilding != null && _currentLocation != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) {
         mapController.move(widget.initialBuilding!.coords, 18);
-        showBuildingInfo(context, widget.initialBuilding!);
+        showBuildingInfo(
+          context,
+          widget.initialBuilding!,
+          currentLocation: _currentLocation!,
+          onRouteCalculated: (route) {
+            setState(() {
+              _routeLine = route;
+            });
+          },
+        );
       });
     }
     mapController.mapEventStream.listen((event) {
@@ -63,12 +75,57 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
   }
+  Future<void> _checkAndRestartLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
 
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return;
+    }
+
+    if (permission == LocationPermission.deniedForever) return;
+
+    // Si llega hasta aquí, entonces tiene permisos y GPS activo
+    // Reinicia el stream
+    _positionStream?.cancel(); // Cancela el anterior si existía
+    _listenToLocation();
+  }
+  void _handleRouteUpdate(List<LatLng> route) {
+    setState(() {
+      _routeLine = route;
+    });
+  }
+  void _listenToLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) return;
+    }
+    if (permission == LocationPermission.deniedForever) return;
+
+    _positionStream = Geolocator.getPositionStream(
+      locationSettings: const LocationSettings(
+        accuracy: LocationAccuracy.high,
+        distanceFilter: 5,
+      ),
+    ).listen((Position position) {
+      setState(() {
+        _currentLocation = LatLng(position.latitude, position.longitude);
+      });
+    });
+  }
   @override
   void dispose() {
+    _positionStream?.cancel();
     mapController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
+    _positionStream?.cancel();
     super.dispose();
   }
 
@@ -77,7 +134,6 @@ class _MapScreenState extends State<MapScreen> {
     setState(() {
       _filteredBuildings = allBuildings.where((b) {
         bool matchesQuery = b.searchableContent.contains(lowerQuery);
-
         bool matchesCategory = true;
         if (_selectedCategory != null && _selectedCategory != 'Todos') {
           matchesCategory = b.category.toLowerCase() == _selectedCategory!.toLowerCase();
@@ -114,13 +170,21 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _onMarkerTapped(Building building) {
+  Future<void> _onMarkerTapped(Building building) async {
     _clearSearchState();
     _clearRouteAndInstructions();
-    mapController.move(building.coords, 20); // Zoom in on the building
-    showBuildingInfo(context, building); // Open the detailed info sheet
+    mapController.move(building.coords, 20);
+    showBuildingInfo(
+      context,
+      building,
+      currentLocation: _currentLocation ?? LatLng(0, 0),
+      onRouteCalculated: (route) {
+        setState(() {
+          _routeLine = route;
+        });
+      },
+    );
   }
-
   void _navigateToHome() {
     Navigator.pushReplacementNamed(context, '/');
   }
@@ -131,16 +195,34 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(LatLng(4.637040, -74.082983), 18);
     _scaffoldKey.currentState?.closeDrawer();
   }
-  void _navigateToFavorites() {
-    Navigator.push(
+  void _navigateToFavorites() async {
+    final selectedBuilding = await Navigator.push<Building?>(
       context,
       MaterialPageRoute(builder: (context) => const FavoritesScreen()),
     );
+
+    if (selectedBuilding != null) {
+      // Mueve el mapa al edificio seleccionado
+      mapController.move(selectedBuilding.coords, 18);
+
+      // Muestra la hoja de información
+      if (_currentLocation != null) {
+        showBuildingInfo(
+          context,
+          selectedBuilding,
+          currentLocation: _currentLocation!,
+          onRouteCalculated: (route) {
+            setState(() {
+              _routeLine = route;
+            });
+          },
+        );
+      }
+    }
   }
 
   void _clearRouteAndInstructions() {
     setState(() {
-      _routePoints = [];
     });
   }
 
@@ -154,17 +236,42 @@ class _MapScreenState extends State<MapScreen> {
     });
   }
 
-  void _onMyLocationButtonPressed() {
-    mapController.move(LatLng(4.637040, -74.082983), 18);
+  Future<void> _onMyLocationButtonPressed() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Activa los servicios de ubicación.')),
+      );
+      return;
+    }
+
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return;
+      }
+    }
+
+    if (permission == LocationPermission.deniedForever) {
+      return;
+    }
+
+    final position = await Geolocator.getCurrentPosition();
+    final currentLatLng = LatLng(position.latitude, position.longitude);
+    setState(() {
+      _currentCenter = currentLatLng;
+    });
+
+    mapController.move(currentLatLng, 18);
     mapController.rotate(0);
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(content: Text('Centrando mapa en la Universidad Nacional.')),
-    );
+
     _clearRouteAndInstructions();
     if (Navigator.of(context).canPop()) {
       Navigator.of(context).pop();
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -215,15 +322,30 @@ class _MapScreenState extends State<MapScreen> {
                 subdomains: ['a', 'b', 'c', 'd'],
                 userAgentPackageName: 'com.example.mapadefinitivo',
               ),
+              if (_routeLine.isNotEmpty)
               PolylineLayer(
                 polylines: [
-                  if (_routePoints.isNotEmpty)
-                    Polyline(
-                      points: _routePoints,
-                      color: Colors.blue,
-                      strokeWidth: 6.0,
-                      borderStrokeWidth: 2.0,
-                      borderColor: Colors.black,
+                  Polyline(
+                    points: _routeLine,
+                    color: Colors.blue,
+                    strokeWidth: 4.0,
+                  ),
+                ],
+              ),
+              MarkerLayer(
+                markers: [
+                  if (_currentLocation != null)
+                    Marker(
+                      point: _currentLocation!,
+                      width: 20,
+                      height: 20,
+                      child: Container(
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: Colors.blue.withOpacity(0.8),
+                          border: Border.all(color: Colors.white, width: 2),
+                        ),
+                      ),
                     ),
                 ],
               ),
@@ -236,15 +358,35 @@ class _MapScreenState extends State<MapScreen> {
               ),
             ],
           ),
+          if (_routeLine.isNotEmpty)
+            Positioned(
+              bottom: 20,
+              left: 20,
+              child: FloatingActionButton(
+                heroTag: 'cancelRouteButton',
+                mini: true,
+                backgroundColor: Colors.redAccent,
+                tooltip: 'Cancelar ruta',
+                onPressed: () {
+                  setState(() {
+                    _routeLine.clear();
+                  });
+                  if (Navigator.of(context).canPop()) {
+                    Navigator.of(context).pop();
+                  }
+                },
+                child: const Icon(Icons.close),
+              ),
+            ),
           Positioned(
             top: MediaQuery.of(context).padding.top + 10,
             left: 10,
             child: FloatingActionButton(
               heroTag: 'menuButton',
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               onPressed: () => _scaffoldKey.currentState?.openDrawer(),
-              child: const Icon(Icons.menu, color: Colors.black),
+              child:  Icon(Icons.menu, color: Theme.of(context).iconTheme.color),
             ),
           ),
           Positioned(
@@ -253,9 +395,9 @@ class _MapScreenState extends State<MapScreen> {
             child: FloatingActionButton(
               heroTag: 'searchButton',
               mini: true,
-              backgroundColor: Colors.white,
+              backgroundColor: Theme.of(context).colorScheme.background,
               onPressed: _toggleSearchVisibility,
-              child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Colors.black),
+              child: Icon(_isSearchVisible ? Icons.close : Icons.search, color: Theme.of(context).iconTheme.color),
             ),
           ),
           Align(
@@ -268,15 +410,18 @@ class _MapScreenState extends State<MapScreen> {
                   FloatingActionButton(
                     heroTag: 'myLocationButton',
                     mini: true,
-                    backgroundColor: Colors.white,
-                    onPressed: _onMyLocationButtonPressed,
-                    child: const Icon(Icons.gps_fixed, color: Colors.black),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    onPressed: () async {
+                      await _checkAndRestartLocation();
+                      await _onMyLocationButtonPressed();
+                    },
+                    child: Icon(Icons.gps_fixed, color: Theme.of(context).iconTheme.color),
                   ),
                   const SizedBox(height: 10),
                   FloatingActionButton(
                     heroTag: 'backButton',
-                    backgroundColor: Colors.white,
-                    child: const Icon(Icons.map, color: Colors.black),
+                    backgroundColor: Theme.of(context).colorScheme.background,
+                    child: Icon(Icons.map, color: Theme.of(context).iconTheme.color),
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
                         Navigator.of(context).pop();
@@ -291,10 +436,10 @@ class _MapScreenState extends State<MapScreen> {
             ),
           ),
 
-          Align( // BRUJULA - SE MANTIENE EXACTAMENTE IGUAL, NO NECESITA CAMBIOS
+          Align( // BRUJULA
             alignment: Alignment.bottomRight,
             child: Padding(
-              padding: const EdgeInsets.only(right: 80.0, bottom: 20.0),
+              padding: const EdgeInsets.only(right: 0, bottom: 140.0),
               child: StreamBuilder<MapEvent>(
                 stream: mapController.mapEventStream,
                 builder: (context, snapshot) {
@@ -304,12 +449,12 @@ class _MapScreenState extends State<MapScreen> {
                   return Stack(
                     alignment: Alignment.center,
                     children: [
-                      Image.asset('assets/images/cruceta.png', width: 148),
+                      Image.asset('assets/images/cruceta.png', width: 100),
                       Positioned(
-                        right: 8,
+                        right: 23,
                         child: Transform.rotate(
                           angle: rotationRadians,
-                          child: Image.asset('assets/images/señalador.png', width: 126),
+                          child: Image.asset('assets/images/señalador.png', width: 52.5,),
                         ),
                       ),
                     ],
@@ -338,7 +483,18 @@ class _MapScreenState extends State<MapScreen> {
                     onBuildingSelected: (building) {
                       mapController.move(building.coords, 19);
                       _clearSearchState();
-                      showBuildingInfo(context, building);
+                      if (_currentLocation != null) {
+                        showBuildingInfo(
+                          context,
+                          building,
+                          currentLocation: _currentLocation!,
+                          onRouteCalculated: (route) {
+                            setState(() {
+                              _routeLine = route;
+                            });
+                          },
+                        );
+                      }
                     },
                   ),
                 ],
@@ -349,3 +505,4 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
+

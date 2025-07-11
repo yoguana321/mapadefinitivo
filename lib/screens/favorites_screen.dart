@@ -37,35 +37,58 @@ class _FavoritesScreenState extends State<FavoritesScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Acceso directo
+
     return Scaffold(
       appBar: AppBar(title: const Text('Favoritos')),
       body: favoriteBuildings.isEmpty
-          ? const Center(child: Text('No hay favoritos aún.'))
-      :ListView.builder(
+          ? Center(
+        child: Text(
+          'No hay favoritos aún.',
+          style: theme.textTheme.bodyLarge?.copyWith(
+            color: theme.colorScheme.onBackground,
+          ),
+        ),
+      )
+          : ListView.builder(
         itemCount: favoriteBuildings.length,
         itemBuilder: (context, index) {
           final building = favoriteBuildings[index];
           return ListTile(
-            leading: Icon(building.icon, color: Theme.of(context).primaryColor),
-            title: Text(building.name),
+            leading: Icon(
+              building.icon,
+              color: theme.primaryColor,
+            ),
+            title: Text(
+              building.name,
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onBackground,
+              ),
+            ),
             trailing: IconButton(
               icon: const Icon(Icons.star, color: Colors.amber),
-                onPressed: () async {
-                  final prefs = await SharedPreferences.getInstance();
-                  await prefs.setBool('fav_${building.id}', false);
+              onPressed: () async {
+                final prefs = await SharedPreferences.getInstance();
+                await prefs.setBool('fav_${building.id}', false);
 
-                  setState(() {
-                    favoriteBuildings.removeAt(index);
-                  });
+                setState(() {
+                  favoriteBuildings.removeAt(index);
+                });
 
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('${building.shortName} fue eliminado de favoritos'),
-                      duration: const Duration(seconds: 2),
-                      behavior: SnackBarBehavior.floating,
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(
+                      '${building.shortName} fue eliminado de favoritos',
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onPrimary,
+                      ),
                     ),
-                  );
-                },
+                    backgroundColor: theme.colorScheme.primary,
+                    duration: const Duration(seconds: 2),
+                    behavior: SnackBarBehavior.floating,
+                  ),
+                );
+              },
             ),
             onTap: () {
               Navigator.pop(context, building); // Volver al mapa con el edificio seleccionado

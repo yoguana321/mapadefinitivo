@@ -1,10 +1,11 @@
 // lib/models/building.dart
-import 'package:flutter/material.dart';
-import 'package:latlong2/latlong.dart';
-import 'room.dart'; // Asegúrate de importar Room
-import 'professor.dart'; // Asegúrate de importar Professor si lo usas en searchableContent
+import 'package:flutter/material.dart'; // Para IconData
+import 'package:latlong2/latlong.dart'; // Para LatLng
+import 'room.dart';
 
 class Building {
+  final double latitude;
+  final double longitude;
   final String id;
   final String name;
   final String shortName;
@@ -13,13 +14,14 @@ class Building {
   final LatLng coords;
   final String category;
   final IconData icon;
-  final List<String> imageUrls;
+  final String imageUrl;
   final List<Room>? rooms;
-  final Map<String, String>? hours;
+  final String? hours;
   final String? contactInfo;
   final bool? isAccessible;
   final Color? markerColor;
   final String _searchableContent;
+
 
   Building({
     required this.id,
@@ -30,7 +32,9 @@ class Building {
     required this.coords,
     required this.category,
     required this.icon,
-    required this.imageUrls,
+    required this.imageUrl,
+    required this.latitude,
+    required this.longitude,
     this.rooms,
     this.hours,
     this.contactInfo,
@@ -52,7 +56,7 @@ class Building {
       String info,
       String? history,
       List<Room>? rooms,
-      Map<String, String>? hours,
+      String? hours,
       String? contactInfo,
       ) {
     String content = '';
@@ -62,10 +66,7 @@ class Building {
       content += '${history.toLowerCase()} ';
     }
     if (hours != null) {
-      hours.forEach((day, time) {
-        content += '${day.toLowerCase()} ';
-        content += '${time.toLowerCase()} ';
-      });
+      content += '${hours.toLowerCase()} ';
     }
     if (contactInfo != null) {
       content += '${contactInfo.toLowerCase()} ';
@@ -73,21 +74,16 @@ class Building {
 
     if (rooms != null) {
       for (var room in rooms) {
-        content += '${room.id.toLowerCase()} ';
-        content += '${room.number.toLowerCase()} ';
+        content += '${room.id.toLowerCase()} '; // Usar room.id
+        content += '${room.number.toLowerCase()} '; // Usar room.number
         if (room.name != null) {
           content += '${room.name!.toLowerCase()} ';
         }
         content += '${room.floor.toLowerCase()} ';
-        if (room.description != null) { // Añadir descripción al contenido de búsqueda
-          content += '${room.description!.toLowerCase()} ';
-        }
-        if (room.capacity != null) { // Añadir capacidad
-          content += '${room.capacity!.toLowerCase()} ';
-        }
-        if (room.equipment != null) { // Añadir equipamiento
-          content += '${room.equipment!.toLowerCase()} ';
-        }
+        // No hay RoomType en tu modelo Room, por lo tanto no se añade a searchableContent aquí.
+        // if (room.type != null) { // Si Room.type existiera y fuera parte de la búsqueda
+        //   content += '${room.type!.toString().split('.').last.toLowerCase()} ';
+        // }
         if (room.professors != null) {
           for (var professor in room.professors!) {
             content += '${professor.name.toLowerCase()} ';
@@ -98,53 +94,15 @@ class Building {
             if (professor.roomNumber != null) {
               content += '${professor.roomNumber!.toLowerCase()} ';
             }
-            if (professor.role != null) { // Añadir rol del profesor
-              content += '${professor.role!.toLowerCase()} ';
-            }
+            // No hay officeHours en tu _generateSearchableContent original.
+            // Si quieres añadirlo:
+            // if (professor.officeHours != null) {
+            //   content += '${professor.officeHours!.toLowerCase()} ';
+            // }
           }
         }
       }
     }
     return content;
   }
-
-  // --- Método copyWith para Building ---
-  Building copyWith({
-    String? id,
-    String? name,
-    String? shortName,
-    String? info,
-    String? history,
-    LatLng? coords,
-    String? category,
-    IconData? icon,
-    List<String>? imageUrls,
-    List<Room>? rooms,
-    Map<String, String>? hours,
-    String? contactInfo,
-    bool? isAccessible,
-    Color? markerColor,
-  }) {
-    return Building(
-      id: id ?? this.id,
-      name: name ?? this.name,
-      shortName: shortName ?? this.shortName,
-      info: info ?? this.info,
-      history: history ?? this.history,
-      coords: coords ?? this.coords,
-      category: category ?? this.category,
-      icon: icon ?? this.icon,
-      imageUrls: imageUrls ?? this.imageUrls,
-      rooms: rooms ?? this.rooms,
-      hours: hours ?? this.hours,
-      contactInfo: contactInfo ?? this.contactInfo,
-      isAccessible: isAccessible ?? this.isAccessible,
-      markerColor: markerColor ?? this.markerColor,
-    );
-  }
-
-// Puedes añadir un factory constructor fromMap si lo necesitas para Building
-// factory Building.fromMap(Map<String, dynamic> map) {
-//   // Implementa la lógica para parsear el mapa y crear un Building
-// }
 }

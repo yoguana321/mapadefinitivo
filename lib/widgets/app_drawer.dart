@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'dart:ui'; // Importante para BackdropFilter
-
-// CONTROL DE LA BARRA LATERAL (SLIDEBARD)
+import 'package:provider/provider.dart';
+import 'theme_provider.dart'; // Asegúrate de que la ruta sea correcta
 
 // Definición de callbacks para la navegación y el filtro
 typedef FilterCategorySelected = void Function(String category);
@@ -9,7 +9,6 @@ typedef NavigateToMap = void Function();
 typedef NavigateToHome = void Function();
 typedef NavigateToFavorites = void Function();
 
-// Widget para el cajón de navegación (Drawer) de la aplicación
 class AppDrawer extends StatelessWidget {
   final String? selectedCategory;
   final List<String> categories;
@@ -35,7 +34,7 @@ class AppDrawer extends StatelessWidget {
         padding: EdgeInsets.zero,
         children: <Widget>[
           Container(
-            height: 180, // Ajusta la altura que desees
+            height: 180,
             decoration: const BoxDecoration(
               image: DecorationImage(
                 image: AssetImage('assets/images/CAMPUS_SLIDEBAR.jpg'),
@@ -44,7 +43,6 @@ class AppDrawer extends StatelessWidget {
             ),
             child: Stack(
               children: [
-                // Puedes agregar más elementos encima si deseas
                 Align(
                   alignment: Alignment.bottomLeft,
                   child: Padding(
@@ -52,10 +50,9 @@ class AppDrawer extends StatelessWidget {
                     child: ClipRRect(
                       borderRadius: BorderRadius.circular(8.0),
                       child: BackdropFilter(
-
                         filter: ImageFilter.blur(sigmaX: 5.0, sigmaY: 5.0),
                         child: Container(
-                          color: Colors.black.withAlpha(77), // 77/255 ≈ 0.3
+                          color: Colors.black.withAlpha(77),
                           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                           child: const Text(
                             'M.I UNAL',
@@ -132,6 +129,19 @@ class AppDrawer extends StatelessWidget {
             );
           }),
           const Divider(),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, _) {
+              final isDark = themeProvider.themeMode == ThemeMode.dark;
+              return SwitchListTile(
+                secondary: const Icon(Icons.brightness_6),
+                title: const Text('Modo oscuro'),
+                value: isDark,
+                onChanged: (value) {
+                  themeProvider.toggleTheme(value);
+                },
+              );
+            },
+          ),
           ListTile(
             leading: const Icon(Icons.info),
             title: const Text('Acerca de'),
