@@ -1,2 +1,2 @@
 # APP MiUnal - GPS
-Proyecto Taller de ingeniería electrónica - UNAL - 2025-1
+Proyecto de Introduccion y Taller de ingeniería electrónica - UNAL - 2025-1
