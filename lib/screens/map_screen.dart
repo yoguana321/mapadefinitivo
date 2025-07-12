@@ -5,9 +5,9 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:mapadefinitivo/screens/favorites_screen.dart';
 import '../models/building.dart';
-import '../data/building_data.dart';
+import '../data/building_data.dart'; // Asegúrate de que allBuildings sea mutable si planeas editarlo
 import '../widgets/app_drawer.dart';
-import '../services/building_info_sheet.dart';
+import '../services/building_info_sheet.dart'; // Importa la función showBuildingInfo
 import '../widgets/map_markers.dart';
 import '../widgets/search_and_filter_bar.dart';
 import '../widgets/search_results_list.dart';
@@ -40,25 +40,40 @@ class _MapScreenState extends State<MapScreen> {
   // NUEVO: Variable para almacenar la rotación actual del mapa
   double _currentMapRotation = 0.0;
   StreamSubscription<Position>? _positionStream;
+
   @override
   void initState() {
     super.initState();
     _listenToLocation();
-    if (widget.initialBuilding != null && _currentLocation != null) {
-      WidgetsBinding.instance.addPostFrameCallback((_) {
+    // Manejo del edificio inicial
+    if (widget.initialBuilding != null) {
+      WidgetsBinding.instance.addPostFrameCallback((_) async {
+        // Asegurarse de que _currentLocation esté disponible antes de mostrar info
+        // o pasar un valor por defecto si la ubicación no es crítica para la primera carga.
+        // Aquí esperamos un poco o pasamos (0,0) si no es crucial para la primera vista.
+        if (_currentLocation == null) {
+          // Opcional: Esperar un segundo o dos a que se obtenga la ubicación inicial
+          // o pedirla una vez si es indispensable para la hoja.
+          // Por simplicidad, si es nulo, pasaremos (0,0) al callback de ruta.
+        }
         mapController.move(widget.initialBuilding!.coords, 18);
         showBuildingInfo(
           context,
           widget.initialBuilding!,
-          currentLocation: _currentLocation!,
+          currentLocation: _currentLocation ?? LatLng(0, 0), // Proporciona un valor por defecto si es nulo
           onRouteCalculated: (route) {
             setState(() {
               _routeLine = route;
             });
           },
+          // !!! AÑADIDO: onBuildingUpdated callback !!!
+          onBuildingUpdated: (updatedBuilding) {
+            _updateBuildingInLists(updatedBuilding);
+          },
         );
       });
     }
+
     mapController.mapEventStream.listen((event) {
       if (event is MapEventMove || event is MapEventMoveEnd || event is MapEventRotate || event is MapEventRotateEnd) {
         setState(() {
@@ -75,6 +90,7 @@ class _MapScreenState extends State<MapScreen> {
       }
     });
   }
+
   Future<void> _checkAndRestartLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
     if (!serviceEnabled) return;
@@ -92,40 +108,79 @@ class _MapScreenState extends State<MapScreen> {
     _positionStream?.cancel(); // Cancela el anterior si existía
     _listenToLocation();
   }
+
   void _handleRouteUpdate(List<LatLng> route) {
     setState(() {
       _routeLine = route;
     });
   }
+
   void _listenToLocation() async {
     bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) return;
+    if (!serviceEnabled) {
+      // Manejar el caso de que el servicio de ubicación no esté habilitado
+      return;
+    }
 
     LocationPermission permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) return;
+      if (permission == LocationPermission.denied) {
+        // Permiso denegado
+        return;
+      }
     }
-    if (permission == LocationPermission.deniedForever) return;
+    if (permission == LocationPermission.deniedForever) {
+      // Permiso denegado permanentemente
+      return;
+    }
 
     _positionStream = Geolocator.getPositionStream(
       locationSettings: const LocationSettings(
         accuracy: LocationAccuracy.high,
-        distanceFilter: 5,
+        distanceFilter: 5, // Actualizar cada 5 metros
       ),
     ).listen((Position position) {
       setState(() {
         _currentLocation = LatLng(position.latitude, position.longitude);
       });
+    }, onError: (error) {
+      // Manejar errores del stream de ubicación
+      debugPrint('Error en el stream de ubicación: $error');
     });
   }
+
+  // Nuevo método para actualizar un edificio en las listas locales
+  void _updateBuildingInLists(Building updatedBuilding) {
+    setState(() {
+      // Actualiza en _filteredBuildings
+      final indexFiltered = _filteredBuildings.indexWhere((b) => b.id == updatedBuilding.id);
+      if (indexFiltered != -1) {
+        _filteredBuildings[indexFiltered] = updatedBuilding;
+      }
+
+      // Si allBuildings es mutable y quieres que los cambios persistan en los datos de la app
+      // (lo cual es complejo si los datos están hardcodeados o no tienen un sistema de persistencia)
+      // tendrías que encontrar y reemplazar el edificio en allBuildings también.
+      // Por ejemplo:
+      final indexAll = allBuildings.indexWhere((b) => b.id == updatedBuilding.id);
+      if (indexAll != -1) {
+        // Esto solo funcionaría si allBuildings NO fuera final y fuera un List<Building> mutable.
+        // Si allBuildings es 'final', necesitarías un mecanismo para recargar todos los edificios
+        // o pasar un callback al padre de MapScreen para que actualice la fuente de datos.
+        // Para esta configuración, solo actualizar _filteredBuildings es suficiente para la UI.
+        // (allBuildings as List<Building>)[indexAll] = updatedBuilding; // Esto causaría un error si allBuildings es final
+      }
+      _updateFilteredBuildings(); // Re-filtra por si la edición afecta la búsqueda/categoría
+    });
+  }
+
   @override
   void dispose() {
     _positionStream?.cancel();
     mapController.dispose();
     _searchController.dispose();
     _searchFocusNode.dispose();
-    _positionStream?.cancel();
     super.dispose();
   }
 
@@ -183,8 +238,13 @@ class _MapScreenState extends State<MapScreen> {
           _routeLine = route;
         });
       },
+      // !!! AÑADIDO: onBuildingUpdated callback !!!
+      onBuildingUpdated: (updatedBuilding) {
+        _updateBuildingInLists(updatedBuilding);
+      },
     );
   }
+
   void _navigateToHome() {
     Navigator.pushReplacementNamed(context, '/');
   }
@@ -195,6 +255,7 @@ class _MapScreenState extends State<MapScreen> {
     mapController.move(LatLng(4.637040, -74.082983), 18);
     _scaffoldKey.currentState?.closeDrawer();
   }
+
   void _navigateToFavorites() async {
     final selectedBuilding = await Navigator.push<Building?>(
       context,
@@ -216,6 +277,10 @@ class _MapScreenState extends State<MapScreen> {
               _routeLine = route;
             });
           },
+          // !!! AÑADIDO: onBuildingUpdated callback !!!
+          onBuildingUpdated: (updatedBuilding) {
+            _updateBuildingInLists(updatedBuilding);
+          },
         );
       }
     }
@@ -223,6 +288,8 @@ class _MapScreenState extends State<MapScreen> {
 
   void _clearRouteAndInstructions() {
     setState(() {
+      _routeLine.clear(); // Limpiar la ruta visual
+      // Si tienes un widget o variable para instrucciones, también limpíalo aquí
     });
   }
 
@@ -249,26 +316,42 @@ class _MapScreenState extends State<MapScreen> {
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
       if (permission == LocationPermission.denied) {
+        // Usuario denegó permisos
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('Permisos de ubicación denegados.')),
+        );
         return;
       }
     }
 
     if (permission == LocationPermission.deniedForever) {
+      // Permisos denegados permanentemente
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Permisos de ubicación denegados permanentemente. Habilítalos desde la configuración de la aplicación.')),
+      );
       return;
     }
 
-    final position = await Geolocator.getCurrentPosition();
-    final currentLatLng = LatLng(position.latitude, position.longitude);
-    setState(() {
-      _currentCenter = currentLatLng;
-    });
+    try {
+      final position = await Geolocator.getCurrentPosition(desiredAccuracy: LocationAccuracy.high);
+      final currentLatLng = LatLng(position.latitude, position.longitude);
+      setState(() {
+        _currentCenter = currentLatLng;
+        _currentLocation = currentLatLng; // También actualiza _currentLocation
+      });
 
-    mapController.move(currentLatLng, 18);
-    mapController.rotate(0);
+      mapController.move(currentLatLng, 18);
+      mapController.rotate(0); // Restablece la rotación a 0 al centrar en la ubicación actual
 
-    _clearRouteAndInstructions();
-    if (Navigator.of(context).canPop()) {
-      Navigator.of(context).pop();
+      _clearRouteAndInstructions();
+      // Si hay un BottomSheet abierto, ciérralo
+      if (Navigator.of(context).canPop()) {
+        Navigator.of(context).pop();
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('No se pudo obtener la ubicación: $e')),
+      );
     }
   }
 
@@ -308,6 +391,8 @@ class _MapScreenState extends State<MapScreen> {
               ),
               onTap: (tapPosition, latLng) {
                 _clearRouteAndInstructions();
+                // Si hay un BottomSheet abierto, ciérralo.
+                // Es importante comprobar si se puede hacer pop, para no generar errores.
                 if (Navigator.of(context).canPop()) {
                   Navigator.of(context).pop();
                 }
@@ -323,15 +408,15 @@ class _MapScreenState extends State<MapScreen> {
                 userAgentPackageName: 'com.example.mapadefinitivo',
               ),
               if (_routeLine.isNotEmpty)
-              PolylineLayer(
-                polylines: [
-                  Polyline(
-                    points: _routeLine,
-                    color: Colors.blue,
-                    strokeWidth: 4.0,
-                  ),
-                ],
-              ),
+                PolylineLayer(
+                  polylines: [
+                    Polyline(
+                      points: _routeLine,
+                      color: Colors.blue,
+                      strokeWidth: 4.0,
+                    ),
+                  ],
+                ),
               MarkerLayer(
                 markers: [
                   if (_currentLocation != null)
@@ -371,7 +456,7 @@ class _MapScreenState extends State<MapScreen> {
                   setState(() {
                     _routeLine.clear();
                   });
-                  if (Navigator.of(context).canPop()) {
+                  if (Navigator.of(context).canPop()) { // Cierra el bottom sheet si está abierto
                     Navigator.of(context).pop();
                   }
                 },
@@ -412,8 +497,8 @@ class _MapScreenState extends State<MapScreen> {
                     mini: true,
                     backgroundColor: Theme.of(context).colorScheme.background,
                     onPressed: () async {
-                      await _checkAndRestartLocation();
-                      await _onMyLocationButtonPressed();
+                      await _checkAndRestartLocation(); // Asegura permisos y reinicia stream si es necesario
+                      await _onMyLocationButtonPressed(); // Mueve el mapa y gestiona UI
                     },
                     child: Icon(Icons.gps_fixed, color: Theme.of(context).iconTheme.color),
                   ),
@@ -424,9 +509,9 @@ class _MapScreenState extends State<MapScreen> {
                     child: Icon(Icons.map, color: Theme.of(context).iconTheme.color),
                     onPressed: () {
                       if (Navigator.of(context).canPop()) {
-                        Navigator.of(context).pop();
+                        Navigator.of(context).pop(); // Intenta cerrar el bottom sheet si está abierto
                       } else {
-                        Navigator.pushReplacementNamed(context, '/');
+                        Navigator.pushReplacementNamed(context, '/'); // Navega a la ruta inicial si no hay sheets
                       }
                       _clearRouteAndInstructions();
                     },
@@ -443,7 +528,7 @@ class _MapScreenState extends State<MapScreen> {
               child: StreamBuilder<MapEvent>(
                 stream: mapController.mapEventStream,
                 builder: (context, snapshot) {
-                  final rotationDegrees = snapshot.data?.camera.rotation ?? 0.0;
+                  final rotationDegrees = mapController.camera.rotation; // Obtener la rotación directamente
                   final rotationRadians = -rotationDegrees * (3.1415926535 / 180); // convertir a radianes y negar
 
                   return Stack(
@@ -493,6 +578,10 @@ class _MapScreenState extends State<MapScreen> {
                               _routeLine = route;
                             });
                           },
+                          // !!! AÑADIDO: onBuildingUpdated callback !!!
+                          onBuildingUpdated: (updatedBuilding) {
+                            _updateBuildingInLists(updatedBuilding);
+                          },
                         );
                       }
                     },
@@ -505,4 +594,3 @@ class _MapScreenState extends State<MapScreen> {
     );
   }
 }
-

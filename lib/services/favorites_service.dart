@@ -1,64 +1,39 @@
-// lib/screens/favorites_screen.dart
-import 'package:flutter/material.dart';
+// lib/services/favorites_service.dart
 import 'package:shared_preferences/shared_preferences.dart';
-import '../data/building_data.dart'; // Ajusta esto según donde esté tu lista de edificios
-import '../models/building.dart';
+import 'package:flutter/foundation.dart'; // Para debugPrint
 
-class FavoritesScreen extends StatefulWidget {
-  const FavoritesScreen({super.key});
+class FavoritesService {
+  static final FavoritesService _instance = FavoritesService._internal();
 
-  @override
-  State<FavoritesScreen> createState() => _FavoritesScreenState();
-}
-
-class _FavoritesScreenState extends State<FavoritesScreen> {
-  List<Building> _favoriteBuildings = [];
-
-  @override
-  void initState() {
-    super.initState();
-    _loadFavorites();
+  factory FavoritesService() {
+    return _instance;
   }
 
-  Future<void> _loadFavorites() async {
+  FavoritesService._internal();
+
+  static const String _favoritesKey = 'favorite_building_ids'; // Usaremos esta clave
+
+  Future<List<String>> getFavorites() async {
     final prefs = await SharedPreferences.getInstance();
-    final favs = <Building>[];
-
-    for (var building in allBuildings) {
-      final isFav = prefs.getBool('fav_${building.id}') ?? false;
-      if (isFav) {
-        favs.add(building);
-      }
-    }
-
-    setState(() {
-      _favoriteBuildings = favs;
-    });
+    return prefs.getStringList(_favoritesKey) ?? [];
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Mis Favoritos')),
-      body: _favoriteBuildings.isEmpty
-          ? const Center(child: Text('No tienes favoritos aún.'))
-          : ListView.builder(
-        itemCount: _favoriteBuildings.length,
-        itemBuilder: (context, index) {
-          final building = _favoriteBuildings[index];
-          return ListTile(
-            leading: Icon(building.icon, color: building.markerColor),
-            title: Text(building.name),
-            subtitle: Text(building.category),
-            trailing: const Icon(Icons.arrow_forward_ios, size: 16),
-            onTap: () {
-              // Navega al edificio en el mapa o muestra info
-              Navigator.pop(context); // Vuelve al mapa
-              // Implementa navegación si lo deseas
-            },
-          );
-        },
-      ),
-    );
+  Future<bool> isBuildingFavorite(String buildingId) async {
+    final favorites = await getFavorites();
+    return favorites.contains(buildingId);
+  }
+
+  Future<void> toggleFavorite(String buildingId) async {
+    final prefs = await SharedPreferences.getInstance();
+    List<String> favorites = prefs.getStringList(_favoritesKey) ?? [];
+
+    if (favorites.contains(buildingId)) {
+      favorites.remove(buildingId);
+      debugPrint('Removed $buildingId from favorites.');
+    } else {
+      favorites.add(buildingId);
+      debugPrint('Added $buildingId to favorites.');
+    }
+    await prefs.setStringList(_favoritesKey, favorites);
   }
 }

@@ -1,20 +1,18 @@
+// lib/widgets/edit_room_sheet.dart
 import 'package:flutter/material.dart';
 import '../models/room.dart';
-import '../models/professor.dart'; // Asegúrate de importar el modelo Professor
+import '../models/professor.dart'; // Asegúrate de importar Professor
 
-// Este widget será un BottomSheet que permitirá editar la información de un Room.
 class EditRoomSheet extends StatefulWidget {
-  final Room room; // El Room que se va a editar
-  final Color accentColor; // Para mantener la coherencia de estilo
-
-  // Callback para devolver la Room modificada
-  final Function(Room) onRoomUpdated;
+  final Room room; // Cambiado de 'initialRoom' a 'room'
+  final Color accentColor;
+  final ValueChanged<Room> onRoomUpdated; // Cambiado de 'onRoomSaved' a 'onRoomUpdated'
 
   const EditRoomSheet({
     Key? key,
     required this.room,
     required this.accentColor,
-    required this.onRoomUpdated,
+    required this.onRoomUpdated, // Usar onRoomUpdated
   }) : super(key: key);
 
   @override
@@ -22,199 +20,52 @@ class EditRoomSheet extends StatefulWidget {
 }
 
 class _EditRoomSheetState extends State<EditRoomSheet> {
-  // Controladores para los campos de texto
+  final _formKey = GlobalKey<FormState>();
   late TextEditingController _nameController;
   late TextEditingController _numberController;
+  late TextEditingController _floorController;
   late TextEditingController _descriptionController;
-
-  // NUEVOS CONTROLADORES para Room: contactInfo, capacity, equipment
-  late TextEditingController _contactInfoController;
   late TextEditingController _capacityController;
   late TextEditingController _equipmentController;
-
-
-  // Lista temporal para los profesores para poder añadir/quitar/editar
-  late List<Professor> _professors;
+  late TextEditingController _contactController;
+  late TextEditingController _scheduleController; // Para manejar el horario como un string
+  late bool _isServiceRoom;
+  late bool _isAccessible;
 
   @override
   void initState() {
     super.initState();
-    // Inicializar controladores con los valores actuales de la sala
     _nameController = TextEditingController(text: widget.room.name);
     _numberController = TextEditingController(text: widget.room.number);
+    _floorController = TextEditingController(text: widget.room.floor);
     _descriptionController = TextEditingController(text: widget.room.description);
-
-    // Inicializar los nuevos controladores
-    _contactInfoController = TextEditingController(text: widget.room.contactInfo);
-    _capacityController = TextEditingController(text: widget.room.capacity);
-    _equipmentController = TextEditingController(text: widget.room.equipment);
-
-    _professors = List.from(widget.room.professors ?? []); // Hacer una copia para poder modificarla
+    _capacityController = TextEditingController(text: widget.room.capacity?.toString());
+    _equipmentController = TextEditingController(text: widget.room.equipment?.join(', '));
+    _contactController = TextEditingController(text: widget.room.contact);
+    // Para el horario, podrías mostrar un resumen o "Editar"
+    _scheduleController = TextEditingController(text: _formatScheduleMap(widget.room.scheduleMap));
+    _isServiceRoom = widget.room.isServiceRoom ?? false;
+    _isAccessible = widget.room.isAccessible ?? false;
   }
 
   @override
   void dispose() {
-    // Liberar los controladores cuando el widget ya no se use
     _nameController.dispose();
     _numberController.dispose();
+    _floorController.dispose();
     _descriptionController.dispose();
-
-    // Disponer los nuevos controladores
-    _contactInfoController.dispose();
     _capacityController.dispose();
     _equipmentController.dispose();
-
+    _contactController.dispose();
+    _scheduleController.dispose();
     super.dispose();
   }
 
-  // Función para mostrar un diálogo de edición para un profesor
-  Future<void> _editProfessor(Professor professor, int index) async {
-    final TextEditingController professorNameController = TextEditingController(text: professor.name);
-    final TextEditingController professorDepartmentController = TextEditingController(text: professor.department); // NEW
-    final TextEditingController professorRoomController = TextEditingController(text: professor.roomNumber);
-    final TextEditingController professorEmailController = TextEditingController(text: professor.email); // NEW
-    final TextEditingController professorOfficeHoursController = TextEditingController(text: professor.officeHours); // NEW
-    final TextEditingController professorRoleController = TextEditingController(text: professor.role); // NEW
-
-    final updated = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Editar Profesor'),
-          content: SingleChildScrollView( // Added SingleChildScrollView
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: professorNameController,
-                  decoration: const InputDecoration(labelText: 'Nombre del Profesor'),
-                ),
-                TextField(
-                  controller: professorDepartmentController,
-                  decoration: const InputDecoration(labelText: 'Departamento'),
-                ),
-                TextField(
-                  controller: professorRoomController,
-                  decoration: const InputDecoration(labelText: 'Aula/Oficina Asignada (Opcional)'),
-                ),
-                TextField(
-                  controller: professorEmailController,
-                  decoration: const InputDecoration(labelText: 'Email (Opcional)'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                TextField(
-                  controller: professorOfficeHoursController,
-                  decoration: const InputDecoration(labelText: 'Horas de Oficina (Opcional)'),
-                ),
-                TextField(
-                  controller: professorRoleController,
-                  decoration: const InputDecoration(labelText: 'Rol (Opcional)'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false), // Cancelar
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true), // Guardar
-              child: const Text('Guardar'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (updated == true) {
-      setState(() {
-        _professors[index] = Professor(
-          id: professor.id,
-          name: professorNameController.text,
-          department: professorDepartmentController.text, // REQUIRED
-          roomNumber: professorRoomController.text.isNotEmpty ? professorRoomController.text : null,
-          email: professorEmailController.text.isNotEmpty ? professorEmailController.text : null,
-          officeHours: professorOfficeHoursController.text.isNotEmpty ? professorOfficeHoursController.text : null,
-          role: professorRoleController.text.isNotEmpty ? professorRoleController.text : null,
-        );
-      });
-    }
-  }
-
-  // Función para añadir un nuevo profesor
-  Future<void> _addProfessor() async {
-    final TextEditingController newProfessorNameController = TextEditingController();
-    final TextEditingController newProfessorDepartmentController = TextEditingController(); // NEW
-    final TextEditingController newProfessorRoomController = TextEditingController();
-    final TextEditingController newProfessorEmailController = TextEditingController(); // NEW
-    final TextEditingController newProfessorOfficeHoursController = TextEditingController(); // NEW
-    final TextEditingController newProfessorRoleController = TextEditingController(); // NEW
-
-    final added = await showDialog<bool>(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: const Text('Añadir Nuevo Profesor'),
-          content: SingleChildScrollView( // Added SingleChildScrollView
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                TextField(
-                  controller: newProfessorNameController,
-                  decoration: const InputDecoration(labelText: 'Nombre del Profesor'),
-                ),
-                TextField(
-                  controller: newProfessorDepartmentController,
-                  decoration: const InputDecoration(labelText: 'Departamento'),
-                ),
-                TextField(
-                  controller: newProfessorRoomController,
-                  decoration: const InputDecoration(labelText: 'Aula/Oficina Asignada (Opcional)'),
-                ),
-                TextField(
-                  controller: newProfessorEmailController,
-                  decoration: const InputDecoration(labelText: 'Email (Opcional)'),
-                  keyboardType: TextInputType.emailAddress,
-                ),
-                TextField(
-                  controller: newProfessorOfficeHoursController,
-                  decoration: const InputDecoration(labelText: 'Horas de Oficina (Opcional)'),
-                ),
-                TextField(
-                  controller: newProfessorRoleController,
-                  decoration: const InputDecoration(labelText: 'Rol (Opcional)'),
-                ),
-              ],
-            ),
-          ),
-          actions: [
-            TextButton(
-              onPressed: () => Navigator.pop(context, false),
-              child: const Text('Cancelar'),
-            ),
-            TextButton(
-              onPressed: () => Navigator.pop(context, true),
-              child: const Text('Añadir'),
-            ),
-          ],
-        );
-      },
-    );
-
-    if (added == true && newProfessorNameController.text.isNotEmpty) {
-      setState(() {
-        _professors.add(Professor(
-          id: UniqueKey().toString(),
-          name: newProfessorNameController.text,
-          department: newProfessorDepartmentController.text, // REQUIRED
-          roomNumber: newProfessorRoomController.text.isNotEmpty ? newProfessorRoomController.text : null,
-          email: newProfessorEmailController.text.isNotEmpty ? newProfessorEmailController.text : null,
-          officeHours: newProfessorOfficeHoursController.text.isNotEmpty ? newProfessorOfficeHoursController.text : null,
-          role: newProfessorRoleController.text.isNotEmpty ? newProfessorRoleController.text : null,
-        ));
-      });
-    }
+  // Helper para mostrar el horario de forma legible (simple)
+  String _formatScheduleMap(Map<String, String>? scheduleMap) {
+    if (scheduleMap == null || scheduleMap.isEmpty) return 'No definido';
+    // Ejemplo: "Lunes-Viernes: 08:00-17:00"
+    return scheduleMap.entries.map((e) => '${e.key}: ${e.value}').join(', ');
   }
 
   @override
@@ -224,7 +75,7 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
       minChildSize: 0.5,
       maxChildSize: 0.95,
       expand: false,
-      builder: (BuildContext context, ScrollController scrollController) {
+      builder: (_, scrollController) {
         return Container(
           decoration: BoxDecoration(
             color: Theme.of(context).canvasColor,
@@ -232,7 +83,6 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
           ),
           child: Column(
             children: [
-              // Drag handle
               Container(
                 height: 16,
                 width: double.infinity,
@@ -247,13 +97,13 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                 ),
               ),
               Padding(
-                padding: const EdgeInsets.all(16.0),
+                padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 8.0),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Text(
-                      'Editar ${widget.room.number} - ${widget.room.name ?? ''}',
-                      style: Theme.of(context).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
+                      'Editar Sala',
+                      style: Theme.of(context).textTheme.headlineSmall?.copyWith(fontWeight: FontWeight.bold),
                     ),
                     IconButton(
                       icon: const Icon(Icons.close),
@@ -263,157 +113,163 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                 ),
               ),
               Expanded(
-                child: ListView(
+                child: SingleChildScrollView(
                   controller: scrollController,
                   padding: const EdgeInsets.all(16.0),
-                  children: [
-                    TextField(
-                      controller: _nameController,
-                      decoration: const InputDecoration(
-                        labelText: 'Nombre del Salón (Opcional)',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _numberController,
-                      decoration: const InputDecoration(
-                        labelText: 'Número del Salón',
-                        border: OutlineInputBorder(),
-                      ),
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _descriptionController,
-                      decoration: const InputDecoration(
-                        labelText: 'Descripción (Opcional)',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 3,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _contactInfoController,
-                      decoration: const InputDecoration(
-                        labelText: 'Información de Contacto (Salón) (Opcional)',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.phone, // O email, dependiendo del uso principal
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _capacityController,
-                      decoration: const InputDecoration(
-                        labelText: 'Capacidad (Opcional)',
-                        border: OutlineInputBorder(),
-                      ),
-                      keyboardType: TextInputType.number,
-                    ),
-                    const SizedBox(height: 16),
-                    TextField(
-                      controller: _equipmentController,
-                      decoration: const InputDecoration(
-                        labelText: 'Equipamiento (Opcional)',
-                        border: OutlineInputBorder(),
-                      ),
-                      maxLines: 2,
-                      keyboardType: TextInputType.multiline,
-                    ),
-                    const SizedBox(height: 24),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  child: Form(
+                    key: _formKey,
+                    child: Column(
                       children: [
-                        Text(
-                          'Profesores Asignados',
-                          style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
+                        TextFormField(
+                          controller: _nameController,
+                          decoration: InputDecoration(
+                            labelText: 'Nombre de la Sala (opcional)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
                         ),
-                        IconButton(
-                          icon: Icon(Icons.add_circle, color: widget.accentColor),
-                          onPressed: _addProfessor,
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _numberController,
+                          decoration: InputDecoration(
+                            labelText: 'Número de Sala',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingrese el número de sala.';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _floorController,
+                          decoration: InputDecoration(
+                            labelText: 'Piso',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          validator: (value) {
+                            if (value == null || value.isEmpty) {
+                              return 'Por favor, ingrese el piso.';
+                            }
+                            return null;
+                          },
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _descriptionController,
+                          decoration: InputDecoration(
+                            labelText: 'Descripción (opcional)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          maxLines: 3,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _capacityController,
+                          decoration: InputDecoration(
+                            labelText: 'Capacidad (opcional)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          keyboardType: TextInputType.number,
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _equipmentController,
+                          decoration: InputDecoration(
+                            labelText: 'Equipamiento (separado por comas, opcional)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        TextFormField(
+                          controller: _contactController,
+                          decoration: InputDecoration(
+                            labelText: 'Contacto (opcional)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                        ),
+                        const SizedBox(height: 16),
+                        // Horario: Podrías hacer un selector de horario más complejo aquí.
+                        // Por ahora, solo es de lectura simple o un campo de texto para edición manual.
+                        TextFormField(
+                          controller: _scheduleController,
+                          decoration: InputDecoration(
+                            labelText: 'Horario (ej. Lunes: 08:00-17:00, Sábado: Cerrado)',
+                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+                          ),
+                          maxLines: 2,
+                        ),
+                        const SizedBox(height: 16),
+                        SwitchListTile(
+                          title: const Text('Es Sala de Servicio'),
+                          value: _isServiceRoom,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _isServiceRoom = value;
+                            });
+                          },
+                          activeColor: widget.accentColor,
+                        ),
+                        SwitchListTile(
+                          title: const Text('Es Accesible'),
+                          value: _isAccessible,
+                          onChanged: (bool value) {
+                            setState(() {
+                              _isAccessible = value;
+                            });
+                          },
+                          activeColor: widget.accentColor,
+                        ),
+                        const SizedBox(height: 24),
+                        ElevatedButton(
+                          onPressed: () {
+                            if (_formKey.currentState!.validate()) {
+                              // Crear el mapa de horario desde el string (simplificado)
+                              final Map<String, String>? updatedScheduleMap = _scheduleController.text.isNotEmpty
+                                  ? Map.fromEntries(_scheduleController.text.split(',').map((s) {
+                                final parts = s.split(':');
+                                if (parts.length == 2) {
+                                  return MapEntry(parts[0].trim(), parts[1].trim());
+                                }
+                                return null;
+                              }).whereType<MapEntry<String, String>>())
+                                  : null;
+
+                              final updatedRoom = widget.room.copyWith(
+                                name: _nameController.text.isEmpty ? null : _nameController.text,
+                                number: _numberController.text,
+                                floor: _floorController.text,
+                                description: _descriptionController.text.isEmpty ? null : _descriptionController.text,
+                                capacity: int.tryParse(_capacityController.text),
+                                equipment: _equipmentController.text.isEmpty
+                                    ? null
+                                    : _equipmentController.text.split(',').map((e) => e.trim()).toList(),
+                                contact: _contactController.text.isEmpty ? null : _contactController.text,
+                                isServiceRoom: _isServiceRoom,
+                                isAccessible: _isAccessible,
+                                scheduleMap: updatedScheduleMap,
+                                // Profesores no se editan desde aquí en este ejemplo, se mantienen los originales
+                                professors: widget.room.professors,
+                              );
+                              widget.onRoomUpdated(updatedRoom); // Llama al callback con la sala actualizada
+                            }
+                          },
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: widget.accentColor,
+                            padding: const EdgeInsets.symmetric(horizontal: 40, vertical: 15),
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(10),
+                            ),
+                          ),
+                          child: const Text(
+                            'Guardar Cambios',
+                            style: TextStyle(fontSize: 18, color: Colors.white),
+                          ),
                         ),
                       ],
                     ),
-                    const SizedBox(height: 8),
-                    if (_professors.isEmpty)
-                      Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8.0),
-                        child: Text(
-                          'No hay profesores asignados. Usa el botón "+" para añadir.',
-                          style: Theme.of(context).textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic, color: Colors.grey),
-                        ),
-                      ),
-                    ..._professors.asMap().entries.map((entry) {
-                      int idx = entry.key;
-                      Professor professor = entry.value;
-                      return Card(
-                        margin: const EdgeInsets.symmetric(vertical: 4),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        elevation: 0.5,
-                        child: ListTile(
-                          contentPadding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                          leading: CircleAvatar(
-                            backgroundColor: widget.accentColor.withAlpha((255 * 0.7).round()),
-                            child: Text(professor.name.isNotEmpty ? professor.name[0].toUpperCase() : '?', style: const TextStyle(color: Colors.white)),
-                          ),
-                          title: Text(professor.name, style: const TextStyle(fontSize: 14, fontWeight: FontWeight.w600)),
-                          // Mostrar departamento y aula/oficina
-                          subtitle: Text(
-                            '${professor.department}${professor.roomNumber != null && professor.roomNumber!.isNotEmpty ? ' - Aula: ${professor.roomNumber}' : ''}',
-                            style: TextStyle(fontSize: 12, color: Colors.grey[700]),
-                          ),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              IconButton(
-                                icon: const Icon(Icons.edit, size: 20),
-                                onPressed: () => _editProfessor(professor, idx),
-                              ),
-                              IconButton(
-                                icon: const Icon(Icons.delete, color: Colors.red, size: 20),
-                                onPressed: () {
-                                  setState(() {
-                                    _professors.removeAt(idx);
-                                  });
-                                },
-                              ),
-                            ],
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                    const SizedBox(height: 24),
-                    ElevatedButton(
-                      onPressed: () {
-                        // Crear una nueva instancia de Room con los datos modificados
-                        final updatedRoom = widget.room.copyWith(
-                          name: _nameController.text.isNotEmpty ? _nameController.text : null,
-                          number: _numberController.text,
-                          description: _descriptionController.text.isNotEmpty ? _descriptionController.text : null,
-                          professors: _professors,
-                          contactInfo: _contactInfoController.text.isNotEmpty ? _contactInfoController.text : null,
-                          capacity: _capacityController.text.isNotEmpty ? _capacityController.text : null,
-                          equipment: _equipmentController.text.isNotEmpty ? _equipmentController.text : null,
-                          // Asegúrate de copiar otras propiedades que no se editan aquí
-                          isServiceRoom: widget.room.isServiceRoom,
-                          floor: widget.room.floor,
-                          // No actualizamos directamente buildingId aquí, asumiendo que la sala sigue en el mismo edificio
-                        );
-                        // Llamar al callback para pasar la Room actualizada
-                        widget.onRoomUpdated(updatedRoom);
-                        Navigator.pop(context); // Cerrar el BottomSheet
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: widget.accentColor,
-                        padding: const EdgeInsets.symmetric(vertical: 12),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-                      ),
-                      child: const Text(
-                        'Guardar Cambios',
-                        style: TextStyle(fontSize: 18, color: Colors.white),
-                      ),
-                    ),
-                  ],
+                  ),
                 ),
               ),
             ],

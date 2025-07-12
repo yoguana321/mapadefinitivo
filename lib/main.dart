@@ -1,10 +1,15 @@
+// main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:intl/date_symbol_data_local.dart'; // ¡Nueva importación!
 import 'screens/splash_screen.dart';
 import 'screens/map_screen.dart';
 import 'widgets/theme_provider.dart';
 
-void main() {
+void main() async { // ¡Ahora es async!
+  WidgetsFlutterBinding.ensureInitialized(); // Asegura que Flutter esté inicializado
+  await initializeDateFormatting('es', null); // Inicializa los datos de localización para español
+
   runApp(
     ChangeNotifierProvider(
       create: (_) => ThemeProvider(),
@@ -41,7 +46,7 @@ class MyApp extends StatelessWidget {
           foregroundColor: Colors.white,
         ),
       ),
-      themeMode: themeProvider.themeMode, // ← ¡AQUÍ se controla!
+      themeMode: themeProvider.themeMode,
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),

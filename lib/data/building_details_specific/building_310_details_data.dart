@@ -215,7 +215,7 @@ final List<Room> rooms310 = [
       name: 'Oficina de Programa ORI (Internacionalización)',
       floor: 'Piso 1',
       isServiceRoom: false,
-      contactInfo: 'Correo: ori_fcebog@unal.edu.co' // Citado de la imagen proporcionada
+      contact: 'Correo: ori_fcebog@unal.edu.co' // Citado de la imagen proporcionada
   ),
   Room(
     id: '310-1-area-curricular-economia-desarrollo',

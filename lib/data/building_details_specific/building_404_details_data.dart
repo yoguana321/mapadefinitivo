@@ -29,7 +29,7 @@ final List<Room> rooms404 = [
     name: 'Restaurante y Cafetería Yu Takeuchi',
     floor: 'Piso 1',
     isServiceRoom: true,
-      contactInfo: 'Celular 3205497639, Correo: unalcopias@gmail.com',
+      contact: 'Celular 3205497639, Correo: unalcopias@gmail.com',
   ),
   Room(
     id: '404-1-lab-practica-experimental-fisica-101',
@@ -163,7 +163,7 @@ final List<Room> rooms404 = [
     name: 'Tienda "Unalcopias"',
     floor: 'Piso 1',
     isServiceRoom: true,
-    contactInfo: 'Celular 3205497639, Correo: unalcopias@gmail.com',
+    contact: 'Celular 3205497639, Correo: unalcopias@gmail.com',
   ),
   Room(
     id: '404-1-direccion-curricular-maestria-ensenanza-ciencias-exactas-naturales-125',

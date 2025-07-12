@@ -154,7 +154,16 @@ final Building auditorioLeonDeGreiff = Building(
   info: infoAuditorioLeon,
   history: historyAuditorioLeon,
   contactInfo: contactInfoAuditorioLeon,
-  hours: hoursAuditorioLeon,
+  hours: {
+    'Lunes': '06:00 - 22:00',
+    'Martes': '06:00 - 22:00',
+    'Miércoles': '06:00 - 22:00',
+    'Jueves': '06:00 - 22:00',
+    'Viernes': '06:00 - 22:00',
+    'Sábado': '07:00 - 18:00',
+    'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
+    'Feriado': 'Cerrado', // Considera un manejo para días feriados
+  },
   rooms: roomsAuditorioLeon,
   markerColor: Colors.red.shade700,
   isAccessible: true,
