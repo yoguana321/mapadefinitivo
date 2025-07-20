@@ -5,18 +5,14 @@ import '../models/room.dart';
 import '../widgets/common_info_widgets.dart'; // Para InfoRow
 import '../widgets/edit_room_sheet.dart'; // Para el sheet de edición
 // Importa las utilidades de horario
-import '../utils/schedule_utils.dart'; // <--- IMPORTANTE
-
-// Las enums y clases OpeningStatus/OpeningInfo ya no necesitan ser declaradas aquí
-// si las importas desde 'package:your_app_name/utils/schedule_utils.dart'.
-
+import '../utils/schedule_utils.dart';
 
 class BuildingRoomsTab extends StatefulWidget {
-  final Building building; // Mantenemos Building por si necesitas info global
-  final List<Room> rooms; // Ahora recibe directamente las habitaciones filtradas
+  final Building building;
+  final List<Room> rooms;
   final ScrollController scrollController;
   final Color accentColor;
-  final ValueChanged<Room> onRoomUpdated; // Callback para cuando una habitación es actualizada
+  final ValueChanged<Room> onRoomUpdated;
 
   const BuildingRoomsTab({
     Key? key,
@@ -32,9 +28,6 @@ class BuildingRoomsTab extends StatefulWidget {
 }
 
 class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
-  // Las funciones _parseTime, _getDayName, _formatMinutes, _getOpeningStatus
-  // YA NO NECESITAN ESTAR AQUÍ. SE IMPORTAN DE schedule_utils.dart
-
   @override
   Widget build(BuildContext context) {
     if (widget.rooms.isEmpty) {
@@ -57,8 +50,6 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
       itemCount: widget.rooms.length,
       itemBuilder: (context, index) {
         final room = widget.rooms[index];
-        // Usa la función global getOpeningStatus
-        final openingInfo = getOpeningStatus(room.scheduleMap);
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -74,7 +65,7 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                   children: [
                     Expanded(
                       child: Text(
-                        room.name ?? room.number, // Usa el nombre si existe, sino el número
+                        room.name ?? room.number,
                         style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
                       ),
                     ),
@@ -85,11 +76,11 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                           context: context,
                           isScrollControlled: true,
                           builder: (context) => EditRoomSheet(
-                            room: room, // <--- AHORA SÍ ES 'room'
+                            room: room,
                             accentColor: widget.accentColor,
-                            onRoomUpdated: (updatedRoom) { // <--- AHORA SÍ ES 'onRoomUpdated'
-                              widget.onRoomUpdated(updatedRoom); // Llama al callback para notificar al padre
-                              Navigator.pop(context); // Cierra el sheet de edición
+                            onRoomUpdated: (updatedRoom) {
+                              widget.onRoomUpdated(updatedRoom);
+                              Navigator.pop(context);
                             },
                           ),
                         );
@@ -125,13 +116,7 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                     value: room.contact!,
                     color: widget.accentColor,
                   ),
-                // Horario de la sala
-                InfoRow(
-                  icon: openingInfo.status == OpeningStatus.open ? Icons.lock_open : Icons.lock_outline,
-                  label: 'Horario',
-                  value: '${openingInfo.message}' + (openingInfo.closingTime != null && openingInfo.closingTime != '24 horas' ? ' (cierra a las ${openingInfo.closingTime})' : ''),
-                  color: openingInfo.color,
-                ),
+                // LÍNEA ELIMINADA: Ya no se muestra el horario de la sala
                 if (room.isAccessible == true)
                   InfoRow(
                     icon: Icons.accessible,

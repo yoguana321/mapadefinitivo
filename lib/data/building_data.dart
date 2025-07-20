@@ -18,8 +18,124 @@ import '../data/building_details_specific/building_404_details_data.dart';
 import '../data/building_details_specific/building_407_details_data.dart';
 import '../data/building_details_specific/building_310_details_data.dart';
 import '../data/building_details_specific/building_412_details_data.dart';
+import '../data/building_details_specific/building_103_details_data.dart';
+import '../data/building_details_specific/building_214_details_data.dart';
+import '../data/building_details_specific/building_228_details_data.dart';
+import '../data/building_details_specific/building_409_details_data.dart';
+import '../data/building_details_specific/building_564_details_data.dart';
+import '../data/building_details_specific/building_451_details_data.dart';
+import '../data/building_details_specific/building_205_details_data.dart';
 // --- Definición de Edificios ---
-
+final Building building205 = Building(
+  id: '205',
+  name: 'Edificio Fals Borda',
+  latitude: 4.634449,
+  longitude: -74.083858,
+  shortName: '205-Fals Borda',
+  category: 'Facultad',
+  coords: LatLng(4.634449, -74.083858),
+  icon: Icons.school_outlined, // Un icono que represente la facultad
+  imageUrls: [
+    'assets/buildings/205/image1.jpg',
+    'assets/buildings/205/image2.jpg', // Placeholder para una segunda imagen
+  ],
+  info: info205, // Usando 'info' como en tu modelo
+  history: history205,
+  contactInfo: contactInfo205, // Usando 'contactInfo' como en tu modelo
+  hours: hours205,
+  rooms: rooms205,
+  specialServices: specialServices205,
+  markerColor: Colors.blueGrey.shade700,
+  isAccessible: true,
+);
+final Building building103 = Building(
+  id: '103',
+  name: 'Edificio Central - Polideportivo',
+  latitude: 4.634535,
+  longitude: -74.082750,
+  shortName: '103-Polideportivo',
+  category: 'Bienestar y Deportes',
+  coords: LatLng(4.634535, -74.082750),
+  icon: Icons.sports_gymnastics_outlined, // Un icono que represente el polideportivo
+  imageUrls: [
+    'assets/buildings/103/image1.jpg',
+    'assets/buildings/103/image2.jpg',
+  ],
+  info: info103, // Usando 'info' como en tu modelo
+  history: history103,
+  contactInfo: contactInfo103, // Usando 'contactInfo' como en tu modelo
+  hours: hours103,
+  rooms: rooms103,
+  specialServices: specialServices103,
+  markerColor: Colors.blue.shade700,
+  isAccessible: true,
+);
+final Building building451 = Building(
+  id: '451',
+  name: 'Facultad de Química',
+  latitude: 4.637513,
+  longitude: -74.083951,
+  shortName: '451-Química',
+  category: 'Facultad',
+  coords: LatLng(4.637513, -74.083951),
+  icon: Icons.school_outlined, // Un icono que represente la facultad
+  imageUrls: [
+    'assets/images/451.jpg',
+    'assets/images/451_2.jpg', // Placeholder para una segunda imagen
+  ],
+  info: info451, // Usando 'info' como en tu modelo
+  history: history451,
+  contactInfo: contactInfo451, // Usando 'contactInfo' como en tu modelo
+  hours: hours451,
+  rooms: rooms451,
+  specialServices: specialServices451,
+  markerColor: Colors.teal.shade700,
+  isAccessible: true,
+);
+final Building building228 = Building(
+  id: '228',
+  name: 'Facultad de Enfermería',
+  latitude: 4.635318,
+  longitude: -74.084828,
+  shortName: '228-Enfermería',
+  category: 'Facultad de Enfermería',
+  coords: LatLng(4.635318, -74.084828),
+  icon: Icons.local_hospital_outlined,
+  imageUrls: [
+    'assets/buildings/228/image1.jpg',
+  ],
+  info: info228,
+  history: history228,
+  contactInfo: contactInfo228,
+  hours: hours228,
+  rooms: rooms228,
+  specialServices: specialServices228, // Propiedad agregada
+  markerColor: Colors.red.shade700,
+  isAccessible: true,
+  totalFloors: 5,
+);
+final Building building214 = Building(
+  id: '214',
+  name: 'Ingeniería Agrícola / Lingüística',
+  latitude: 4.633583, // Coordenadas de ejemplo
+  longitude: -74.084016, // Coordenadas de ejemplo
+  shortName: 'Edificio 214',
+  category: 'Facultad de Ingeniería',
+  coords: LatLng(4.633583, -74.084016),
+  icon: Icons.agriculture_outlined, // Un icono que represente el edificio
+  imageUrls: [
+    'assets/buildings/214/image1.jpg',
+    'assets/buildings/214/image2.jpg', // Placeholder para una segunda imagen
+  ],
+  info: info214, // Usando 'info' como en tu modelo
+  history: history214,
+  contactInfo: contactInfo214, // Usando 'contactInfo' como en tu modelo
+  hours: hours214,
+  rooms: rooms214,
+  specialServices: [], // No se especificaron, así que la lista está vacía
+  markerColor: Colors.green.shade700,
+  isAccessible: true,
+);
 final Building building401 = Building(
   id: '401',
   name: '401 - EL VIEJO - JULIO GARAVITO',
@@ -61,7 +177,28 @@ final Building building404 = Building(
   markerColor: Colors.amber.shade700, // Un color distintivo para el 404
   isAccessible: true, // Asumiendo que es accesible
 );
-
+final Building building409 = Building(
+  id: '409',
+  name: 'Laboratorio de Hidráulica',
+  latitude: 4.638593,
+  longitude: -74.081800,
+  shortName: 'Edificio 409',
+  category: 'Laboratorio',
+  coords: LatLng(4.638593, -74.081800),
+  icon: Icons.science_outlined,
+  imageUrls: [
+    'assets/buildings/409/image1.jpg',
+    'assets/buildings/409/image2.jpg', // Placeholder para una segunda imagen
+  ],
+  info: info409,
+  history: history409,
+  contactInfo: contactInfo409,
+  hours: hours409,
+  rooms: rooms409,
+  specialServices: specialServices409,
+  markerColor: Colors.cyan.shade700,
+  isAccessible: true,
+);
 final Building building453 = Building(
   id: '453',
   name: '453 - GUILLERMINA URIBE BONE',
@@ -244,19 +381,44 @@ final Building building310 = Building(
   markerColor: Colors.teal.shade700, // Un color distintivo para el 310
   isAccessible: true, // Asumiendo que es accesible
 );
+final Building building564 = Building(
+  id: '564',
+  name: '564 - EDIFICIO AULAS DE CIENCIAS', // Nombre en mayúsculas y con número
+  latitude: 4.636417, // Coordenadas de ejemplo
+  longitude: -74.086880, // Coordenadas de ejemplo
+  shortName: '564 - Gloria Amparo Galeano Garcés', // Nombre corto siguiendo el nuevo formato
+  category: 'Facultad', // Categoría simplificada
+  coords: LatLng(4.636417, -74.086880),
+  icon: Icons.science_outlined,
+  imageUrls: ['assets/images/564.jpg'], // Ruta de imagen y formato ajustados
+  info: info564,
+  history: history564,
+  contactInfo: contactInfo564,
+  hours: hours564,
+  rooms: rooms564,
+  markerColor: Colors.purple.shade700,
+  isAccessible: true,
+);
 // Lista total de todos los edificios para usar en el mapa
 final List<Building> allBuildings = [
+  building205,
+  building103,
+  building451,
+  building228,
+  building214,
   building401,
+  building404,
+  building409,
   building453,
-  auditorioLeonDeGreiff,
-  bibliotecaCentral,
   buildingCYT,
   building411,
+  building412,
+  auditorioLeonDeGreiff,
   building406,
-  building404,
   building407,
+  bibliotecaCentral,
   building310,
-  building412,// Añade aquí cualquier otro edificio que tengas (ej. buildingComedor, etc.)
+  building564,
 ];
 
 // Listado de categorías (esto es independiente de los edificios individuales, es global)
