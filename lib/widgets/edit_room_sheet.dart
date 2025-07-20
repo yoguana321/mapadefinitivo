@@ -1,18 +1,18 @@
 // lib/widgets/edit_room_sheet.dart
 import 'package:flutter/material.dart';
 import '../models/room.dart';
-import '../models/professor.dart'; // Asegúrate de importar Professor
+import '../models/professor.dart';
 
 class EditRoomSheet extends StatefulWidget {
-  final Room room; // Cambiado de 'initialRoom' a 'room'
+  final Room room;
   final Color accentColor;
-  final ValueChanged<Room> onRoomUpdated; // Cambiado de 'onRoomSaved' a 'onRoomUpdated'
+  final ValueChanged<Room> onRoomUpdated;
 
   const EditRoomSheet({
     Key? key,
     required this.room,
     required this.accentColor,
-    required this.onRoomUpdated, // Usar onRoomUpdated
+    required this.onRoomUpdated,
   }) : super(key: key);
 
   @override
@@ -28,7 +28,6 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
   late TextEditingController _capacityController;
   late TextEditingController _equipmentController;
   late TextEditingController _contactController;
-  late TextEditingController _scheduleController; // Para manejar el horario como un string
   late bool _isServiceRoom;
   late bool _isAccessible;
 
@@ -42,8 +41,6 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
     _capacityController = TextEditingController(text: widget.room.capacity?.toString());
     _equipmentController = TextEditingController(text: widget.room.equipment?.join(', '));
     _contactController = TextEditingController(text: widget.room.contact);
-    // Para el horario, podrías mostrar un resumen o "Editar"
-    _scheduleController = TextEditingController(text: _formatScheduleMap(widget.room.scheduleMap));
     _isServiceRoom = widget.room.isServiceRoom ?? false;
     _isAccessible = widget.room.isAccessible ?? false;
   }
@@ -57,15 +54,7 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
     _capacityController.dispose();
     _equipmentController.dispose();
     _contactController.dispose();
-    _scheduleController.dispose();
     super.dispose();
-  }
-
-  // Helper para mostrar el horario de forma legible (simple)
-  String _formatScheduleMap(Map<String, String>? scheduleMap) {
-    if (scheduleMap == null || scheduleMap.isEmpty) return 'No definido';
-    // Ejemplo: "Lunes-Viernes: 08:00-17:00"
-    return scheduleMap.entries.map((e) => '${e.key}: ${e.value}').join(', ');
   }
 
   @override
@@ -122,6 +111,7 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                       children: [
                         TextFormField(
                           controller: _nameController,
+                          readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Nombre de la Sala (opcional)',
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -130,6 +120,7 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _numberController,
+                          readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Número de Sala',
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -144,6 +135,7 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                         const SizedBox(height: 16),
                         TextFormField(
                           controller: _floorController,
+                          readOnly: true,
                           decoration: InputDecoration(
                             labelText: 'Piso',
                             border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
@@ -190,17 +182,6 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                           ),
                         ),
                         const SizedBox(height: 16),
-                        // Horario: Podrías hacer un selector de horario más complejo aquí.
-                        // Por ahora, solo es de lectura simple o un campo de texto para edición manual.
-                        TextFormField(
-                          controller: _scheduleController,
-                          decoration: InputDecoration(
-                            labelText: 'Horario (ej. Lunes: 08:00-17:00, Sábado: Cerrado)',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-                          ),
-                          maxLines: 2,
-                        ),
-                        const SizedBox(height: 16),
                         SwitchListTile(
                           title: const Text('Es Sala de Servicio'),
                           value: _isServiceRoom,
@@ -225,17 +206,6 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                         ElevatedButton(
                           onPressed: () {
                             if (_formKey.currentState!.validate()) {
-                              // Crear el mapa de horario desde el string (simplificado)
-                              final Map<String, String>? updatedScheduleMap = _scheduleController.text.isNotEmpty
-                                  ? Map.fromEntries(_scheduleController.text.split(',').map((s) {
-                                final parts = s.split(':');
-                                if (parts.length == 2) {
-                                  return MapEntry(parts[0].trim(), parts[1].trim());
-                                }
-                                return null;
-                              }).whereType<MapEntry<String, String>>())
-                                  : null;
-
                               final updatedRoom = widget.room.copyWith(
                                 name: _nameController.text.isEmpty ? null : _nameController.text,
                                 number: _numberController.text,
@@ -248,11 +218,10 @@ class _EditRoomSheetState extends State<EditRoomSheet> {
                                 contact: _contactController.text.isEmpty ? null : _contactController.text,
                                 isServiceRoom: _isServiceRoom,
                                 isAccessible: _isAccessible,
-                                scheduleMap: updatedScheduleMap,
-                                // Profesores no se editan desde aquí en este ejemplo, se mantienen los originales
+                                // La propiedad scheduleMap se omite intencionalmente
                                 professors: widget.room.professors,
                               );
-                              widget.onRoomUpdated(updatedRoom); // Llama al callback con la sala actualizada
+                              widget.onRoomUpdated(updatedRoom);
                             }
                           },
                           style: ElevatedButton.styleFrom(

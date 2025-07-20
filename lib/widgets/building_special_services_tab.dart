@@ -1,22 +1,22 @@
 // lib/widgets/building_special_services_tab.dart
 import 'package:flutter/material.dart';
 import '../models/building.dart';
-import '../models/room.dart'; // Asegúrate de importar el modelo Room
-import '../widgets/edit_room_sheet.dart'; // Importa EditRoomSheet
-import '../utils/schedule_utils.dart'; // Importa si los servicios especiales tienen horarios
+import '../models/room.dart';
+import '../widgets/edit_room_sheet.dart';
+import '../utils/schedule_utils.dart';
 
 class BuildingSpecialServicesTab extends StatefulWidget {
   final Building building;
   final ScrollController scrollController;
   final Color accentColor;
-  final Function(Room) onRoomUpdated; // <-- Correcto: Ahora es Function(Room)
+  final Function(Room) onRoomUpdated;
 
   const BuildingSpecialServicesTab({
     Key? key,
     required this.building,
     required this.scrollController,
     required this.accentColor,
-    required this.onRoomUpdated, // Asegúrate de que esté aquí
+    required this.onRoomUpdated,
   }) : super(key: key);
 
   @override
@@ -27,8 +27,8 @@ class _BuildingSpecialServicesTabState extends State<BuildingSpecialServicesTab>
   @override
   Widget build(BuildContext context) {
     if (widget.building.specialServices == null || widget.building.specialServices!.isEmpty) {
-      return ListView( // Usamos ListView para que el scrollController sea usado incluso si está vacío
-        controller: widget.scrollController, // <-- Correcto: Usando el ScrollController
+      return ListView(
+        controller: widget.scrollController,
         padding: const EdgeInsets.all(16.0),
         children: [
           Center(
@@ -43,13 +43,11 @@ class _BuildingSpecialServicesTabState extends State<BuildingSpecialServicesTab>
     }
 
     return ListView.builder(
-      controller: widget.scrollController, // <-- Correcto: Usando el ScrollController
+      controller: widget.scrollController,
       padding: const EdgeInsets.all(16.0),
       itemCount: widget.building.specialServices!.length,
       itemBuilder: (context, index) {
         final service = widget.building.specialServices![index];
-
-        final openingInfo = getOpeningStatus(service.scheduleMap);
 
         List<Widget> subtitleWidgets = [];
         if (service.number != null && service.number!.isNotEmpty) {
@@ -71,30 +69,32 @@ class _BuildingSpecialServicesTabState extends State<BuildingSpecialServicesTab>
           subtitleWidgets.add(Text('Responsables: ${service.professors!.map((p) => p.name).join(', ')}'));
         }
 
-        // Mostrar el estado de apertura
-        subtitleWidgets.add(
-          Padding(
-            padding: const EdgeInsets.only(top: 4.0),
-            child: Row(
-              children: [
-                Icon(
-                  openingInfo.status == OpeningStatus.open ? Icons.lock_open : Icons.lock_outline,
-                  color: openingInfo.color,
-                  size: 16,
-                ),
-                const SizedBox(width: 4),
-                Text(
-                  openingInfo.message,
-                  style: TextStyle(
-                    color: openingInfo.color,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
+        // LÍNEA ELIMINADA: Ya no se muestra el estado de apertura
+        // Comentado para referencia:
+        // final openingInfo = getOpeningStatus(service.scheduleMap);
+        // subtitleWidgets.add(
+        //   Padding(
+        //     padding: const EdgeInsets.only(top: 4.0),
+        //     child: Row(
+        //       children: [
+        //         Icon(
+        //           openingInfo.status == OpeningStatus.open ? Icons.lock_open : Icons.lock_outline,
+        //           color: openingInfo.color,
+        //           size: 16,
+        //         ),
+        //         const SizedBox(width: 4),
+        //         Text(
+        //           openingInfo.message,
+        //           style: TextStyle(
+        //             color: openingInfo.color,
+        //             fontWeight: FontWeight.bold,
+        //             fontSize: 12,
+        //           ),
+        //         ),
+        //       ],
+        //     ),
+        //   ),
+        // );
 
         return Card(
           margin: const EdgeInsets.symmetric(vertical: 8.0),
@@ -120,11 +120,11 @@ class _BuildingSpecialServicesTabState extends State<BuildingSpecialServicesTab>
                   isScrollControlled: true,
                   backgroundColor: Colors.transparent,
                   builder: (context) => EditRoomSheet(
-                    room: service, // Se asume que 'service' es un objeto Room o compatible
+                    room: service,
                     accentColor: widget.accentColor,
                     onRoomUpdated: (updatedRoom) {
-                      widget.onRoomUpdated(updatedRoom); // Llama al callback del padre con la Room actualizada
-                      Navigator.pop(context); // <-- ¡Mueve el pop aquí!
+                      widget.onRoomUpdated(updatedRoom);
+                      Navigator.pop(context);
                     },
                   ),
                 );

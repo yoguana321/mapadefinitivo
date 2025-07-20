@@ -186,18 +186,16 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     return DraggableScrollableSheet(
       initialChildSize: 0.6,
       minChildSize: 0.2,
-      maxChildSize: 1.0, // Ya lo habíamos cambiado a 1.0 para solucionar el overflow de las pestañas
+      maxChildSize: 1.0,
       expand: false,
       builder: (BuildContext context, ScrollController scrollController) {
         return ClipRRect(
           borderRadius: const BorderRadius.vertical(top: Radius.circular(16.0)),
           child: Container(
             color: theme.cardColor,
-            // ANTES: Column directamente aquí
-            // AHORA: Usamos un ListView para que TODO el contenido de la hoja sea scrollable
-            child: ListView( // <-- CAMBIO CLAVE AQUÍ: ListView para hacer todo scrollable
-              controller: scrollController, // <-- Pasar el scrollController a este ListView
-              padding: EdgeInsets.zero, // Importante para evitar paddings extras
+            child: ListView(
+              controller: scrollController,
+              padding: EdgeInsets.zero,
               children: [
                 BuildingTitleBar(
                   buildingName: _currentBuilding.name,
@@ -207,11 +205,23 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   padding: const EdgeInsets.symmetric(horizontal: 16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min, // Mantener min para que el Column no tome espacio extra innecesario
+                    mainAxisSize: MainAxisSize.min,
                     children: [
-                      Text(
-                        _currentBuilding.category,
-                        style: theme.textTheme.titleSmall?.copyWith(color: theme.colorScheme.onSurface.withOpacity(0.7)),
+                      // VISTA MEJORADA PARA LA CATEGORÍA
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+                        decoration: BoxDecoration(
+                          color: accentColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(20.0),
+                          border: Border.all(color: accentColor.withOpacity(0.5)),
+                        ),
+                        child: Text(
+                          _currentBuilding.category,
+                          style: theme.textTheme.labelMedium?.copyWith(
+                            color: accentColor,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
                       ),
                       const SizedBox(height: 12),
                       Row(
@@ -285,13 +295,9 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                   },
                 ),
                 const SizedBox(height: 16),
-                // Este Expanded ya está dentro del ListView, por lo que su altura se ajustará.
-                // No necesitas mainAxisSize.min en el Column de aquí, ya que Expanded
-                // le dará la altura que necesite dentro del ListView.
                 DefaultTabController(
                   length: tabLabels.length,
                   child: Column(
-                    // mainAxisSize: MainAxisSize.min, // <-- SE ELIMINA ESTE mainAxisSize.min
                     children: [
                       TabBar(
                         isScrollable: true,
@@ -300,41 +306,22 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                         indicatorColor: accentColor,
                         tabs: tabLabels,
                       ),
-                      // El Expanded aquí es crucial para que el TabBarView ocupe el resto del espacio vertical
-                      // disponible y permita el scroll interno de las pestañas.
                       SizedBox(
-                        height: 400, // <--- AJUSTA ESTA ALTURA. Esto es crucial para el scroll de las pestañas
-                        // O bien, si quieres que ocupe todo el espacio restante del padre (ListView),
-                        // entonces esta parte de la arquitectura del TabBarView debe ser revisada.
-                        // Generalmente, TabBarView se usa dentro de un Expanded en un Column,
-                        // o con una altura fija si el padre es scrollable.
-                        // Si el ListView padre es scrollable, y quieres que el TabBarView
-                        // sea scrollable, tienes que darle una altura CONCRETA o un Flexible/Expanded
-                        // dentro de un Column con altura definida.
-                        // La forma más sencilla para que el TabBarView funcione dentro de un ListView
-                        // es darle una altura fija, o si el padre es un Column/Expanded,
-                        // que el TabBarView esté dentro de un Expanded.
-                        // Dado que el Column ahora está dentro de un ListView,
-                        // este Column ya no está en un Expanded directamente del DraggableScrollableSheet.
-                        // Por lo tanto, el Expanded del TabBarView no tiene un padre con altura infinita.
-                        // Necesitamos darle una altura fija para que el TabBarView sepa cuánto espacio tomar.
-                        // O si no, tendríamos que reestructurar el Column padre.
-                        // Para resolver el 10px overflow en las tabs, una altura fija para el SizedBox que envuelve
-                        // el TabBarView es a menudo la solución más simple dentro de un ListView.
+                        height: 400,
                         child: TabBarView(
                           children: tabLabels.map((tab) {
                             final String tabText = tab.text ?? '';
                             if (tabText == 'Información') {
                               return BuildingGeneralInfoTab(
                                 building: _currentBuilding,
-                                scrollController: scrollController, // ScrollController del padre
+                                scrollController: scrollController,
                                 accentColor: accentColor,
                               );
                             } else if (tabText == 'Servicios Especiales') {
                               final List<Room> serviceRooms = _currentBuilding.specialServices ?? [];
                               return BuildingSpecialServicesTab(
                                 building: _currentBuilding,
-                                scrollController: scrollController, // ScrollController del padre
+                                scrollController: scrollController,
                                 accentColor: accentColor,
                                 onRoomUpdated: _updateSpecialServiceInBuilding,
                               );
@@ -347,7 +334,7 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                               return BuildingRoomsTab(
                                 building: _currentBuilding,
                                 rooms: floorRooms,
-                                scrollController: scrollController, // ScrollController del padre
+                                scrollController: scrollController,
                                 accentColor: accentColor,
                                 onRoomUpdated: _updateRoomInBuilding,
                               );
