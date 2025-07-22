@@ -1,22 +1,29 @@
+// lib/widgets/search_and_filter_bar.dart
+
 import 'package:flutter/material.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class SearchAndFilterBar extends StatefulWidget {
   final TextEditingController searchController;
   final FocusNode searchFocusNode;
-  final List<String> categories;
+  final List<String> categories; // mainBuildingCategories
+  final Map<String, List<String>> facultySubcategories; // NUEVO: Para las subcategorías de Facultades
   final String? selectedCategory;
+  final String? selectedSubCategory; // NUEVO: Para la subcategoría seleccionada
+  // MODIFICADO: El callback de selección de categoría ahora puede recibir una subcategoría.
+  final Function(String category, {String? subCategory}) onCategorySelected;
   final ValueChanged<String> onSearchChanged;
-  final ValueChanged<String> onCategorySelected;
 
   const SearchAndFilterBar({
     super.key,
     required this.searchController,
     required this.searchFocusNode,
     required this.categories,
+    required this.facultySubcategories, // AÑADIDO
     required this.selectedCategory,
+    required this.selectedSubCategory, // AÑADIDO
     required this.onSearchChanged,
-    required this.onCategorySelected,
+    required this.onCategorySelected, // MODIFICADO
   });
 
   @override
@@ -41,16 +48,23 @@ class _SearchAndFilterBarState extends State<SearchAndFilterBar> {
       );
       if (available) {
         setState(() => _isListening = true);
+        widget.searchFocusNode.requestFocus(); // Enfocar el campo de búsqueda al empezar a escuchar
         _speech.listen(
           onResult: (result) {
             final recognized = result.recognizedWords;
             widget.searchController.text = recognized;
             widget.onSearchChanged(recognized);
+            if (result.finalResult) {
+              setState(() => _isListening = false); // Detener la escucha al obtener el resultado final
+            }
           },
+          listenFor: const Duration(seconds: 5), // Opcional: tiempo máximo de escucha
+          pauseFor: const Duration(seconds: 3), // Opcional: tiempo de pausa antes de finalizar
+          partialResults: true, // Para obtener resultados intermedios
         );
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(content: Text('No se pudo acceder al micrófono')),
+          const SnackBar(content: Text('No se pudo acceder al micrófono. Verifica los permisos.')),
         );
       }
     } else {
@@ -60,7 +74,19 @@ class _SearchAndFilterBarState extends State<SearchAndFilterBar> {
   }
 
   @override
+  void dispose() {
+    _speech.stop(); // Asegúrate de detener la escucha al desechar el widget
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
+    // Obtener las subcategorías de facultades si la categoría actual es "Facultades"
+    List<String> currentSubcategories = [];
+    if (widget.selectedCategory == 'Facultades' && widget.facultySubcategories.containsKey('Facultades')) {
+      currentSubcategories = widget.facultySubcategories['Facultades']!;
+    }
+
     return Column(
       children: [
         Material(
@@ -102,6 +128,7 @@ class _SearchAndFilterBarState extends State<SearchAndFilterBar> {
           ),
         ),
         const SizedBox(height: 8),
+        // PRIMERA FILA DE CATEGORÍAS PRINCIPALES
         SizedBox(
           height: 40,
           child: ListView.builder(
@@ -116,17 +143,52 @@ class _SearchAndFilterBarState extends State<SearchAndFilterBar> {
                   selected: widget.selectedCategory == category,
                   onSelected: (bool selected) {
                     if (selected) {
-                      widget.onCategorySelected(category);
+                      // Al seleccionar una categoría principal:
+                      // Si es "Facultades", pasa null para la subcategoría (MapScreen lo manejará a "Todos")
+                      // Si no es "Facultades", pasa null para la subcategoría (no aplica)
+                      widget.onCategorySelected(category, subCategory: category == 'Facultades' ? null : null);
                     }
                   },
-                  selectedColor:
-                  Theme.of(context).primaryColor.withOpacity(0.2),
+                  selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
                   elevation: 2,
                 ),
               );
             },
           ),
         ),
+        // SEGUNDA FILA DE SUBCATEGORÍAS (SOLO SI "FACULTADES" ESTÁ SELECCIONADO)
+        if (widget.selectedCategory == 'Facultades' && currentSubcategories.isNotEmpty)
+          Column(
+            children: [
+              const SizedBox(height: 8), // Espacio entre las filas de chips
+              SizedBox(
+                height: 40,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: currentSubcategories.length,
+                  itemBuilder: (context, index) {
+                    final subCategory = currentSubcategories[index];
+                    return Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: ChoiceChip(
+                        label: Text(subCategory),
+                        selected: widget.selectedSubCategory == subCategory,
+                        onSelected: (bool selected) {
+                          if (selected) {
+                            // Al seleccionar una subcategoría, pasa la categoría principal actual
+                            // y la nueva subcategoría.
+                            widget.onCategorySelected(widget.selectedCategory!, subCategory: subCategory);
+                          }
+                        },
+                        selectedColor: Theme.of(context).primaryColor.withOpacity(0.2),
+                        elevation: 2,
+                      ),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
       ],
     );
   }

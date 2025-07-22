@@ -10,23 +10,23 @@ class Building {
   final String id;
   final String name;
   final String shortName;
-  final String info; // MANTENIDO como 'info'
+  final String info;
   final String? history;
   final LatLng coords;
-  final String category;
+  final String category; // MANTENIDO como String simple para la categoría principal
   final IconData icon;
   final List<String> imageUrls;
   final List<Room>? rooms;
-  final List<Room>? specialServices; // <--- AÑADIDO: Servicios especiales
+  final List<Room>? specialServices;
   final Map<String, String>? hours;
   final String? contactInfo;
   final bool? isAccessible;
   final Color? markerColor;
   final String? address;
   final String? website;
-  final int? totalFloors; // <<--- MANTENIDO
-  final Color? accentColor; // <<--- MANTENIDO
-  final List<String> tags; // <--- ¡AÑADIDO! La nueva propiedad para etiquetas
+  final int? totalFloors;
+  final Color? accentColor;
+  final List<String> tags; // ¡CLAVE! Propiedad para etiquetas múltiples
 
   final String _searchableContent;
 
@@ -34,63 +34,62 @@ class Building {
     required this.id,
     required this.name,
     required this.shortName,
-    required this.info, // MANTENIDO
+    required this.info,
     this.history,
     required this.coords,
-    required this.category,
+    required this.category, // MANTENIDO como String
     required this.icon,
     required this.imageUrls,
     required this.latitude,
     required this.longitude,
     this.rooms,
-    this.specialServices, // <--- AÑADIDO AL CONSTRUCTOR
+    this.specialServices,
     this.hours,
     this.contactInfo,
     this.isAccessible,
     this.markerColor,
     this.address,
     this.website,
-    this.totalFloors, // <<--- MANTENIDO
-    this.accentColor, // <<--- MANTENIDO
-    this.tags = const [], // <--- ¡AÑADIDO Y CON VALOR POR DEFECTO!
+    this.totalFloors,
+    this.accentColor,
+    this.tags = const [], // Con valor por defecto
   }) : _searchableContent = _generateSearchableContent(
     name,
-    info, // MANTENIDO
+    info,
     history,
+    category, // Pasamos la categoría también para que sea parte del contenido buscable
     rooms,
-    specialServices, // <--- AÑADido a la generación de contenido buscable
+    specialServices,
     hours,
     contactInfo,
     address,
     website,
-    tags, // <--- ¡AÑADIDO aquí también!
+    tags,
   );
 
   String get searchableContent => _searchableContent;
 
   static String _generateSearchableContent(
       String name,
-      String info, // MANTENIDO
+      String info,
       String? history,
+      String category, // La categoría principal del edificio
       List<Room>? rooms,
-      List<Room>? specialServices, // <--- AÑADIDO aquí
+      List<Room>? specialServices,
       Map<String, String>? hours,
       String? contactInfo,
       String? address,
       String? website,
-      List<String> tags, // <--- ¡AÑADIDO al método generador!
+      List<String> tags,
       ) {
     String content = '';
     content += '${name.toLowerCase()} ';
-    content += '${info.toLowerCase()} '; // MANTENIDO
+    content += '${info.toLowerCase()} ';
     if (history != null) {
       content += '${history.toLowerCase()} ';
     }
-    // Añadir la categoría principal al contenido buscable
-    // Asumiendo que 'category' es una propiedad de Building, no un parámetro aquí.
-    // Si necesitas la categoría principal para la búsqueda, tendrías que pasarla como parámetro aquí
-    // o hacer que Building.searchableContent sea un getter directo si _searchableContent no existe.
-    // Por ahora, solo añadiremos las tags.
+    // Añadimos la categoría principal al contenido buscable
+    content += '${category.toLowerCase()} ';
 
     // Contenido de las tags
     if (tags.isNotEmpty) {
@@ -125,7 +124,7 @@ class Building {
         if (room.description != null) {
           content += '${room.description!.toLowerCase()} ';
         }
-        if (room.category != null) { // Añadir la categoría de la habitación si existe
+        if (room.category != null) {
           content += '${room.category!.toLowerCase()} ';
         }
         if (room.capacity != null) {
@@ -164,7 +163,7 @@ class Building {
       }
     }
 
-    // Contenido de servicios especiales (similar a habitaciones, si son tipo Room)
+    // Contenido de servicios especiales
     if (specialServices != null) {
       for (var service in specialServices) {
         content += '${service.id.toLowerCase()} ';
@@ -176,7 +175,7 @@ class Building {
         if (service.description != null) {
           content += '${service.description!.toLowerCase()} ';
         }
-        if (service.category != null) { // Añadir la categoría del servicio si existe
+        if (service.category != null) {
           content += '${service.category!.toLowerCase()} ';
         }
         if (service.capacity != null) {
@@ -219,7 +218,6 @@ class Building {
   }
 
   factory Building.fromMap(Map<String, dynamic> map) {
-    // Helper para parsear la lista de habitaciones/servicios
     List<Room>? parseRoomList(List<dynamic>? jsonList) {
       return jsonList?.map((item) => Room.fromMap(item as Map<String, dynamic>)).toList();
     }
@@ -228,16 +226,16 @@ class Building {
       id: map['id'] as String,
       name: map['name'] as String,
       shortName: map['shortName'] as String,
-      info: map['info'] as String, // MANTENIDO: lee 'info'
+      info: map['info'] as String,
       history: map['history'] as String?,
       coords: LatLng(map['coords']['latitude'] as double, map['coords']['longitude'] as double),
-      category: map['category'] as String,
+      category: map['category'] as String, // Lee la categoría como String
       icon: IconData(map['iconCodePoint'] as int, fontFamily: map['iconFontFamily'] as String),
       imageUrls: (map['imageUrls'] as List<dynamic>?)?.map((e) => e as String).toList() ?? [],
       latitude: map['coords']['latitude'] as double,
       longitude: map['coords']['longitude'] as double,
       rooms: parseRoomList(map['rooms'] as List<dynamic>?),
-      specialServices: parseRoomList(map['specialServices'] as List<dynamic>?), // <--- AÑADIDO en fromMap
+      specialServices: parseRoomList(map['specialServices'] as List<dynamic>?),
       hours: map['hours'] is Map<String, dynamic>
           ? (map['hours'] as Map<String, dynamic>).map(
             (key, value) => MapEntry(key, value as String),
@@ -248,9 +246,9 @@ class Building {
       markerColor: map['markerColor'] != null ? Color(map['markerColor'] as int) : null,
       address: map['address'] as String?,
       website: map['website'] as String?,
-      totalFloors: map['totalFloors'] as int?, // <<--- MANTENIDO en fromMap
-      accentColor: map['accentColor'] != null ? Color(map['accentColor'] as int) : null, // <<--- MANTENIDO en fromMap
-      tags: (map['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [], // <--- ¡AÑADIDO en fromMap!
+      totalFloors: map['totalFloors'] as int?,
+      accentColor: map['accentColor'] != null ? Color(map['accentColor'] as int) : null,
+      tags: (map['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [], // Lee las tags
     );
   }
 
@@ -259,26 +257,26 @@ class Building {
       'id': id,
       'name': name,
       'shortName': shortName,
-      'info': info, // MANTENIDO: escribe 'info'
+      'info': info,
       'history': history,
       'coords': {'latitude': coords.latitude, 'longitude': coords.longitude},
-      'category': category,
+      'category': category, // Escribe la categoría como String
       'iconCodePoint': icon.codePoint,
-      'iconFontFamily': icon.fontFamily, // Corregido: 'iconFontFontFamily' a 'iconFontFamily'
+      'iconFontFamily': icon.fontFamily,
       'imageUrls': imageUrls,
       'latitude': latitude,
       'longitude': longitude,
       'rooms': rooms?.map((r) => r.toMap()).toList(),
-      'specialServices': specialServices?.map((s) => s.toMap()).toList(), // <--- AÑADIDO en toMap
+      'specialServices': specialServices?.map((s) => s.toMap()).toList(),
       'hours': hours,
       'contactInfo': contactInfo,
       'isAccessible': isAccessible,
       'markerColor': markerColor?.value,
       'address': address,
       'website': website,
-      'totalFloors': totalFloors, // <<--- MANTENIDO en toMap
-      'accentColor': accentColor?.value, // <<--- MANTENIDO en toMap
-      'tags': tags, // <--- ¡AÑADIDO en toMap!
+      'totalFloors': totalFloors,
+      'accentColor': accentColor?.value,
+      'tags': tags, // Escribe las tags
     };
   }
 
@@ -286,49 +284,49 @@ class Building {
     String? id,
     String? name,
     String? shortName,
-    String? info, // MANTENIDO
+    String? info,
     String? history,
     LatLng? coords,
-    String? category,
+    String? category, // MANTENIDO como String
     IconData? icon,
     List<String>? imageUrls,
     double? latitude,
     double? longitude,
     List<Room>? rooms,
-    List<Room>? specialServices, // <--- AÑADIDO en copyWith
+    List<Room>? specialServices,
     Map<String, String>? hours,
     String? contactInfo,
     bool? isAccessible,
     Color? markerColor,
     String? address,
     String? website,
-    int? totalFloors, // <<--- MANTENIDO en copyWith
-    Color? accentColor, // <<--- MANTENIDO en copyWith
-    List<String>? tags, // <--- ¡AÑADIDO en copyWith!
+    int? totalFloors,
+    Color? accentColor,
+    List<String>? tags, // Las tags para copyWith
   }) {
     return Building(
       id: id ?? this.id,
       name: name ?? this.name,
       shortName: shortName ?? this.shortName,
-      info: info ?? this.info, // MANTENIDO
+      info: info ?? this.info,
       history: history ?? this.history,
       coords: coords ?? this.coords,
-      category: category ?? this.category,
+      category: category ?? this.category, // MANTENIDO
       icon: icon ?? this.icon,
       imageUrls: imageUrls ?? this.imageUrls,
       latitude: latitude ?? this.latitude,
       longitude: longitude ?? this.longitude,
       rooms: rooms ?? this.rooms,
-      specialServices: specialServices ?? this.specialServices, // <--- AÑADIDO en copyWith
+      specialServices: specialServices ?? this.specialServices,
       hours: hours ?? this.hours,
       contactInfo: contactInfo ?? this.contactInfo,
       isAccessible: isAccessible ?? this.isAccessible,
       markerColor: markerColor ?? this.markerColor,
       address: address ?? this.address,
       website: website ?? this.website,
-      totalFloors: totalFloors ?? this.totalFloors, // <<--- MANTENIDO en copyWith
-      accentColor: accentColor ?? this.accentColor, // <<--- MANTENIDO en copyWith
-      tags: tags ?? this.tags, // <--- ¡AÑADIDO en copyWith!
+      totalFloors: totalFloors ?? this.totalFloors,
+      accentColor: accentColor ?? this.accentColor,
+      tags: tags ?? this.tags, // Las tags para copyWith
     );
   }
 }
