@@ -16,8 +16,8 @@ const Map<String, String> hours404 = {
   'Jueves': '06:00 - 22:00',
   'Viernes': '06:00 - 22:00',
   'Sábado': '07:00 - 18:00',
-  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
-  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+  'Domingo': 'Cerrado',
+  'Feriado': 'Cerrado',
 };
 const String contactInfo404 = 'Para información general del edificio, contacte la Secretaría de la Facultad de Ciencias.'; // Puedes añadir más contactos si los tienes.
 
@@ -28,14 +28,15 @@ final List<Room> rooms404 = [
     number: 'Restaurante y Cafetería',
     name: 'Restaurante y Cafetería Yu Takeuchi',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
-      contact: 'Celular 3205497639, Correo: unalcopias@gmail.com',
   ),
   Room(
     id: '404-1-lab-practica-experimental-fisica-101',
     number: 'Lab. Práctica Experimental 101',
     name: 'Laboratorio de Práctica Experimental - Departamento de Física 101',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -43,6 +44,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Eléctrica y Semiconductores 101B',
     name: 'Laboratorio de Caracterización Eléctrica y Semiconductores 101B',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -50,6 +52,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Física Nuevos Materiales 102',
     name: 'Laboratorio Física de Nuevos Materiales 102',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -57,6 +60,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Colisiones Atómicas 103B',
     name: 'Laboratorio de Colisiones Atómicas 103B',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -64,6 +68,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Detectores 103B',
     name: 'Laboratorio de Detectores 103B',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -71,6 +76,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Superconductividad 104A',
     name: 'Laboratorio Superconductividad y Nuevos Materiales 104A',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -78,6 +84,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Celdas Solares 106',
     name: 'Laboratorio Fabricación de Celdas Solares 106 - Depto. Física',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -85,6 +92,7 @@ final List<Room> rooms404 = [
     number: 'Grupo ARGOS',
     name: 'Grupo de Investigación ARGOS - Laboratorio Metrología y Física Geoespacial',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Treated as a lab due to "Laboratorio Metrología"
     isServiceRoom: false,
   ),
   Room(
@@ -92,6 +100,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Materiales Termoeléctricos 108',
     name: 'Laboratorio de Materiales Termoeléctricos 108',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -99,6 +108,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Caracterización Materiales',
     name: 'Laboratorio de Caracterización de Materiales',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -106,6 +116,7 @@ final List<Room> rooms404 = [
     number: 'Grupo GEMA 128',
     name: 'Grupo de Estudio de Materiales GEMA 128',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Assumed to be an academic group's office/space
     isServiceRoom: false,
   ),
   Room(
@@ -113,6 +124,7 @@ final List<Room> rooms404 = [
     number: 'Controles Eléctricos',
     name: 'Cuarto de Controles Eléctricos',
     floor: 'Piso 1',
+    category: 'Infraestructura',
     isServiceRoom: true,
   ),
   Room(
@@ -120,6 +132,7 @@ final List<Room> rooms404 = [
     number: 'Planta de Criogénesis',
     name: 'Planta de Criogénesis',
     floor: 'Piso 1',
+    category: 'Infraestructura',
     isServiceRoom: true,
   ),
   Room(
@@ -127,6 +140,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Nuevos Materiales CRYOMAG 119',
     name: 'Laboratorio de Nuevos Materiales - CRYOMAG 119',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -134,13 +148,15 @@ final List<Room> rooms404 = [
     number: 'Microondas',
     name: 'Área de Microondas',
     floor: 'Piso 1',
-    isServiceRoom: true, // Asumo que es un área con equipos de microondas
+    category: 'Servicios', // Could be Lab or Service, assuming general use area
+    isServiceRoom: true,
   ),
   Room(
     id: '404-1-lab-peliculas-delgadas-122',
     number: 'Lab. Películas Delgadas 122',
     name: 'Laboratorio Películas Delgadas 122',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -148,6 +164,7 @@ final List<Room> rooms404 = [
     number: 'Baño Hombres',
     name: 'Baño de Hombres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -155,6 +172,7 @@ final List<Room> rooms404 = [
     number: 'Taller Mecánica Fina',
     name: 'Taller de Mecánica Fina',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -162,6 +180,7 @@ final List<Room> rooms404 = [
     number: 'Tienda Unalcopias',
     name: 'Tienda "Unalcopias"',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
     contact: 'Celular 3205497639, Correo: unalcopias@gmail.com',
   ),
@@ -170,6 +189,7 @@ final List<Room> rooms404 = [
     number: 'Dir. Maestría Enseñanza Ciencias 125',
     name: 'Dirección Curricular - Maestría en Enseñanza de las Ciencias Exactas y Naturales Oficina 125',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -177,6 +197,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Resonancia Paramagnética Electrónica',
     name: 'Laboratorio de Resonancia Paramagnética Electrónica',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -184,6 +205,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Mediciones Estructuras Nano',
     name: 'Laboratorio Mediciones Estructuras - Nano',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -191,6 +213,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Resonancia Magnética Nuclear 121D',
     name: 'Laboratorio Resonancia Magnética Nuclear 121D',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -198,6 +221,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Materiales Nanoestructurados 121C',
     name: 'Laboratorio Materiales Nanoestructurados 121C - Cátedra Nacional: Tecnologías Cuánticas',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -205,6 +229,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Microscopía Electrónica',
     name: 'Grupo de Microscopía Electrónica',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Treated as a research group's office
     isServiceRoom: false,
   ),
   Room(
@@ -212,6 +237,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Materiales Nanoestructurados',
     name: 'Grupo de Materiales Nanoestructurados y sus Aplicaciones',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Treated as a research group's office
     isServiceRoom: false,
   ),
   Room(
@@ -219,6 +245,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Óptica Aplicada 107',
     name: 'Laboratorio Óptica Aplicada 107',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -226,6 +253,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Innovación Tecnológica 108',
     name: 'Laboratorio Innovación Tecnológica 108',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -233,6 +261,7 @@ final List<Room> rooms404 = [
     number: 'Archivo 110',
     name: 'Archivo 110',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -240,6 +269,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Caracterización Óptica y Eléctrica 111',
     name: 'Laboratorio Caracterización Óptica y Eléctrica de Materiales 111',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -247,6 +277,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Física Aplicada 102',
     name: 'Grupo Física Aplicada - Laboratorio Nanoestructuras Orgánicas y Moleculares 102',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Has "Laboratorio" in name
     isServiceRoom: false,
   ),
   Room(
@@ -254,6 +285,7 @@ final List<Room> rooms404 = [
     number: 'Labs. Superconductividad y Nanomateriales 103',
     name: 'Laboratorios Superconductividad y Nanomateriales 103',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -261,6 +293,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Óptica e Información Cuántica 105',
     name: 'Grupo de Óptica e Información Cuántica - Grupo de Simulación de Sistemas Físicos 105',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // These are research groups
     isServiceRoom: false,
   ),
   Room(
@@ -268,6 +301,7 @@ final List<Room> rooms404 = [
     number: 'Lab. Materiales Aplicación Tecnológica 104',
     name: 'Laboratorio de Materiales con Aplicación Tecnológica 104',
     floor: 'Piso 1',
+    category: 'Laboratorios',
     isServiceRoom: false,
   ),
   Room(
@@ -275,6 +309,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Astrofísica 112',
     name: 'Grupo Astrofísica 112',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Research group
     isServiceRoom: false,
   ),
   Room(
@@ -282,6 +317,7 @@ final List<Room> rooms404 = [
     number: 'Cuarto de Bombas 114',
     name: 'Cuarto de Bombas 114',
     floor: 'Piso 1',
+    category: 'Infraestructura',
     isServiceRoom: true,
   ),
   Room(
@@ -289,20 +325,23 @@ final List<Room> rooms404 = [
     number: 'Baño Mujeres',
     name: 'Baño de Mujeres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
     id: '404-1-vri-laboratorios',
     number: 'VRI - Laboratorios',
-    name: 'Vicedecanatura de Investigación y Extensión - Laboratorios (Para Investigación de Servicios)',
+    name: 'Oficina Vicedecanatura de Investigación y Extensión - Laboratorios',
     floor: 'Piso 1',
-    isServiceRoom: false, // Es una oficina/unidad, no un servicio como baño/cafetería
+    category: 'Oficinas Administrativas',
+    isServiceRoom: false,
   ),
   Room(
     id: '404-1-puntos-carga',
     number: 'Puntos de Carga',
     name: 'Puntos de Carga (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
 
@@ -312,6 +351,7 @@ final List<Room> rooms404 = [
     number: 'Baño Hombres',
     name: 'Baño de Hombres (Piso 2)',
     floor: 'Piso 2',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -319,6 +359,7 @@ final List<Room> rooms404 = [
     number: 'Sala de Cómputo Física 219',
     name: 'Sala de Cómputo de Física 219',
     floor: 'Piso 2',
+    category: 'Aulas Especializadas',
     isServiceRoom: false,
   ),
   Room(
@@ -326,6 +367,7 @@ final List<Room> rooms404 = [
     number: 'Dir. Área Curricular 218',
     name: 'Dirección Área Curricular 218',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -333,6 +375,7 @@ final List<Room> rooms404 = [
     number: 'Sala TIC 217',
     name: 'Sala TIC 217 - Salón Guillermo Castillo',
     floor: 'Piso 2',
+    category: 'Aulas Especializadas',
     isServiceRoom: false,
   ),
   Room(
@@ -340,6 +383,7 @@ final List<Room> rooms404 = [
     number: 'Salón de Redes 212',
     name: 'Salón de Redes 212',
     floor: 'Piso 2',
+    category: 'Aulas Especializadas', // Specialized room for networking
     isServiceRoom: false,
   ),
   Room(
@@ -347,13 +391,15 @@ final List<Room> rooms404 = [
     number: 'Salón Cableado 211',
     name: 'Salón Cableado 211',
     floor: 'Piso 2',
-    isServiceRoom: false,
+    category: 'Infraestructura',
+    isServiceRoom: false, // More like a technical room for infrastructure
   ),
   Room(
     id: '404-2-grupo-fenomenologia-particulas-elementales-210',
     number: 'Grupos Investigación 210',
     name: 'Grupos: Fenomenología de Partículas Elementales, Campos y Partículas, Econofísica y Sociofísica 210',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -361,30 +407,35 @@ final List<Room> rooms404 = [
     number: 'Auditorio José Granés Sellares',
     name: 'Auditorio José Granés Sellares',
     floor: 'Piso 2',
+    category: 'Auditorios',
     isServiceRoom: false,
   ),
-  // Salones de clase Piso 2
-  Room(id: '404-2-salon-216', number: 'Salón 216', name: 'Salón de Clase 216', floor: 'Piso 2'),
-  Room(id: '404-2-salon-202', number: 'Salón 202', name: 'Salón de Clase 202', floor: 'Piso 2'),
-  Room(id: '404-2-salon-215', number: 'Salón 215', name: 'Salón de Clase 215', floor: 'Piso 2'),
-  Room(id: '404-2-salon-214', number: 'Salón 214', name: 'Salón de Clase 214', floor: 'Piso 2'),
-  Room(id: '404-2-salon-207', number: 'Salón 207', name: 'Salón de Clase 207', floor: 'Piso 2'),
-  Room(id: '404-2-salon-209', number: 'Salón 209', name: 'Salón de Clase 209', floor: 'Piso 2'),
-  Room(id: '404-2-salon-219', number: 'Salón 219', name: 'Salón de Clase 219', floor: 'Piso 2'),
-  Room(id: '404-2-salon-212b', number: 'Salón 212', name: 'Salón de Clase 212', floor: 'Piso 2'), // Renombrado para evitar ID duplicado
-  Room(id: '404-2-salon-210b', number: 'Salón 210', name: 'Salón de Clase 210', floor: 'Piso 2'), // Renombrado para evitar ID duplicado
-  Room(id: '404-2-salon-208', number: 'Salón 208', name: 'Salón de Clase 208', floor: 'Piso 2'),
-  Room(id: '404-2-salon-206', number: 'Salón 206', name: 'Salón de Clase 206', floor: 'Piso 2'),
-  Room(id: '404-2-salon-204', number: 'Salón 204', name: 'Salón de Clase 204', floor: 'Piso 2'),
-  Room(id: '404-2-salon-202b', number: 'Salón 202', name: 'Salón de Clase 202', floor: 'Piso 2'), // Renombrado para evitar ID duplicado
-  Room(id: '404-2-salon-200b', number: 'Salón 200B', name: 'Salón de Clase 200B', floor: 'Piso 2'),
-  Room(id: '404-2-salon-203', number: 'Salón 203', name: 'Salón de Clase 203', floor: 'Piso 2'),
-  Room(id: '404-2-salon-200a', number: 'Salón 200A', name: 'Salón de Clase 200A', floor: 'Piso 2'),
+  // Salones de clase Piso 2 (using explicit numbers where available)
+  Room(id: '404-2-salon-clase-216', number: 'Salón de Clase 216', name: 'Salón de Clase 216', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-202', number: 'Salón de Clase 202', name: 'Salón de Clase 202', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-215', number: 'Salón de Clase 215', name: 'Salón de Clase 215', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-214', number: 'Salón de Clase 214', name: 'Salón de Clase 214', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-207', number: 'Salón de Clase 207', name: 'Salón de Clase 207', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-209', number: 'Salón de Clase 209', name: 'Salón de Clase 209', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  // Note: The text lists 216, 219, 214, 212, 210, 208, 206, 204, 202 multiple times. Assuming unique rooms where numbers are distinct.
+  // Correcting potential ID/number clashes with previous entries if they are distinct
+  Room(id: '404-2-salon-clase-219-b', number: 'Salón de Clase 219', name: 'Salón de Clase 219', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-214-b', number: 'Salón de Clase 214', name: 'Salón de Clase 214', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-212-b', number: 'Salón de Clase 212', name: 'Salón de Clase 212', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-210-b', number: 'Salón de Clase 210', name: 'Salón de Clase 210', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-208-b', number: 'Salón de Clase 208', name: 'Salón de Clase 208', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-206-b', number: 'Salón de Clase 206', name: 'Salón de Clase 206', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-204-b', number: 'Salón de Clase 204', name: 'Salón de Clase 204', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-202-b', number: 'Salón de Clase 202', name: 'Salón de Clase 202', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-200B', number: 'Salón de Clase 200B', name: 'Salón de Clase 200B', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-203', number: 'Salón de Clase 203', name: 'Salón de Clase 203', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
+  Room(id: '404-2-salon-clase-200A', number: 'Salón de Clase 200A', name: 'Salón de Clase 200A', floor: 'Piso 2', category: 'Aulas', isServiceRoom: false),
   Room(
     id: '404-2-area-curricular-matematicas-205',
     number: 'Área Curricular Matemáticas 205',
     name: 'Área Curricular de Matemáticas 205',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -392,6 +443,7 @@ final List<Room> rooms404 = [
     number: 'Grupo Óptica e Información Cuántica 206',
     name: 'Grupo Óptica e Información Cuántica 206',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -399,6 +451,7 @@ final List<Room> rooms404 = [
     number: 'Sala de Cómputo 208',
     name: 'Sala de Cómputo 208',
     floor: 'Piso 2',
+    category: 'Aulas Especializadas',
     isServiceRoom: false,
   ),
   Room(
@@ -406,13 +459,15 @@ final List<Room> rooms404 = [
     number: 'Programa Ciencia de la Computación',
     name: 'Programa de Ciencia de la Computación',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
     id: '404-2-bano-hombres-b',
-    number: 'Baño Hombres',
+    number: 'Baño Hombres (Segundo)',
     name: 'Baño de Hombres (Piso 2, Segundo)',
     floor: 'Piso 2',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -420,6 +475,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 217',
     name: 'Oficina 217 - Enseñanza, Conceptos y Métodos en Física',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -427,6 +483,7 @@ final List<Room> rooms404 = [
     number: 'Coordinación Académica Física 213',
     name: 'Coordinación Académica de Física - Grupo de Sistemas Correccionados 213',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -434,6 +491,7 @@ final List<Room> rooms404 = [
     number: 'Sala de Estudio',
     name: 'Sala de Estudio (Piso 2)',
     floor: 'Piso 2',
+    category: 'Salas de Estudio',
     isServiceRoom: false,
   ),
   Room(
@@ -441,6 +499,7 @@ final List<Room> rooms404 = [
     number: 'Dir. Depto. Física 204',
     name: 'Dirección Departamento de Física 204',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -448,6 +507,7 @@ final List<Room> rooms404 = [
     number: 'Secretaría Depto. Matemáticas 209',
     name: 'Secretaría Departamento de Matemáticas 209',
     floor: 'Piso 2',
+    category: 'Oficinas Administrativas',
     isServiceRoom: false,
   ),
   Room(
@@ -455,6 +515,7 @@ final List<Room> rooms404 = [
     number: 'Baño Mujeres',
     name: 'Baño de Mujeres (Piso 2)',
     floor: 'Piso 2',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
 
@@ -464,6 +525,7 @@ final List<Room> rooms404 = [
     number: 'Baño Mujeres',
     name: 'Baño de Mujeres (Piso 3)',
     floor: 'Piso 3',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -471,6 +533,7 @@ final List<Room> rooms404 = [
     number: 'Baño Hombres',
     name: 'Baño de Hombres (Piso 3)',
     floor: 'Piso 3',
+    category: 'Servicios',
     isServiceRoom: true,
   ),
   Room(
@@ -478,15 +541,17 @@ final List<Room> rooms404 = [
     number: 'Sala de Profesores',
     name: 'Sala de Profesores (Departamentos de Matemáticas, Estadística y Física)',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
 
-  // Oficinas de profesores del tercer y cuarto piso
+  // Oficinas de profesores del tercer piso
   Room(
     id: '404-3-prof-epifanio-lozano-312',
     number: 'Oficina 312',
     name: 'Oficina 312',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'epifanio_lozano', name: 'Epifanio Lozano', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -494,6 +559,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 303',
     name: 'Oficina 303',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'clara_neira', name: 'Clara Neira', department: 'Matemáticas/Física'),
       Professor(id: 'humberto_sarria', name: 'Humberto Sarria', department: 'Matemáticas/Física'),
@@ -504,6 +570,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 305',
     name: 'Oficina 305',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'eduardo_cardenas', name: 'Eduardo Cárdenas', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -511,6 +578,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 314',
     name: 'Oficina 314',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'ricardo_pastran', name: 'Ricardo Pastran', department: 'Matemáticas/Física'),
       Professor(id: 'pedro_zambrano', name: 'Pedro Zambrano', department: 'Matemáticas/Física'),
@@ -521,6 +589,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 316',
     name: 'Oficina 316',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'carolina_neira_jimenez', name: 'Carolina Neira Jiménez', department: 'Matemáticas/Física'),
       Professor(id: 'natalia_pinzon_cortes', name: 'Natalia C. Pinzon Cortés', department: 'Matemáticas/Física'),
@@ -531,6 +600,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 307',
     name: 'Oficina 307',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'rene_castillo', name: 'René Castillo', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -538,6 +608,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 309',
     name: 'Oficina 309',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'reinaldo_martinez', name: 'Reinaldo Martínez', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -545,6 +616,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 322',
     name: 'Oficina 322',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'freddy_hernan', name: 'Freddy Hernán', department: 'Matemáticas/Física'),
       Professor(id: 'mauricio_ruiz', name: 'Mauricio Ruiz', department: 'Matemáticas/Física'),
@@ -555,6 +627,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 320',
     name: 'Oficina 320',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'alina_fedossova', name: 'Alina Fedossova', department: 'Matemáticas/Física'),
       Professor(id: 'hernan_garzon', name: 'Hernán Garzón', department: 'Matemáticas/Física'),
@@ -565,9 +638,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 326',
     name: 'Oficina 326',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'crecencio_huertas', name: 'Crecencio Huertas', department: 'Matemáticas/Física'),
-      Professor(id: 'jose_jimenez', name: 'José Jiménez', department: 'Matemáticas/Física'),
+      Professor(id: 'jose_jimenez_b', name: 'José Jiménez', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -575,6 +649,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 311',
     name: 'Oficina 311',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'carolina_garcia', name: 'Carolina García', department: 'Matemáticas/Física'),
       Professor(id: 'fabian_ramirez', name: 'Fabián Ramírez', department: 'Matemáticas/Física'),
@@ -585,6 +660,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 313',
     name: 'Oficina 313',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'franqui_cardenas', name: 'Franqui Cárdenas', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -592,6 +668,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 328',
     name: 'Oficina 328',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'miriam_campos', name: 'Miriam Campos', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -599,6 +676,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 330',
     name: 'Oficina 330',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'serafin_bautista', name: 'Serafín Bautista', department: 'Matemáticas/Física'),
       Professor(id: 'german_fonseca', name: 'Germán Fonseca', department: 'Matemáticas/Física'),
@@ -609,6 +687,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 315',
     name: 'Oficina 315',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'gabriel_padilla', name: 'Gabriel Padilla', department: 'Matemáticas/Física'),
       Professor(id: 'john_rodriguez', name: 'John Rodríguez', department: 'Matemáticas/Física'),
@@ -619,6 +698,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 317',
     name: 'Oficina 317',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'edward_becerra', name: 'Edward Becerra', department: 'Matemáticas/Física'),
       Professor(id: 'clara_sanchez', name: 'Clara Sánchez', department: 'Matemáticas/Física'),
@@ -629,8 +709,9 @@ final List<Room> rooms404 = [
     number: 'Oficina 332',
     name: 'Oficina 332',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'janeth_galeano', name: 'Janeth Galeano Peñaloza', department: 'Matemáticas/Física'),
+      Professor(id: 'janeth_galeano_penaloza', name: 'Janeth Galeano Peñaloza', department: 'Matemáticas/Física'),
       Professor(id: 'claudio_rodriguez_beltran', name: 'Claudio Rodríguez Beltrán', department: 'Matemáticas/Física'),
     ],
   ),
@@ -639,6 +720,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 334',
     name: 'Oficina 334',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'german_preciado', name: 'Germán Preciado', department: 'Matemáticas/Física'),
       Professor(id: 'felix_soriano', name: 'Félix Soriano', department: 'Matemáticas/Física'),
@@ -649,6 +731,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 319',
     name: 'Oficina 319',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'diana_serrano', name: 'Diana Serrano', department: 'Matemáticas/Física'),
       Professor(id: 'daniel_nunez', name: 'Daniel Núñez', department: 'Matemáticas/Física'),
@@ -659,6 +742,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 321',
     name: 'Oficina 321',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'ivan_castro', name: 'Iván Castro', department: 'Matemáticas/Física'),
       Professor(id: 'edixon_rojas', name: 'Edixon Rojas', department: 'Matemáticas/Física'),
@@ -669,6 +753,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 336',
     name: 'Oficina 336',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [Professor(id: 'camilo_jose_torres', name: 'Camilo José Torres', department: 'Matemáticas/Física')],
   ),
   Room(
@@ -676,6 +761,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 338',
     name: 'Oficina 338',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'sandra_vergara_cardozo', name: 'Sandra Vergara Cardozo', department: 'Matemáticas/Física'),
       Professor(id: 'juan_camilo_sosa_martinez', name: 'Juan Camilo Sosa Martínez', department: 'Matemáticas/Física'),
@@ -686,9 +772,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 323',
     name: 'Oficina 323',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'gustavo_nieto', name: 'Gustavo Nieto', department: 'Matemáticas/Física'),
-      Professor(id: 'diego_roldan', name: 'Diego Gerardo Roldan', department: 'Matemáticas/Física'),
+      Professor(id: 'diego_gerardo_roldan', name: 'Diego Gerardo Roldan', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -696,9 +783,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 325',
     name: 'Oficina 325',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'luis_grajales', name: 'Luis Fernando Grajales Hernández', department: 'Matemáticas/Física'),
-      Professor(id: 'mario_arrieta', name: 'Mario Enrique Arrieta Prieto', department: 'Matemáticas/Física'),
+      Professor(id: 'luis_fernando_grajales_hernandez', name: 'Luis Fernando Grajales Hernández', department: 'Matemáticas/Física'),
+      Professor(id: 'mario_enrique_arrieta_prieto', name: 'Mario Enrique Arrieta Prieto', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -706,16 +794,18 @@ final List<Room> rooms404 = [
     number: 'Oficina 340',
     name: 'Oficina 340',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'ruben_guevara', name: 'Rubén Darío Guevara González', department: 'Matemáticas/Física'),
-      Professor(id: 'carlos_panza', name: 'Carlos Arturo Panza', department: 'Matemáticas/Física'),
+      Professor(id: 'ruben_dario_guevara_gonzalez', name: 'Rubén Darío Guevara González', department: 'Matemáticas/Física'),
+      Professor(id: 'carlos_arturo_panza', name: 'Carlos Arturo Panza', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
-    id: '404-3-oficina-342',
+    id: '404-3-oficina-342', // No professors listed in the input for this room
     number: 'Oficina 342',
-    name: 'Oficina 342 (Sin Información de Profesores)',
+    name: 'Oficina 342',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     isServiceRoom: false,
   ),
   Room(
@@ -723,20 +813,23 @@ final List<Room> rooms404 = [
     number: 'Oficina 327',
     name: 'Oficina 327',
     floor: 'Piso 3',
-    professors: [Professor(id: 'jose_jimenez_moscoso', name: 'José Alfredo Jiménez Moscoso', department: 'Matemáticas/Física')],
+    category: 'Oficinas Académicas',
+    professors: [Professor(id: 'jose_alfredo_jimenez_moscoso', name: 'José Alfredo Jiménez Moscoso', department: 'Matemáticas/Física')],
   ),
   Room(
     id: '404-3-prof-diana-carolina-franco-soto-329',
     number: 'Oficina 329',
     name: 'Oficina 329',
     floor: 'Piso 3',
-    professors: [Professor(id: 'diana_franco', name: 'Diana Carolina Franco Soto', department: 'Matemáticas/Física')],
+    category: 'Oficinas Académicas',
+    professors: [Professor(id: 'diana_carolina_franco_soto', name: 'Diana Carolina Franco Soto', department: 'Matemáticas/Física')],
   ),
   Room(
     id: '404-3-prof-alvaro-marino-344',
     number: 'Oficina 344',
     name: 'Oficina 344',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'alvaro_marino', name: 'Álvaro Mariño', department: 'Matemáticas/Física'),
       Professor(id: 'ramiro_cardona', name: 'Ramiro Cardona', department: 'Matemáticas/Física'),
@@ -747,6 +840,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 346',
     name: 'Oficina 346',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'william_herrera', name: 'William Herrera', department: 'Matemáticas/Física'),
       Professor(id: 'miriam_rincon', name: 'Miriam Rincón', department: 'Matemáticas/Física'),
@@ -757,9 +851,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 331',
     name: 'Oficina 331',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'sergio_calderon', name: 'Sergio Alejandro Calderón Villanueva', department: 'Matemáticas/Física'),
-      Professor(id: 'martha_castaneda', name: 'Martha Patricia Castañeda', department: 'Matemáticas/Física'),
+      Professor(id: 'sergio_alejandro_calderon_villanueva', name: 'Sergio Alejandro Calderón Villanueva', department: 'Matemáticas/Física'),
+      Professor(id: 'martha_patricia_castaneda', name: 'Martha Patricia Castañeda', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -767,13 +862,15 @@ final List<Room> rooms404 = [
     number: 'Oficina 333',
     name: 'Oficina 333',
     floor: 'Piso 3',
-    professors: [Professor(id: 'mayo_polo', name: 'Mayo Luz Polo González', department: 'Matemáticas/Física')],
+    category: 'Oficinas Académicas',
+    professors: [Professor(id: 'mayo_luz_polo_gonzalez', name: 'Mayo Luz Polo González', department: 'Matemáticas/Física')],
   ),
   Room(
     id: '404-3-prof-jose-munoz-348',
     number: 'Oficina 348',
     name: 'Oficina 348',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'jose_munoz', name: 'José Muñoz', department: 'Matemáticas/Física'),
       Professor(id: 'diego_torres', name: 'Diego Torres', department: 'Matemáticas/Física'),
@@ -784,9 +881,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 350',
     name: 'Oficina 350',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'david_tellez', name: 'David Téllez', department: 'Matemáticas/Física'),
-      Professor(id: 'jairo_roa', name: 'Jairo Roa Rojas', department: 'Matemáticas/Física'),
+      Professor(id: 'jairo_roa_rojas', name: 'Jairo Roa Rojas', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -794,9 +892,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 335',
     name: 'Oficina 335',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'alejandro_perez', name: 'Alejandro Pérez', department: 'Matemáticas/Física'),
-      Professor(id: 'plinio_teheran', name: 'Plinio del Teherán', department: 'Matemáticas/Física'),
+      Professor(id: 'plinio_del_teheran', name: 'Plinio del Teherán', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -804,6 +903,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 337',
     name: 'Oficina 337',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'miguel_ardila', name: 'Miguel Ardila', department: 'Matemáticas/Física'),
       Professor(id: 'ovidio_almanza', name: 'Ovidio Almanza', department: 'Matemáticas/Física'),
@@ -814,8 +914,9 @@ final List<Room> rooms404 = [
     number: 'Oficina 352',
     name: 'Oficina 352',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'juan_beltran', name: 'Juan Pablo Beltrán', department: 'Matemáticas/Física'),
+      Professor(id: 'juan_pablo_beltran', name: 'Juan Pablo Beltrán', department: 'Matemáticas/Física'),
       Professor(id: 'jaime_villalobos', name: 'Jaime Villalobos', department: 'Matemáticas/Física'),
     ],
   ),
@@ -824,9 +925,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 339',
     name: 'Oficina 339',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'gil_capote', name: 'Gil Capote', department: 'Matemáticas/Física'),
-      Professor(id: 'jose_barba', name: 'José José Barba', department: 'Matemáticas/Física'),
+      Professor(id: 'jose_jose_barba', name: 'José José Barba', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -834,6 +936,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 341',
     name: 'Oficina 341',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'clara_calderon', name: 'Clara Calderón', department: 'Matemáticas/Física'),
       Professor(id: 'anderson_dussan', name: 'Anderson Dussan', department: 'Matemáticas/Física'),
@@ -844,6 +947,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 354',
     name: 'Oficina 354',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'julio_rodriguez', name: 'Julio Rodríguez', department: 'Matemáticas/Física'),
       Professor(id: 'juan_baena', name: 'Juan Baena', department: 'Matemáticas/Física'),
@@ -854,6 +958,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 343',
     name: 'Oficina 343',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'carlos_quimbay', name: 'Carlos Quimbay', department: 'Matemáticas/Física'),
       Professor(id: 'mauricio_de_sanctis', name: 'Mauricio de Sanctis', department: 'Matemáticas/Física'),
@@ -864,6 +969,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 345',
     name: 'Oficina 345',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'roberto_franco', name: 'Roberto Franco', department: 'Matemáticas/Física'),
       Professor(id: 'jereson_silva', name: 'Jereson Silva', department: 'Matemáticas/Física'),
@@ -874,6 +980,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 356',
     name: 'Oficina 356',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'maria_plazas', name: 'María Plazas', department: 'Matemáticas/Física'),
       Professor(id: 'doris_cadavid', name: 'Doris Cadavid', department: 'Matemáticas/Física'),
@@ -884,6 +991,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 358',
     name: 'Oficina 358',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'astrid_baquero', name: 'Astrid Baquero', department: 'Matemáticas/Física'),
       Professor(id: 'hernan_sanchez', name: 'Hernán Sánchez', department: 'Matemáticas/Física'),
@@ -894,6 +1002,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 347',
     name: 'Oficina 347',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'luis_lopez', name: 'Luis López', department: 'Matemáticas/Física'),
       Professor(id: 'jaime_torres', name: 'Jaime Torres', department: 'Matemáticas/Física'),
@@ -904,6 +1013,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 349',
     name: 'Oficina 349',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'aminta_mendoza', name: 'Aminta Mendoza', department: 'Matemáticas/Física'),
       Professor(id: 'dario_rodriguez', name: 'Darío Rodríguez', department: 'Matemáticas/Física'),
@@ -914,6 +1024,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 360',
     name: 'Oficina 360',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'freddy_ochoa', name: 'Freddy Ochoa', department: 'Matemáticas/Física'),
       Professor(id: 'rigoberto_casas', name: 'Rigoberto Casas', department: 'Matemáticas/Física'),
@@ -924,6 +1035,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 362',
     name: 'Oficina 362',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'john_sandino', name: 'John Sandino', department: 'Matemáticas/Física'),
       Professor(id: 'mauricio_martinez', name: 'Mauricio Martínez', department: 'Matemáticas/Física'),
@@ -934,6 +1046,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 351',
     name: 'Oficina 351',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'javier_cardona', name: 'Javier Cardona', department: 'Matemáticas/Física'),
       Professor(id: 'carlos_garzon', name: 'Carlos Garzón', department: 'Matemáticas/Física'),
@@ -944,6 +1057,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 353',
     name: 'Oficina 353',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'hector_castro', name: 'Héctor Castro', department: 'Matemáticas/Física'),
       Professor(id: 'carlos_hernandez', name: 'Carlos Hernández', department: 'Matemáticas/Física'),
@@ -954,6 +1068,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 364',
     name: 'Oficina 364',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'shirley_gomez', name: 'Shirley Gómez', department: 'Matemáticas/Física'),
       Professor(id: 'gustavo_martinez', name: 'Gustavo Martínez', department: 'Matemáticas/Física'),
@@ -964,6 +1079,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 366',
     name: 'Oficina 366',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'jose_alfonso', name: 'José Alfonso', department: 'Matemáticas/Física'),
       Professor(id: 'frank_fonseca', name: 'Frank Fonseca', department: 'Matemáticas/Física'),
@@ -974,6 +1090,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 355',
     name: 'Oficina 355',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'diego_milanes', name: 'Diego Milanes', department: 'Matemáticas/Física'),
       Professor(id: 'carlos_sandoval', name: 'Carlos Sandoval', department: 'Matemáticas/Física'),
@@ -984,6 +1101,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 368',
     name: 'Oficina 368',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'herbert_vinck', name: 'Herbert Vinck', department: 'Matemáticas/Física'),
       Professor(id: 'jairo_alexis_lopez', name: 'Jairo Alexis López', department: 'Matemáticas/Física'),
@@ -994,9 +1112,10 @@ final List<Room> rooms404 = [
     number: 'Oficina 370',
     name: 'Oficina 370',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'rafaele_fazio', name: 'Rafaele Fazio', department: 'Matemáticas/Física'),
-      Professor(id: 'f_valencia', name: 'F Valencia', department: 'Matemáticas/Física'),
+      Professor(id: 'f_valencia', name: 'F. Valencia', department: 'Matemáticas/Física'),
     ],
   ),
   Room(
@@ -1004,8 +1123,9 @@ final List<Room> rooms404 = [
     number: 'Oficina 357',
     name: 'Oficina 357',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
-      Professor(id: 'julie_sanchez', name: 'Julie Edith Sánchez', department: 'Matemáticas/Física'),
+      Professor(id: 'julie_edith_sanchez', name: 'Julie Edith Sánchez', department: 'Matemáticas/Física'),
       Professor(id: 'omar_olarte', name: 'Omar Olarte', department: 'Matemáticas/Física'),
     ],
   ),
@@ -1014,6 +1134,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 372',
     name: 'Oficina 372',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'yobani_mejia', name: 'Yobani Mejía', department: 'Matemáticas/Física'),
       Professor(id: 'john_morales', name: 'John Morales', department: 'Matemáticas/Física'),
@@ -1024,6 +1145,7 @@ final List<Room> rooms404 = [
     number: 'Oficina 374',
     name: 'Oficina 374',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas',
     professors: [
       Professor(id: 'rafael_hurtado', name: 'Rafael Hurtado', department: 'Matemáticas/Física'),
       Professor(id: 'agulles_pedros', name: 'Agulles Pedros', department: 'Matemáticas/Física'),
@@ -1034,14 +1156,9 @@ final List<Room> rooms404 = [
     number: 'Oficina 376',
     name: 'Oficina 376',
     floor: 'Piso 3',
-    professors: [Professor(id: 'carlos_perilla', name: 'Carlos Perilla', department: 'Matemáticas/Física')],
-  ),
-  Room(
-    id: '404-4-prof-jose-ricardo-martinez-vargas-401', // Esto parece un error, José Ricardo Martinez Vargas estaba en 406.401
-    number: 'Oficina 401',
-    name: 'Oficina 401 (Piso 4 - Por confirmar Profesor)',
-    floor: 'Piso 4', // Asumo que esta es la única oficina del 4to piso que mencionaste
-    // Professors aquí si es del 404
-    // professors: [Professor(id: 'jose_ricardo_martinez_vargas_404', name: 'Ing. Jose Ricardo Martinez Vargas', department: 'Física')],
+    category: 'Oficinas Académicas',
+    professors: [
+      Professor(id: 'carlos_perilla', name: 'Carlos Perilla', department: 'Matemáticas/Física'),
+    ],
   ),
 ];

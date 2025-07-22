@@ -1,3 +1,5 @@
+// lib/data/building_details_specific/edificio_214_antonio_narino_details_data.dart
+
 import '/models/room.dart';
 import '/models/professor.dart';
 
@@ -18,6 +20,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 116',
     name: 'Laboratorio Energía e Instrumentación en Biosistemas',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -25,6 +28,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 117',
     name: 'Laboratorio Bioclimática aplicada en Biosistemas',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -32,6 +36,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 118',
     name: 'Laboratorio de Suelos',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -39,6 +44,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio de Mecanización',
     name: 'Laboratorio de Mecanización',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -46,6 +52,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio Física de Suelos',
     name: 'Laboratorio Física de Suelos',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -53,6 +60,7 @@ final List<Room> rooms214 = [
     number: 'Biblioteca DAAD',
     name: 'Biblioteca DAAD',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
     scheduleMap: {
       'Martes': '16:00 - 17:00',
@@ -64,6 +72,7 @@ final List<Room> rooms214 = [
     number: 'Semilleros de Investigación',
     name: 'Espacio para Semilleros de Investigación',
     floor: 'Piso 1',
+    category: 'Salas de Estudio', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -71,6 +80,7 @@ final List<Room> rooms214 = [
     number: 'PROBEMOS',
     name: 'Programa de Bienestar Emocional',
     floor: 'Piso 1',
+    category: 'Oficinas de Bienestar', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -78,6 +88,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 115',
     name: 'Laboratorio de Logística',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -85,6 +96,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 117 (Lingüística)',
     name: 'Laboratorio Lingüística',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -92,6 +104,7 @@ final List<Room> rooms214 = [
     number: 'Aula 121',
     name: 'Aula Luis María Corsi Otálora',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -99,6 +112,7 @@ final List<Room> rooms214 = [
     number: 'Salón Laboratorio 117A',
     name: 'Salón Laboratorio 117A',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -106,6 +120,7 @@ final List<Room> rooms214 = [
     number: 'Sala de Informática 117B',
     name: 'Sala de Informática 117B',
     floor: 'Piso 1',
+    category: 'Aulas Especializadas', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -113,6 +128,7 @@ final List<Room> rooms214 = [
     number: 'Aula 122',
     name: 'Aula Eduardo Duarte Carvajal',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -120,6 +136,7 @@ final List<Room> rooms214 = [
     number: '118a',
     name: 'Bienestar Universitario',
     floor: 'Piso 1',
+    category: 'Oficinas de Bienestar', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -127,6 +144,7 @@ final List<Room> rooms214 = [
     number: 'Aula 123',
     name: 'Aula Jaime Falla Lozano',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -134,6 +152,7 @@ final List<Room> rooms214 = [
     number: 'Aula 124',
     name: 'Aula Jorge Enrique Gómez Libreros',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -141,6 +160,7 @@ final List<Room> rooms214 = [
     number: 'Aula 126',
     name: 'Aula Saúl Antonio Ojeda Gómez',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -148,6 +168,7 @@ final List<Room> rooms214 = [
     number: 'Laboratorio 127',
     name: 'Laboratorio de Geomática',
     floor: 'Piso 1',
+    category: 'Laboratorios', // Added category
     isServiceRoom: true,
   ),
 
@@ -155,19 +176,25 @@ final List<Room> rooms214 = [
   Room(
     id: '214-2-206',
     number: 'Salón 206',
+    name: 'Salón 206', // Added name as it was missing
     floor: 'Piso 2',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
     id: '214-2-207',
     number: 'Salón 207',
+    name: 'Salón 207', // Added name as it was missing
     floor: 'Piso 2',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
     id: '214-2-208',
     number: 'Salón 208',
+    name: 'Salón 208', // Added name as it was missing
     floor: 'Piso 2',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -175,6 +202,7 @@ final List<Room> rooms214 = [
     number: '205',
     name: 'Coordinación de Laboratorios de Ing. Agrícola',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -182,6 +210,7 @@ final List<Room> rooms214 = [
     number: '204',
     name: 'Coordinación curricular de Ing. Agrícola',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -189,6 +218,7 @@ final List<Room> rooms214 = [
     number: 'Salón 202',
     name: 'Salón de Posgrado',
     floor: 'Piso 2',
+    category: 'Salas de Estudio', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -196,6 +226,7 @@ final List<Room> rooms214 = [
     number: '203',
     name: 'Sala de Cómputo',
     floor: 'Piso 2',
+    category: 'Aulas Especializadas', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -203,6 +234,7 @@ final List<Room> rooms214 = [
     number: '210',
     name: 'Auxiliares Docentes',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -210,6 +242,7 @@ final List<Room> rooms214 = [
     number: '212a',
     name: 'Revista Forma y Función',
     floor: 'Piso 2',
+    category: 'Oficinas Administrativas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -217,6 +250,7 @@ final List<Room> rooms214 = [
     number: '211',
     name: 'Coordinación Curricular',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -224,6 +258,7 @@ final List<Room> rooms214 = [
     number: '212',
     name: 'Secretaría Coordinación Curricular',
     floor: 'Piso 2',
+    category: 'Oficinas Administrativas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -231,6 +266,7 @@ final List<Room> rooms214 = [
     number: '213',
     name: 'Sala de Profesores',
     floor: 'Piso 2',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -238,6 +274,7 @@ final List<Room> rooms214 = [
     number: '214',
     name: 'Dirección',
     floor: 'Piso 2',
+    category: 'Oficinas Administrativas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -245,6 +282,7 @@ final List<Room> rooms214 = [
     number: '215',
     name: 'Secretaría',
     floor: 'Piso 2',
+    category: 'Oficinas Administrativas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -252,6 +290,7 @@ final List<Room> rooms214 = [
     number: '216',
     name: 'Posgrados de Ciencias de Lenguaje',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -259,6 +298,7 @@ final List<Room> rooms214 = [
     number: '235',
     name: 'Maestría en Lingüística',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -266,6 +306,7 @@ final List<Room> rooms214 = [
     number: '217',
     name: 'Sala de Sustentaciones',
     floor: 'Piso 2',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -273,6 +314,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 219',
     name: 'Oficina de Profesores',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'alberto_abouchaar_velasquez', name: 'Alberto Abouchaar Velásquez', department: 'Lingüística'),
       Professor(id: 'genoveva_iriarte_esguerra', name: 'Genoveva Iriarte Esguerra', department: 'Lingüística'),
@@ -284,6 +326,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 220',
     name: 'Oficina de Profesor',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'hector_ramirez_cruz', name: 'Héctor Ramírez Cruz', department: 'Ingeniería Agrícola'),
     ],
@@ -294,6 +337,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 221',
     name: 'Oficina de Profesoras',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'paula_liliana_ruiz', name: 'Paula Liliana Ruiz', department: 'Lingüística'),
       Professor(id: 'sol_mercedes_castro', name: 'Sol Mercedes Castro', department: 'Lingüística'),
@@ -305,6 +349,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 222',
     name: 'Oficina de Profesora',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'gloria_esperanza_mora', name: 'Gloria Esperanza Mora Monroy', department: 'Ingeniería Agrícola'),
     ],
@@ -315,6 +360,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 223',
     name: 'Oficina de Profesores',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'william_rodriguez', name: 'William Rodríguez', department: 'Ingeniería Agrícola'),
       Professor(id: 'juan_felipe_gonzalez', name: 'Juan Felipe González', department: 'Ingeniería Agrícola'),
@@ -326,6 +372,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 224',
     name: 'Oficina de Profesora',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'ana_maria_ospina', name: 'Ana María Ospina Bozzi', department: 'Lingüística'),
     ],
@@ -336,6 +383,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 225',
     name: 'Oficina de Profesora',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'silvia_baquero', name: 'Silvia Baquero Castellanos', department: 'Lingüística'),
     ],
@@ -346,6 +394,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 226',
     name: 'Oficina de Profesores',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'oscar_vargas', name: 'Óscar Vargas', department: 'Lingüística'),
       Professor(id: 'rafael_mercado', name: 'Rafael Mercado', department: 'Lingüística'),
@@ -357,6 +406,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 227',
     name: 'Oficina de Profesor',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'sergio_bolanos', name: 'Sergio Bolaños Cuellar', department: 'Lingüística'),
     ],
@@ -367,6 +417,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 228',
     name: 'Oficina de Profesores',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'rosaura_gonzalez', name: 'Rosaura González', department: 'Lingüística'),
       Professor(id: 'fernando_rivera', name: 'Fernando Rivera', department: 'Lingüística'),
@@ -378,6 +429,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 229',
     name: 'Oficina de Profesora',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'maria_emilia_montes', name: 'María Emilia Montes Rodríguez', department: 'Lingüística'),
     ],
@@ -388,6 +440,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 230',
     name: 'Oficina de Profesor',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'camilo_robayo_romero', name: 'Camilo Robayo Romero', department: 'Lingüística'),
     ],
@@ -398,6 +451,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 231',
     name: 'Oficina de Profesora',
     floor: 'Piso 2',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'kelly_johanna_vera', name: 'Kelly Johanna Vera Diettes', department: 'Lingüística'),
     ],
@@ -410,6 +464,7 @@ final List<Room> rooms214 = [
     number: '319',
     name: 'Archivo Documentos Proyectos',
     floor: 'Piso 3',
+    category: 'Servicios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -417,6 +472,7 @@ final List<Room> rooms214 = [
     number: '320',
     name: 'Cuarto de Equipos',
     floor: 'Piso 3',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -424,6 +480,7 @@ final List<Room> rooms214 = [
     number: '321',
     name: 'Investigación, Extensión y Desarrollo',
     floor: 'Piso 3',
+    category: 'Oficinas Académicas', // Added category
     description: 'Grupo PIT, TRANSLOGYT, Semillero PIT, Semillero SIMUN',
     isServiceRoom: false,
   ),
@@ -432,6 +489,7 @@ final List<Room> rooms214 = [
     number: '324',
     name: 'Sala de Reuniones de Proyectos',
     floor: 'Piso 3',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
 
@@ -441,6 +499,7 @@ final List<Room> rooms214 = [
     number: '424',
     name: 'Sala de Reuniones de Profesores',
     floor: 'Piso 4',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -448,6 +507,7 @@ final List<Room> rooms214 = [
     number: '421',
     name: 'Profesores Ocasionales',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -455,6 +515,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 420',
     name: 'Oficina de Profesor',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'carlos_moncada', name: 'Carlos Alberto Moncada Aristizabal', department: 'Ingeniería Agrícola'),
     ],
@@ -465,6 +526,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 419',
     name: 'Oficina de Profesor',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'william_castro', name: 'William Castro García', department: 'Ingeniería Agrícola'),
     ],
@@ -475,6 +537,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 418',
     name: 'Oficina de Profesor',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'ricardo_pena', name: 'Ricardo Jose Peña Lindarte', department: 'Ingeniería Agrícola'),
     ],
@@ -485,6 +548,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 416',
     name: 'Oficina de Profesora',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'sonia_mangones', name: 'Sonia C. Mangones', department: 'Ingeniería Agrícola'),
     ],
@@ -495,6 +559,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 415',
     name: 'Oficina de Profesora',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'liliana_lyons', name: 'Liliana L. Lyons', department: 'Ingeniería Agrícola'),
     ],
@@ -505,6 +570,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 414',
     name: 'Profesores de Cátedra',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -512,6 +578,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 413',
     name: 'Profesores de Cátedra',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -519,6 +586,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 412',
     name: 'Oficina de Profesor',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'cesar_ruiz', name: 'César A. Ruiz', department: 'Ingeniería Agrícola'),
     ],
@@ -529,6 +597,7 @@ final List<Room> rooms214 = [
     number: 'Oficina 411',
     name: 'Oficina de Profesor',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'carlos_gomez', name: 'Carlos Alfonso Gomez Guacaneme', department: 'Ingeniería Agrícola'),
     ],
@@ -539,6 +608,7 @@ final List<Room> rooms214 = [
     number: '410',
     name: 'Estudiantes de Posgrado',
     floor: 'Piso 4',
+    category: 'Oficinas Académicas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -546,6 +616,7 @@ final List<Room> rooms214 = [
     number: '409',
     name: 'Archivo Documentos Posgrado',
     floor: 'Piso 4',
+    category: 'Servicios', // Added category
     isServiceRoom: false,
   ),
 ];

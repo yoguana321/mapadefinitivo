@@ -25,6 +25,7 @@ final List<Room> rooms310 = [
     number: 'Fotocopiadora 1 (Derecha)',
     name: 'Fotocopiadora 1 con préstamos de juegos',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -32,6 +33,7 @@ final List<Room> rooms310 = [
     number: 'Fotocopiadora 2',
     name: 'Fotocopiadora',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -39,6 +41,7 @@ final List<Room> rooms310 = [
     number: 'Cuarto de Cableado 1',
     name: 'Cuarto de Cableado',
     floor: 'Piso 1',
+    category: 'Infraestructura', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -46,6 +49,7 @@ final List<Room> rooms310 = [
     number: 'Cuarto de Cableado 2',
     name: 'Cuarto de Cableado',
     floor: 'Piso 1',
+    category: 'Infraestructura', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -53,6 +57,7 @@ final List<Room> rooms310 = [
     number: 'Baño Mujeres',
     name: 'Baño de Mujeres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -60,6 +65,7 @@ final List<Room> rooms310 = [
     number: 'Baño Hombres',
     name: 'Baño de Hombres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -67,6 +73,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Estudio 1',
     name: 'Sala de Estudio (Piso 1)',
     floor: 'Piso 1',
+    category: 'Salas de Estudio', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -74,6 +81,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Estudio 2',
     name: 'Sala de Estudio (Piso 1)',
     floor: 'Piso 1',
+    category: 'Salas de Estudio', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -81,6 +89,7 @@ final List<Room> rooms310 = [
     number: 'Restaurante U',
     name: 'Restaurante Universitario',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -88,6 +97,7 @@ final List<Room> rooms310 = [
     number: 'Aulas (Piso 1)',
     name: 'Aulas de Clase (Piso 1)',
     floor: 'Piso 1',
+    category: 'Aulas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -95,6 +105,7 @@ final List<Room> rooms310 = [
     number: 'Auditorio 1',
     name: 'Auditorio 1',
     floor: 'Piso 1',
+    category: 'Auditorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -102,6 +113,7 @@ final List<Room> rooms310 = [
     number: 'Auditorio 2',
     name: 'Auditorio 2',
     floor: 'Piso 1',
+    category: 'Auditorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -109,6 +121,7 @@ final List<Room> rooms310 = [
     number: 'Auditorio 3',
     name: 'Auditorio 3',
     floor: 'Piso 1',
+    category: 'Auditorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -116,6 +129,7 @@ final List<Room> rooms310 = [
     number: 'Auditorio 4',
     name: 'Auditorio 4',
     floor: 'Piso 1',
+    category: 'Auditorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -123,6 +137,7 @@ final List<Room> rooms310 = [
     number: 'Soporte Técnico',
     name: 'Soporte Técnico',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -130,6 +145,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Juntas',
     name: 'Sala de Juntas',
     floor: 'Piso 1',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -137,6 +153,7 @@ final List<Room> rooms310 = [
     number: 'Dirección de Bienestar',
     name: 'Dirección de Bienestar',
     floor: 'Piso 1',
+    category: 'Oficinas de Bienestar', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -144,6 +161,7 @@ final List<Room> rooms310 = [
     number: 'Baño Mujeres (segundo)',
     name: 'Baño de Mujeres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -151,6 +169,7 @@ final List<Room> rooms310 = [
     number: 'Baño Hombres (segundo)',
     name: 'Baño de Hombres (Piso 1)',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -158,6 +177,7 @@ final List<Room> rooms310 = [
     number: 'Cocina de Servicios',
     name: 'Cocina de Servicios 310',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
   Room(
@@ -165,6 +185,7 @@ final List<Room> rooms310 = [
     number: 'Auditorio Manuel Trujillo Rueda',
     name: 'Auditorio Manuel Trujillo Rueda',
     floor: 'Piso 1',
+    category: 'Auditorios', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -172,6 +193,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Videoconferencias',
     name: 'Sala de Videoconferencias',
     floor: 'Piso 1',
+    category: 'Salones Especiales', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -179,6 +201,7 @@ final List<Room> rooms310 = [
     number: 'Unidad de Informática - UFCE',
     name: 'Unidad de Informática - UFCE',
     floor: 'Piso 1',
+    category: 'Oficinas Administrativas', // Assuming this is an administrative IT unit
     isServiceRoom: false,
   ),
   Room(
@@ -186,6 +209,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Informática 1',
     name: 'Sala de Informática 1',
     floor: 'Piso 1',
+    category: 'Aulas Especializadas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -193,6 +217,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Informática 2',
     name: 'Sala de Informática 2',
     floor: 'Piso 1',
+    category: 'Aulas Especializadas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -200,6 +225,7 @@ final List<Room> rooms310 = [
     number: 'Sala de Informática 3',
     name: 'Sala de Informática 3',
     floor: 'Piso 1',
+    category: 'Aulas Especializadas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -207,6 +233,7 @@ final List<Room> rooms310 = [
     number: 'Equipo de Apoyo a la Gestión - FCE',
     name: 'Equipo de Apoyo a la Gestión - FCE - Decanatura y Vicedecanatura',
     floor: 'Piso 1',
+    category: 'Oficinas Administrativas', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -214,6 +241,7 @@ final List<Room> rooms310 = [
       number: 'Oficina ORI',
       name: 'Oficina de Programa ORI (Internacionalización)',
       floor: 'Piso 1',
+      category: 'Oficinas Administrativas', // Added category
       isServiceRoom: false,
       contact: 'Correo: ori_fcebog@unal.edu.co' // Citado de la imagen proporcionada
   ),
@@ -222,6 +250,7 @@ final List<Room> rooms310 = [
     number: 'Área Curricular Economía y Desarrollo',
     name: 'Área Curricular de Economía y Desarrollo',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'mario_garcia_molina', name: 'Mario García Molina', department: 'Economía', role: 'Director')
     ],
@@ -232,6 +261,7 @@ final List<Room> rooms310 = [
     number: 'Área Curricular Contabilidad y Finanzas',
     name: 'Área Curricular de Contabilidad y Finanzas',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'paula_andrea_navarro_perez', name: 'Paula Andrea Navarro Pérez', department: 'Contabilidad y Finanzas', role: 'Directora')
     ],
@@ -242,6 +272,7 @@ final List<Room> rooms310 = [
     number: 'Área Curricular Gestión y Organizaciones',
     name: 'Área Curricular de Gestión y Organizaciones',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'carlos_alberto_rodriguez', name: 'Carlos Alberto Rodríguez', department: 'Gestión y Organizaciones', role: 'Director')
     ],
@@ -252,6 +283,7 @@ final List<Room> rooms310 = [
     number: 'Escuela de Economía',
     name: 'Escuela de Economía',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'oscart_arturo_benavides_gonzalez', name: 'Oscar Arturo Benavides González', department: 'Economía', role: 'Director')
     ],
@@ -262,6 +294,7 @@ final List<Room> rooms310 = [
     number: 'Escuela de Administración y Contaduría Pública',
     name: 'Escuela de Administración y Contaduría Pública',
     floor: 'Piso 1',
+    category: 'Oficinas Académicas', // Added category
     professors: [
       Professor(id: 'sandra_patricia_rojas_berrio', name: 'Sandra Patricia Rojas Berrio', department: 'Administración y Contaduría Pública', role: 'Directora')
     ],
@@ -272,6 +305,7 @@ final List<Room> rooms310 = [
     number: 'CADE - FCE',
     name: 'CADE - Facultad de Ciencias Económicas',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category - CADE often functions as a student support service
     isServiceRoom: false,
   ),
   Room(
@@ -279,6 +313,7 @@ final List<Room> rooms310 = [
     number: 'Máquinas Expendedoras',
     name: 'Máquinas Expendedoras de Alimentos y Bebidas',
     floor: 'Piso 1',
+    category: 'Servicios', // Added category
     isServiceRoom: true,
   ),
 
@@ -288,6 +323,7 @@ final List<Room> rooms310 = [
     number: 'Salón 201',
     name: 'Salón de Bienestar para Estudiantes - 201',
     floor: 'Piso 2',
+    category: 'Oficinas de Bienestar', // Added category
     isServiceRoom: false,
   ),
   Room(
@@ -295,6 +331,7 @@ final List<Room> rooms310 = [
     number: 'Sala Unidad de Análisis',
     name: 'Sala Unidad de Análisis en Ciencias Económicas',
     floor: 'Piso 2',
+    category: 'Salas de Estudio', // Added category - often used for specialized analysis work/study
     isServiceRoom: false,
   ),
   Room(
@@ -302,6 +339,7 @@ final List<Room> rooms310 = [
     number: 'Paredes para Rayar con Tiza',
     name: 'Paredes Interactivas para Rayar con Tiza',
     floor: 'Piso 2',
-    isServiceRoom: true, // Considerado un "servicio" interactivo
+    category: 'Salas de Estudio', // Added category - as it promotes collaborative study
+    isServiceRoom: true, // Considered an interactive service/resource for study
   ),
 ];

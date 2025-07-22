@@ -7,6 +7,11 @@ import 'dart:async';
 // Importa las utilidades de horario
 import '../utils/schedule_utils.dart'; // <--- IMPORTANTE
 
+// Importa la información específica del Auditorio León de Greiff
+// Asegúrate de que esta ruta sea correcta en tu proyecto
+import '../../data/building_details_specific/auditorio_leon_details_data.dart'; // ¡NUEVA IMPORTACIÓN!
+import 'package:flutter_markdown/flutter_markdown.dart'; // Necesario para MarkdownBody
+
 class BuildingGeneralInfoTab extends StatefulWidget {
   final Building building;
   final ScrollController scrollController;
@@ -25,6 +30,7 @@ class BuildingGeneralInfoTab extends StatefulWidget {
 
 class _BuildingGeneralInfoTabState extends State<BuildingGeneralInfoTab> {
   bool _isHistoryExpanded = false;
+  bool _isTeamExpanded = false; // Nuevo estado para expandir/colapsar el equipo
   Timer? _hourlyUpdateTimer;
 
   @override
@@ -51,6 +57,10 @@ class _BuildingGeneralInfoTabState extends State<BuildingGeneralInfoTab> {
   Widget build(BuildContext context) {
     // Usa la función global getOpeningStatus
     OpeningInfo openingInfo = getOpeningStatus(widget.building.hours);
+
+    // Determina si el edificio actual es el Auditorio León de Greiff para mostrar info específica
+    final bool isAuditorioLeon = widget.building.id == 'auditorio_leon_de_greiff';
+
 
     return ListView(
       controller: widget.scrollController,
@@ -162,13 +172,18 @@ class _BuildingGeneralInfoTabState extends State<BuildingGeneralInfoTab> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    widget.building.history!,
-                    style: Theme.of(context).textTheme.bodyMedium,
-                    maxLines: _isHistoryExpanded ? null : 3,
-                    overflow: _isHistoryExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
+                  MarkdownBody( // Usamos MarkdownBody para que el formato **negrita** funcione
+                    data: widget.building.history!,
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      p: Theme.of(context).textTheme.bodyMedium, // Estilo para párrafos
+                    ),
+                    shrinkWrap: true,
+                    //maxLines: _isHistoryExpanded ? null : 3, // MarkdownBody no soporta maxLines directamente para truncar
+                    //overflow: _isHistoryExpanded ? TextOverflow.visible : TextOverflow.ellipsis,
                   ),
-                  if (widget.building.history!.length > 300)
+                  // Se puede implementar un "leer más" si es necesario, pero MarkdownBody no lo hace automáticamente
+                  // como un Text normal. Para un texto largo, mostrar todo o implementar una lógica de corte manual.
+                  if (widget.building.history!.length > 300) // Mostrar "Leer más" si el texto es largo
                     Align(
                       alignment: Alignment.centerRight,
                       child: Text(
@@ -183,6 +198,47 @@ class _BuildingGeneralInfoTabState extends State<BuildingGeneralInfoTab> {
               ),
             ),
           ),
+        const SizedBox(height: 16),
+
+        // NUEVA SECCIÓN: Equipo de Trabajo (solo para el Auditorio León de Greiff)
+        if (isAuditorioLeon) // Mostrar solo si es el Auditorio León de Greiff
+          InfoSection(
+            title: 'Equipo de Trabajo',
+            icon: Icons.people_alt, // Un icono apropiado para el equipo
+            accentColor: widget.accentColor,
+            content: GestureDetector(
+              onTap: () {
+                setState(() {
+                  _isTeamExpanded = !_isTeamExpanded;
+                });
+              },
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  MarkdownBody(
+                    data: teamAuditorioLeon, // ¡Usamos la nueva constante!
+                    styleSheet: MarkdownStyleSheet.fromTheme(Theme.of(context)).copyWith(
+                      p: Theme.of(context).textTheme.bodyMedium,
+                      listBullet: Theme.of(context).textTheme.bodyMedium, // Para listas
+                    ),
+                    shrinkWrap: true,
+                  ),
+                  if (teamAuditorioLeon.length > 300) // O ajusta la lógica de expansión según el contenido
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: Text(
+                        _isTeamExpanded ? 'Mostrar menos' : 'Leer más',
+                        style: TextStyle(
+                          color: widget.accentColor,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                ],
+              ),
+            ),
+          ),
+        // FIN NUEVA SECCIÓN
       ],
     );
   }

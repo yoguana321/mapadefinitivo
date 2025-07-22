@@ -16,18 +16,20 @@ final List<Room> rooms409 = [
   Room(
     id: '409-1-lab',
     number: 'Laboratorio',
-    name: 'Prácticas de Hidráulica',
+    name: 'Laboratorio de Prácticas de Hidráulica (Piso 1)',
     floor: 'Piso 1',
-    isServiceRoom: true,
+    isServiceRoom: false, // Laboratories are generally not service rooms
+    category: 'Laboratorio',
   ),
 
   // --- SEGUNDO PISO ---
   Room(
     id: '409-2-lab',
     number: 'Laboratorio',
-    name: 'Prácticas de Hidráulica',
+    name: 'Laboratorio de Prácticas de Hidráulica (Piso 2)',
     floor: 'Piso 2',
-    isServiceRoom: true,
+    isServiceRoom: false, // Laboratories are generally not service rooms
+    category: 'Laboratorio',
   ),
   Room(
     id: '409-2-oficina-202a',
@@ -35,49 +37,55 @@ final List<Room> rooms409 = [
     name: 'Oficina 202a',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Oficina',
   ),
 
   // --- TERCER PISO ---
   Room(
     id: '409-3-banos',
     number: 'Baños',
-    name: 'Baños',
+    name: 'Baños (Piso 3)',
     floor: 'Piso 3',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '409-3-oficina-301',
     number: 'Oficina 301',
-    name: 'Oficina de Profesor',
+    name: 'Oficina de Profesor 301',
     floor: 'Piso 3',
     professors: [
       Professor(id: 'nestor_alonso_mancipe_munoz', name: 'Néstor Alonso Mancipe Muñoz', department: 'Ingeniería Civil y Agrícola'),
     ],
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-oficina-302',
     number: 'Oficina 302',
-    name: 'Oficina de Profesor',
+    name: 'Oficina de Profesor 302',
     floor: 'Piso 3',
     professors: [
       Professor(id: 'oscar_julian_quiroga_garzon', name: 'Óscar Julián Quiroga Garzón', department: 'Ingeniería Civil y Agrícola'),
     ],
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-oficinas-303-304',
     number: 'Oficinas 303 y 304',
-    name: 'Oficinas de Docentes',
+    name: 'Oficinas de Docentes (303 y 304)',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-oficinas-305-306',
     number: 'Oficinas 305 y 306',
-    name: 'Oficinas de Docentes',
+    name: 'Oficinas de Docentes (305 y 306)',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-auditorio-307',
@@ -85,6 +93,7 @@ final List<Room> rooms409 = [
     name: 'Auditorio 307',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Auditorio',
   ),
   Room(
     id: '409-3-sala-profesores-308',
@@ -92,6 +101,7 @@ final List<Room> rooms409 = [
     name: 'Sala de Profesores 308',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Sala de Profesores',
   ),
   Room(
     id: '409-3-salon-pregrado-309',
@@ -99,28 +109,31 @@ final List<Room> rooms409 = [
     name: 'Salón Pregrado 309',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Aula',
   ),
   Room(
     id: '409-3-oficina-310',
     number: 'Oficina 310',
-    name: 'Oficina de Profesores',
+    name: 'Oficina de Profesores 310',
     floor: 'Piso 3',
     professors: [
       Professor(id: 'adriana_patricia_pina', name: 'Adriana Patricia Piña Fulano', department: 'Ingeniería Civil y Agrícola'),
       Professor(id: 'mario_enrique_moreno', name: 'Mario Enrique Moreno Castiblanco', department: 'Ingeniería Civil y Agrícola'),
     ],
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-oficina-311',
     number: 'Oficina 311',
-    name: 'Oficina de Profesores',
+    name: 'Oficina de Profesores 311',
     floor: 'Piso 3',
     professors: [
       Professor(id: 'rafael_orlando_ortiz', name: 'Rafael Orlando Ortiz Mosquera', department: 'Ingeniería Civil y Agrícola'),
       Professor(id: 'erasmo_alfredo_rodriguez', name: 'Erasmo Alfredo Rodríguez Sandoval', department: 'Ingeniería Civil y Agrícola'),
     ],
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '409-3-salon-posgrado-312',
@@ -128,16 +141,18 @@ final List<Room> rooms409 = [
     name: 'Salón de Posgrado 312',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Aula de Posgrado',
   ),
   Room(
     id: '409-3-oficina-313',
     number: 'Oficina 313',
-    name: 'Oficina de Profesor',
+    name: 'Oficina de Profesor 313',
     floor: 'Piso 3',
     professors: [
       Professor(id: 'leonardo_david_donado', name: 'Leonardo David Donado Garzón', department: 'Ingeniería Civil y Agrícola'),
     ],
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
 ];
 

@@ -15,7 +15,7 @@ class Room {
   final bool? isServiceRoom; // Indica si es una sala de servicio (ej. baños, cafetería)
   final bool? isAccessible; // Indica si es accesible para personas con movilidad reducida
   final Map<String, String>? scheduleMap; // Horario de la sala como Map<String, String>
-
+  final String? category;
   Room({
     required this.id,
     required this.number,
@@ -29,6 +29,7 @@ class Room {
     this.isServiceRoom,
     this.isAccessible,
     this.scheduleMap,
+    this.category,
   });
 
   // Factory constructor para crear una instancia de Room desde un Map

@@ -161,24 +161,39 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     final theme = Theme.of(context);
     final Color accentColor = _currentBuilding.markerColor ?? theme.colorScheme.primary;
 
-    final List<String> distinctFloors = _currentBuilding.rooms
-        ?.where((room) => room.floor != 'General' && room.floor.isNotEmpty && !(room.isServiceRoom ?? false))
-        .map((room) => room.floor)
+    // Obtener áreas distintas y ordenarlas lógicamente
+    final List<String> areaOrder = [
+      'Áreas Generales',
+      'Sala Principal y Escenario',
+      'Áreas de Soporte',
+      'Oficinas Administrativas',
+      // Añade aquí cualquier otra área que quieras en un orden específico
+    ];
+
+    final List<String> distinctAreas = _currentBuilding.rooms
+        ?.map((room) => room.floor)
+        .where((floor) => floor.isNotEmpty)
         .toSet()
         .toList() ?? [];
 
-    distinctFloors.sort((a, b) {
-      final numA = int.tryParse(a.replaceAll(RegExp(r'[^0-9]'), ''));
-      final numB = int.tryParse(b.replaceAll(RegExp(r'[^0-9]'), ''));
-      if (numA != null && numB != null) {
-        return numA.compareTo(numB);
+    distinctAreas.sort((a, b) {
+      int indexA = areaOrder.indexOf(a);
+      int indexB = areaOrder.indexOf(b);
+
+      if (indexA != -1 && indexB != -1) {
+        return indexA.compareTo(indexB);
+      } else if (indexA != -1) { // 'a' está en el orden, 'b' no, 'a' va primero
+        return -1;
+      } else if (indexB != -1) { // 'b' está en el orden, 'a' no, 'b' va primero
+        return 1;
       }
-      return a.compareTo(b);
+      return a.compareTo(b); // Fallback a orden alfabético para áreas no definidas
     });
+
 
     final List<Tab> tabLabels = [
       const Tab(text: 'Información'),
-      ...distinctFloors.map((floor) => Tab(text: floor)),
+      ...distinctAreas.map((area) => Tab(text: area)), // Usamos las áreas como pestañas
       if (_currentBuilding.specialServices != null && _currentBuilding.specialServices!.isNotEmpty)
         const Tab(text: 'Servicios Especiales'),
     ];
@@ -207,7 +222,6 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      // VISTA MEJORADA PARA LA CATEGORÍA
                       Container(
                         padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
                         decoration: BoxDecoration(
@@ -326,14 +340,13 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                                 onRoomUpdated: _updateSpecialServiceInBuilding,
                               );
                             } else {
-                              final List<Room> floorRooms = _currentBuilding.rooms
-                                  ?.where((room) =>
-                              room.floor == tabText &&
-                                  (room.isServiceRoom == null || room.isServiceRoom == false))
+                              // Esto maneja ahora las pestañas de 'áreas' (antes 'pisos')
+                              final List<Room> areaRooms = _currentBuilding.rooms
+                                  ?.where((room) => room.floor == tabText) // Filtra por la nueva 'área'
                                   .toList() ?? [];
                               return BuildingRoomsTab(
                                 building: _currentBuilding,
-                                rooms: floorRooms,
+                                rooms: areaRooms, // Envía las rooms del área
                                 scrollController: scrollController,
                                 accentColor: accentColor,
                                 onRoomUpdated: _updateRoomInBuilding,

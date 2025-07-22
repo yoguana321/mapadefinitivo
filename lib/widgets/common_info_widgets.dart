@@ -51,6 +51,7 @@ class InfoRow extends StatelessWidget {
   final String value; // Valor, e.g., '310-123-4567'
   final Color color; // Color del icono y etiqueta
   final bool isLink; // Si el valor es un enlace clickeable
+  final double iconIndent; // <--- ADDED: Indent for the whole row
 
   const InfoRow({
     Key? key,
@@ -59,12 +60,14 @@ class InfoRow extends StatelessWidget {
     required this.value,
     required this.color,
     this.isLink = false,
+    this.iconIndent = 0.0, // <--- ADDED: Default value
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4.0),
+      // Apply iconIndent to the left padding
+      padding: EdgeInsets.fromLTRB(iconIndent, 4.0, 0.0, 4.0), // Use iconIndent here
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

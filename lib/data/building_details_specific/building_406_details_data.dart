@@ -1,5 +1,3 @@
-// lib/data/building_details_specific/building_406_details_data.dart
-
 import '/models/room.dart';
 import '/models/professor.dart';
 
@@ -29,6 +27,7 @@ final List<Room> rooms406 = [
     name: 'Máquinas Expendedoras',
     floor: 'Piso 1',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '406-1-bano-mujeres',
@@ -36,6 +35,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Mujeres',
     floor: 'Piso 1',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '406-1-bano-hombres',
@@ -43,6 +43,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Hombres',
     floor: 'Piso 1',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '406-1-sala-computo-101',
@@ -50,6 +51,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Cómputo 101',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Sala de Cómputo',
   ),
   Room(
     id: '406-1-lab-estructuras-101',
@@ -57,6 +59,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras 101',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-lab-pavimentos',
@@ -64,6 +67,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Pavimentos',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-lab-estructuras-cementos',
@@ -71,6 +75,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras - Cementos',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-mecanica-solidos-103',
@@ -78,6 +83,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Mecánica de Sólidos 103',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-sala-computo-104',
@@ -85,6 +91,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Cómputo 104',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Sala de Cómputo',
   ),
   Room(
     id: '406-1-posgrado-estructuras-106',
@@ -92,6 +99,7 @@ final List<Room> rooms406 = [
     name: 'Oficina Posgrado Estructuras 106',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Oficina de Posgrado',
   ),
   Room(
     id: '406-1-lab-estructuras-agregados-concretos',
@@ -99,6 +107,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras - Agregados y Concretos',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-lab-suelos',
@@ -106,6 +115,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Suelos',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-1-lab-ingenieria-ambiental',
@@ -113,13 +123,15 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Ingeniería Ambiental',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '406-1-direccion-iei',
-    number: 'Dirección IEI',
+    id: '406-1-direccion-iei-general',
+    number: 'Dirección IEI (General)',
     name: 'Dirección Instituto de Ensayos e Investigaciones (IEI)',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Oficina Administrativa',
   ),
 
   // --- SEGUNDO PISO ---
@@ -129,6 +141,7 @@ final List<Room> rooms406 = [
     name: 'Dirección Instituto de Ensayos e Investigaciones (IEI) - Oficina 218',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Oficina Administrativa',
   ),
   Room(
     id: '406-2-unidad-ensayos-iei-secretaria-201',
@@ -136,6 +149,7 @@ final List<Room> rooms406 = [
     name: 'Unidad de Ensayos IEI - Secretaría 201',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Oficina Administrativa',
   ),
   Room(
     id: '406-2-profesores-catedra-202',
@@ -143,6 +157,7 @@ final List<Room> rooms406 = [
     name: 'Oficina de Profesores de Cátedra 202',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-sala-profesores-226',
@@ -150,6 +165,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Profesores 226',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Sala de Profesores',
   ),
   Room(
     id: '406-2-lab-ambiental-area-ensayos',
@@ -157,6 +173,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio Ambiental - Área de Ensayos',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-2-lab-operaciones-procesos',
@@ -164,6 +181,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Operaciones y Procesos',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-2-sala-reuniones',
@@ -171,6 +189,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Reuniones (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Sala de Reuniones',
   ),
   Room(
     id: '406-2-lab-ingenieria-ambiental-agua-potable',
@@ -178,6 +197,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Ingeniería Ambiental - Agua Potable',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '406-2-bano-mujeres',
@@ -185,6 +205,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Mujeres (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '406-2-bano-hombres',
@@ -192,6 +213,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Hombres (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: true,
+    category: 'Servicio',
   ),
   Room(
     id: '406-2-prof-felix-hernandez-214',
@@ -202,6 +224,7 @@ final List<Room> rooms406 = [
       Professor(id: 'felix_hernandez', name: 'Ingeniero Félix Hernández Rodríguez', department: 'IEI'),
       Professor(id: 'nelson_pinzon', name: 'Ingeniero Nelson Pinzon Casallas', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-luis-enrique-giltorres-212',
@@ -212,6 +235,7 @@ final List<Room> rooms406 = [
       Professor(id: 'luis_giltorres', name: 'Ingeniero Luis Enrique Giltorres', department: 'IEI'),
       Professor(id: 'mauricio_tapia', name: 'Ingeniero Mauricio Alberto Tapia Camacho', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-juan-manuel-lizarazo-210',
@@ -222,6 +246,7 @@ final List<Room> rooms406 = [
       Professor(id: 'juan_lizarazo', name: 'Ingeniero Juan Manuel Lizarazo Marriaga', department: 'IEI'),
       Professor(id: 'julian_puerto', name: 'Ingeniero Julian David Puerto Suárez', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-secretaria-area-curricular-ing-civil-agricola-207',
@@ -229,6 +254,7 @@ final List<Room> rooms406 = [
     name: 'Secretaría de Área Curricular Ingeniera Civil y Agrícola 207',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Secretaría',
   ),
   Room(
     id: '406-2-prof-octavio-coronado-205',
@@ -239,6 +265,7 @@ final List<Room> rooms406 = [
       Professor(id: 'octavio_coronado', name: 'Ingeniero Octavio Coronado García', department: 'IEI'),
       Professor(id: 'mario_torres', name: 'Ingeniero Mario Camilo Torres Suárez', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-ricardo-leon-parra-206',
@@ -249,6 +276,7 @@ final List<Room> rooms406 = [
       Professor(id: 'ricardo_parra', name: 'Ingeniero Ricardo León Parra Arango', department: 'IEI'),
       Professor(id: 'maritzabel_molina', name: 'Ingeniera Maritzabel Molina Herrera', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-julio-esteban-colmenares-208',
@@ -259,6 +287,7 @@ final List<Room> rooms406 = [
       Professor(id: 'julio_colmenares', name: 'Ingeniero Julio Esteban Colmenares', department: 'IEI'),
       Professor(id: 'guillermo_avila', name: 'Ingeniero Guillermo Eduardo Ávila Álvarez', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-carol-murillo-204',
@@ -269,6 +298,7 @@ final List<Room> rooms406 = [
       Professor(id: 'carol_murillo', name: 'Ingeniera Carol Andrea Murillo Feo', department: 'IEI'),
       Professor(id: 'ferney_bethanco', name: 'Ingeniero Ferney Bethanco Cardozo', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-centros-documentacion-geotecnia-203',
@@ -276,6 +306,7 @@ final List<Room> rooms406 = [
     name: 'Centros de Documentación Geotecnia 203',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Centro de Documentación',
   ),
   Room(
     id: '406-2-prof-carlos-julio-collazos-233',
@@ -286,6 +317,7 @@ final List<Room> rooms406 = [
       Professor(id: 'carlos_collazos', name: 'Ing. Carlos Julio Collazós Chaves', department: 'IEI'),
       Professor(id: 'hector_garcia', name: 'Ing. Hector Manuel García Lozada', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-quim-martha-cristina-bustos-235',
@@ -295,6 +327,7 @@ final List<Room> rooms406 = [
     professors: [
       Professor(id: 'martha_bustos', name: 'Quim. Martha Cristina Bustos Lopez', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-gabriela-arrieta-237',
@@ -304,6 +337,7 @@ final List<Room> rooms406 = [
     professors: [
       Professor(id: 'gabriela_arrieta', name: 'Prof. Gabriela Arrieta Loyo', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   Room(
     id: '406-2-prof-leonei-vega-239',
@@ -314,6 +348,7 @@ final List<Room> rooms406 = [
       Professor(id: 'leonei_vega', name: 'Ing. Leonei Vega Mora', department: 'IEI'),
       Professor(id: 'otoniel_sanabria', name: 'Ing. Otoniel Alfonso Sanabria', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   // --- TERCER PISO ---
   Room(
@@ -322,6 +357,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Estudiantes 302',
     floor: 'Piso 3',
     isServiceRoom: false,
+    category: 'Sala de Estudiantes',
   ),
   Room(
     id: '406-3-prof-dorian-luis-linero-301',
@@ -332,6 +368,7 @@ final List<Room> rooms406 = [
       Professor(id: 'dorian_linero', name: 'Ing. Dorian Luis Linero Segrera', department: 'IEI'),
       Professor(id: 'caori_takeuchi', name: 'Ing. Caori Patricia Takeuchi Tan', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
   // --- CUARTO PISO ---
   Room(
@@ -342,5 +379,6 @@ final List<Room> rooms406 = [
     professors: [
       Professor(id: 'jose_martinez', name: 'Ing. Jose Ricardo Martinez Vargas', department: 'IEI'),
     ],
+    category: 'Oficina de Profesores',
   ),
 ];

@@ -1,25 +1,24 @@
-// lib/data/building_details_specific/building_411_details_data.dart
-
 import '/models/room.dart';
 import '/models/professor.dart';
 
-const String info411 = 'El Edificio 411, o Patios de Ingeniería, es un centro histórico con laboratorios clave de telecomunicaciones, ensayos eléctricos y más. Recientemente renovado, sigue siendo un pilar para la formación e investigación en ingeniería.';
+const String info411 = 'El Edificio 411, conocido como Patios de Ingeniería, es un espacio fundamental para la investigación y las prácticas en diversas ramas de la ingeniería, incluyendo laboratorios especializados, aulas de pregrado y posgrado, y oficinas para profesores.';
 const String history411 = '''
-El Edificio 411, popularmente conocido como Patios de Ingeniería, se construyó en la década de 1940, formando parte integral del conjunto original de la Ciudad Universitaria de la Universidad Nacional de Colombia en Bogotá. Desde sus inicios, ha sido un pilar para la ingeniería, albergando laboratorios fundamentales como los de telecomunicaciones y ensayos eléctricos.
+El Edificio 411, popularmente conocido como Patios de Ingeniería, fue construido en la década de 1940, formando parte del conjunto original de edificaciones que conformaron la naciente Ciudad Universitaria de la Universidad Nacional de Colombia en Bogotá. Históricamente, este edificio ha albergado laboratorios cruciales para el desarrollo de la ingeniería en el país, incluyendo áreas como telecomunicaciones y ensayos eléctricos.
 
-En años recientes, el edificio ha sido objeto de importantes renovaciones, incorporando mejoras estructurales y tecnológicas que lo modernizan, a la vez que conservan su invaluable valor patrimonial. Hoy en día, el 411 continúa siendo un espacio esencial para la formación académica de alta calidad y la investigación avanzada en diversas ramas de la ingeniería.
+En años recientes, el Edificio 411 ha sido objeto de significativas renovaciones que han mejorado su infraestructura y capacidad tecnológica, a la vez que se ha procurado conservar su invaluable valor patrimonial. Hoy en día, sigue siendo un espacio vital y dinámico para la formación académica, la investigación y la innovación en diversas disciplinas de la ingeniería.
 ''';
 const Map<String, String> hours411 = {
-  'Lunes': '06:00 - 22:00',
-  'Martes': '06:00 - 22:00',
-  'Miércoles': '06:00 - 22:00',
-  'Jueves': '07:00 - 02:00',
-  'Viernes': '07:00 - 02:00',
-  'Sábado': '07:00 - 02:00',
-  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
-  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+  'Lunes': '07:00 - 22:00', // DEJAN ABIERTAS SALAS DE PRACTICA
+  'Martes': '07:00 - 22:00', // DEJAN ABIERTAS SALAS DE PRACTICA
+  'Miércoles': '07:00 - 22:00', // DEJAN ABIERTAS SALAS DE PRACTICA
+  'Jueves': '07:00 - 14:00',
+  'Viernes': '07:00 - 14:00',
+  'Sábado': 'Cerrado', // Asumiendo cerrado si no se especifica.
+  'Domingo': 'Cerrado', // Asumiendo cerrado.
+  'Feriado': 'Cerrado', // Asumiendo cerrado.
 };
-const String contactInfo411 = 'Contacto: Secretaría de la Facultad de Ingeniería. [Número Real], Correo: [Correo Real]';
+const String contactInfo411 = 'Contacto: Área Curricular de Ingeniería Eléctrica y Electrónica. \nCorreo electrónico: Por definir. \nTeléfono: Por definir.';
+
 
 final List<Room> rooms411 = [
   // --- PRIMER PISO ---
@@ -29,217 +28,347 @@ final List<Room> rooms411 = [
     name: 'Almacén (Préstamo de materiales)',
     floor: 'Piso 1',
     isServiceRoom: true,
+    category: 'Almacén',
   ),
   Room(
-    id: '411-1-labe-102c',
-    number: 'LABE 102C',
-    name: 'Laboratorio de Ensayos Eléctricos e Industriales LABE 102C',
+    id: '411-1-lab-ensayos-electricos-industriales-102c',
+    number: 'Laboratorio 102C',
+    name: 'Laboratorio Ensayos Eléctricos e Industriales LABE',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-emd-101',
-    number: 'EM&D 101',
-    name: 'Laboratorio EM&D 101',
+    number: 'Sala 101',
+    name: 'Espacio EM&D 101',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Espacio Académico',
   ),
   Room(
     id: '411-1-emd-102d',
-    number: 'EM&D 102D',
-    name: 'Laboratorio EM&D 102D',
+    number: 'Sala 102D',
+    name: 'Espacio EM&D 102D',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Espacio Académico',
   ),
   Room(
     id: '411-1-lab-alta-tension-113',
-    number: 'Lab. Alta Tensión 113',
-    name: 'Laboratorio de Alta Tensión 113',
+    number: 'Laboratorio 113',
+    name: 'Laboratorio de Alta Tensión',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-electronica-analoga-112',
-    number: 'Lab. Electrónica Análoga 112',
-    name: 'Laboratorio de Electrónica Análoga 112',
+    number: 'Laboratorio 112',
+    name: 'Laboratorio de Electrónica Análoga',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '411-1-lab-ing-agricola-100',
-    number: 'Lab. Ing. Agrícola 100',
+    id: '411-1-lab-ingenieria-agricola-100',
+    number: 'Laboratorio 100',
     name: 'Laboratorio 100 Ingeniería Agrícola',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-automatizacion-maquinas-108',
-    number: 'Lab. Automatización 108',
-    name: 'Laboratorio Automatización de Máquinas 108',
+    number: 'Laboratorio 108',
+    name: 'Laboratorio Automatización de Máquinas',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '411-1-lab-microprocesadores-107',
-    number: 'Lab. Microprocesadores 107',
+    id: '411-1-lab-microprocesadores-107-a', // Adjusted ID for uniqueness
+    number: 'Laboratorio 107',
     name: 'Laboratorio de Microprocesadores 107',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-electronica-potencia-115',
-    number: 'Lab. Electrónica Potencia 115',
-    name: 'Laboratorio Electrónica de Potencia 115',
+    number: 'Laboratorio 115',
+    name: 'Laboratorio Electrónica de Potencia',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-instrumentacion-116',
-    number: 'Lab. Instrumentación 116',
-    name: 'Laboratorio de Instrumentación 116',
+    number: 'Laboratorio 116',
+    name: 'Laboratorio de Instrumentación',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-maquinas-electricas-114',
-    number: 'Lab. Máquinas Eléctricas 114',
-    name: 'Laboratorio de Máquinas Eléctricas 114',
+    number: 'Laboratorio 114',
+    name: 'Laboratorio de Máquinas Eléctricas',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-compatibilidad-electromagnetica-118',
-    number: 'Lab. Compatibilidad 118',
-    name: 'Laboratorio Compatibilidad Electromagnética 118',
+    number: 'Laboratorio 118',
+    name: 'Laboratorio Compatibilidad Electromagnética',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-ieee-117',
-    number: 'IEEE 117',
-    name: 'Oficina IEEE 117',
+    number: 'Oficina 117',
+    name: 'I.E.E.E. (Rama Estudiantil)',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Oficina de Grupo Estudiantil',
   ),
   Room(
-    id: '411-1-lab-maquinas-herramientas-107',
-    number: 'Lab. Máquinas y Herramientas 107',
+    id: '411-1-lab-maquinas-herramientas-107-b', // Adjusted ID for uniqueness
+    number: 'Laboratorio 107',
     name: 'Laboratorio Máquinas y Herramientas 107',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-metrologia-106',
-    number: 'Lab. Metrología 106',
-    name: 'Laboratorio Metrología 106',
+    number: 'Laboratorio 106',
+    name: 'Laboratorio Metrología',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-transmision-calor-105',
-    number: 'Lab. Transmisión Calor 105',
-    name: 'Laboratorio Transmisión de Calor 105',
+    number: 'Laboratorio 105',
+    name: 'Laboratorio Transmisión de Calor',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-plantas-termicas-energias-renovables-104',
-    number: 'Lab. Plantas Térmicas 104',
-    name: 'Laboratorio Plantas Térmicas y Energías Renovables 104',
+    number: 'Laboratorio 104',
+    name: 'Laboratorio Plantas Térmicas y Energías Renovables',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-motores-103',
-    number: 'Lab. Motores 103',
-    name: 'Laboratorio de Motores 103',
+    number: 'Laboratorio 103',
+    name: 'Laboratorio de Motores',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-1-lab-metalografia-102',
-    number: 'Lab. Metalografía 102',
-    name: 'Laboratorio Metalografía 102',
+    number: 'Laboratorio 102',
+    name: 'Laboratorio Metalografía',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '411-1-lab-mecatronica-101',
-    number: 'Lab. Mecatrónica 101',
-    name: 'Laboratorio Mecatrónica 101',
+    id: '411-1-lab-mecatronica-101', // Adjusted ID to differentiate from Em&d 101
+    number: 'Laboratorio 101',
+    name: 'Laboratorio Mecatrónica',
     floor: 'Piso 1',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
-  // Nota: La Sala 204 está en el segundo piso pero su acceso es por el primero.
-  // La incluimos en el segundo piso y se puede añadir una nota en la descripción si es necesario
-  // o en la app se puede manejar un "acceso por" especial.
+  Room(
+    id: '411-1-sala-investigacion-educacion-innovacion-204-acceso-1p',
+    number: 'Sala 204',
+    name: 'Sala 204 de Investigación en Tecnologías para la Educación y la Innovación (Acceso por el Primer Piso)',
+    floor: 'Piso 1', // Explicitly placed on 1st floor as per note, despite 204 number
+    isServiceRoom: false,
+    category: 'Sala de Investigación',
+  ),
 
   // --- SEGUNDO PISO ---
   Room(
-    id: '411-2-salon-203c',
+    id: '411-2-oficina-204-triana',
+    number: 'Oficina 204',
+    name: 'Oficina 204',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'cristian_camilo_triana', name: 'Ing. Cristian Camilo Triana Infante', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-205-mantilla-barrera',
+    number: 'Oficina 205',
+    name: 'Oficina 205',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'juan_miguel_mantilla', name: 'Ing. Juan Miguel Mantilla González', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'eduardo_barrera', name: 'Ing. Eduardo Barrera Guadrón', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-206-mendez-cardenas',
+    number: 'Oficina 206',
+    name: 'Oficina 206',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'luis_miguel_mendez', name: 'Ing. Luis Miguel Méndez Moreno', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'pedro_fabian_cardenas', name: 'Ing. Pedro Fabian Cárdenas Herrera', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-207-coordinacion-electrica',
+    number: 'Oficina 207',
+    name: 'Coordinación Curricular Eléctrica',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'hernando_diaz', name: 'Ing. Hernando Diaz Morales', department: 'Ingeniería Eléctrica'),
+      Professor(id: 'fredy_andres_olarte', name: 'Ing. Fredy Andrés Olarte Dussan', department: 'Ingeniería Eléctrica'),
+    ],
+    isServiceRoom: false,
+    category: 'Coordinación',
+  ),
+  Room(
+    id: '411-2-oficina-208-bacca-varon',
+    number: 'Oficina 208',
+    name: 'Oficina 208',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'jan_bacca', name: 'Ing. Jan Bacca Rodriguez', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'gloria_margarita_varon', name: 'Ing. Gloria Margarita Varón Duran', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-209-baquero-cortes',
+    number: 'Oficina 209',
+    name: 'Oficina 209',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'giovanny_baquero', name: 'Ing. Giovanny Baquero Rozo', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'jhon_alexander_cortes', name: 'Ing. Jhon Alexander Cortes Romero', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-210-sofrony',
+    number: 'Oficina 210',
+    name: 'Oficina 210',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'jorge_sofrony', name: 'Ing. Jorge Sofrony Esmeral', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-oficina-211-rodriguez-tibaduiza-sanchez',
+    number: 'Oficina 211',
+    name: 'Oficina 211',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'pablo_enrique_rodriguez', name: 'Ing. Pablo Enrique Rodriguez Espinoza', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'diego_alexander_tibaduiza', name: 'Ing. Diego Alexander Tibaduiza', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'carlos_eduardo_sanchez', name: 'Ing. Carlos Eduardo Sánchez', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-sala-reuniones-docentes-administrativas',
+    number: 'Sala de Reuniones',
+    name: 'SALA DE REUNIONES DOCENTES ADMINISTRATIVAS (Piso 2)',
+    floor: 'Piso 2',
+    isServiceRoom: false,
+    category: 'Sala de Reuniones',
+  ),
+  Room(
+    id: '411-2-oficina-212-eslava-camargo',
+    number: 'Oficina 212',
+    name: 'Oficina 212',
+    floor: 'Piso 2',
+    professors: [
+      Professor(id: 'johan_sebastian_eslava', name: 'Ing. Johan Sebastián Eslava Garnón', department: 'Ingeniería Eléctrica y Electrónica'),
+      Professor(id: 'carlos_ivin_camargo', name: 'Ing. Carlos Ivin Camargo Barefo', department: 'Ingeniería Eléctrica y Electrónica'),
+    ],
+    isServiceRoom: false,
+    category: 'Oficina de Profesores',
+  ),
+  Room(
+    id: '411-2-salon-203c-microelectronica',
     number: 'Salón 203C',
     name: 'Salón 203C Sala de Microeléctrica (GMUN)',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '411-2-salon-203b',
+    id: '411-2-salon-203b-investigacion-desarrollo',
     number: 'Salón 203B',
     name: 'Salón 203B Investigación y Desarrollo',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-2-lab-control-203a',
-    number: 'Lab. Control 203A',
+    number: 'Laboratorio 203A',
     name: 'Laboratorio de Control 203A',
     floor: 'Piso 2',
     isServiceRoom: false,
-  ),
-  Room(
-    id: '411-2-salon-212',
-    number: 'Salón 212',
-    name: 'Salón 212 (Johan Sebastián Eslava / Carlos Iván Camargo)',
-    floor: 'Piso 2',
-    isServiceRoom: false,
-    professors: [
-      Professor(id: 'johan_eslava', name: 'Johan Sebastián Eslava', department: 'Ingeniería', email: 'j.eslava@unal.edu.co'), // Asumiendo correos ficticios
-      Professor(id: 'carlos_camargo', name: 'Carlos Iván Camargo', department: 'Ingeniería', email: 'c.camargo@unal.edu.co'), // Asumiendo correos ficticios
-    ],
-  ),
-  Room(
-    id: '411-2-sala-fiun',
-    number: 'Sala FIUN',
-    name: 'Sala FIUN (Auditorio)',
-    floor: 'Piso 2',
-    isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-2-lab-comunicaciones-200b',
-    number: 'Lab. Comunicaciones 200B',
+    number: 'Laboratorio 200B',
     name: 'Laboratorio de Comunicaciones 200B',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-2-lab-electronica-digital-microprocesadores-202a',
-    number: 'Lab. Electrónica Digital 202A',
+    number: 'Laboratorio 202A',
     name: 'Laboratorio Electrónica Digital y Microprocesadores 202A',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
     id: '411-2-lab-circuitos-202b',
-    number: 'Lab. Circuitos 202B',
+    number: 'Laboratorio 202B',
     name: 'Laboratorio de Circuitos 202B',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Laboratorio',
   ),
   Room(
-    id: '411-2-sala-investigacion-tecnologias-educacion-innovacion-204',
-    number: 'Sala 204',
-    name: 'Sala 204 de Investigación en Tecnologías Para la Educación y la Innovación (Acceso por el Piso 1)',
+    id: '411-2-sala-fiun-auditorio',
+    number: 'Auditorio',
+    name: 'Sala FIUN (Auditorio)',
     floor: 'Piso 2',
     isServiceRoom: false,
+    category: 'Auditorio',
   ),
 ];
