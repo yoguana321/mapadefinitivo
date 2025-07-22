@@ -14,10 +14,10 @@ const Map<String, String> hours406 = {
   'Jueves': '06:00 - 22:00',
   'Viernes': '06:00 - 22:00',
   'Sábado': '07:00 - 18:00',
-  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
-  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+  'Domingo': 'Cerrado',
+  'Feriado': 'Cerrado',
 };
-const String contactInfo406 = 'Contacto IEI: insei_bog@unal.edu.co'; // Usando un correo de tu imagen, puedes añadir más.
+const String contactInfo406 = 'Contacto IEI: insei_bog@unal.edu.co';
 
 final List<Room> rooms406 = [
   // --- PRIMER PISO ---
@@ -27,7 +27,7 @@ final List<Room> rooms406 = [
     name: 'Máquinas Expendedoras',
     floor: 'Piso 1',
     isServiceRoom: true,
-    category: 'Servicio',
+    category: 'Servicios', // Cambiado de 'Servicio' a 'Servicios' para unificar
   ),
   Room(
     id: '406-1-bano-mujeres',
@@ -35,7 +35,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Mujeres',
     floor: 'Piso 1',
     isServiceRoom: true,
-    category: 'Servicio',
+    category: 'Servicios', // Cambiado de 'Servicio' a 'Servicios' para unificar
   ),
   Room(
     id: '406-1-bano-hombres',
@@ -43,7 +43,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Hombres',
     floor: 'Piso 1',
     isServiceRoom: true,
-    category: 'Servicio',
+    category: 'Servicios', // Cambiado de 'Servicio' a 'Servicios' para unificar
   ),
   Room(
     id: '406-1-sala-computo-101',
@@ -51,7 +51,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Cómputo 101',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Sala de Cómputo',
+    category: 'Aulas Especializadas', // Se mapea a esta categoría para usar laptop_mac_outlined
   ),
   Room(
     id: '406-1-lab-estructuras-101',
@@ -59,7 +59,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras 101',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-lab-pavimentos',
@@ -67,7 +67,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Pavimentos',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-lab-estructuras-cementos',
@@ -75,7 +75,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras - Cementos',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-mecanica-solidos-103',
@@ -83,7 +83,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Mecánica de Sólidos 103',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-sala-computo-104',
@@ -91,7 +91,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Cómputo 104',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Sala de Cómputo',
+    category: 'Aulas Especializadas', // Se mapea a esta categoría para usar laptop_mac_outlined
   ),
   Room(
     id: '406-1-posgrado-estructuras-106',
@@ -99,7 +99,7 @@ final List<Room> rooms406 = [
     name: 'Oficina Posgrado Estructuras 106',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Oficina de Posgrado',
+    category: 'Oficina de Posgrado', // Mantener 'Oficina de Posgrado'
   ),
   Room(
     id: '406-1-lab-estructuras-agregados-concretos',
@@ -107,7 +107,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Estructuras - Agregados y Concretos',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-lab-suelos',
@@ -115,7 +115,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Suelos',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-lab-ingenieria-ambiental',
@@ -123,7 +123,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Ingeniería Ambiental',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-1-direccion-iei-general',
@@ -131,7 +131,7 @@ final List<Room> rooms406 = [
     name: 'Dirección Instituto de Ensayos e Investigaciones (IEI)',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Oficina Administrativa',
+    category: 'Oficinas Administrativas', // Cambiado de 'Oficina Administrativa' a 'Oficinas Administrativas' para unificar
   ),
 
   // --- SEGUNDO PISO ---
@@ -141,7 +141,7 @@ final List<Room> rooms406 = [
     name: 'Dirección Instituto de Ensayos e Investigaciones (IEI) - Oficina 218',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Oficina Administrativa',
+    category: 'Oficinas Administrativas', // Cambiado
   ),
   Room(
     id: '406-2-unidad-ensayos-iei-secretaria-201',
@@ -149,7 +149,7 @@ final List<Room> rooms406 = [
     name: 'Unidad de Ensayos IEI - Secretaría 201',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Oficina Administrativa',
+    category: 'Secretaría', // Mantener 'Secretaría'
   ),
   Room(
     id: '406-2-profesores-catedra-202',
@@ -157,7 +157,7 @@ final List<Room> rooms406 = [
     name: 'Oficina de Profesores de Cátedra 202',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantener 'Oficina de Profesores'
   ),
   Room(
     id: '406-2-sala-profesores-226',
@@ -165,7 +165,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Profesores 226',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Sala de Profesores',
+    category: 'Sala de Profesores', // Mantener 'Sala de Profesores'
   ),
   Room(
     id: '406-2-lab-ambiental-area-ensayos',
@@ -173,7 +173,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio Ambiental - Área de Ensayos',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-2-lab-operaciones-procesos',
@@ -181,7 +181,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Operaciones y Procesos',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-2-sala-reuniones',
@@ -189,7 +189,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Reuniones (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Sala de Reuniones',
+    category: 'Sala de Reuniones', // Mantener 'Sala de Reuniones'
   ),
   Room(
     id: '406-2-lab-ingenieria-ambiental-agua-potable',
@@ -197,7 +197,7 @@ final List<Room> rooms406 = [
     name: 'Laboratorio de Ingeniería Ambiental - Agua Potable',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Mantener 'Laboratorios'
   ),
   Room(
     id: '406-2-bano-mujeres',
@@ -205,7 +205,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Mujeres (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: true,
-    category: 'Servicio',
+    category: 'Servicios', // Cambiado
   ),
   Room(
     id: '406-2-bano-hombres',
@@ -213,7 +213,7 @@ final List<Room> rooms406 = [
     name: 'Baño de Hombres (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: true,
-    category: 'Servicio',
+    category: 'Servicios', // Cambiado
   ),
   Room(
     id: '406-2-prof-felix-hernandez-214',
@@ -306,7 +306,7 @@ final List<Room> rooms406 = [
     name: 'Centros de Documentación Geotecnia 203',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Centro de Documentación',
+    category: 'Centro de Documentación', // Mantener 'Centro de Documentación'
   ),
   Room(
     id: '406-2-prof-carlos-julio-collazos-233',
@@ -357,7 +357,7 @@ final List<Room> rooms406 = [
     name: 'Sala de Estudiantes 302',
     floor: 'Piso 3',
     isServiceRoom: false,
-    category: 'Sala de Estudiantes',
+    category: 'Salas de Estudio', // Cambiado de 'Sala de Estudiantes' a 'Salas de Estudio'
   ),
   Room(
     id: '406-3-prof-dorian-luis-linero-301',

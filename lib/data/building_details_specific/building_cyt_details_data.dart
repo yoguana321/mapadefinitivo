@@ -1,287 +1,106 @@
-// lib/data/building_details_specific/building_cyt_details_data.dart
-
 import '/models/room.dart';
-// Mantener por si acaso, aunque no se usen profesores directamente aquí.
+import '/models/professor.dart';
 
-const String infoCYT = 'El Edificio de Ciencia y Tecnología (CYT) es una moderna construcción con enfoque bioclimático, hogar de aulas, laboratorios especializados, y una extensión de la biblioteca.';
-const String historyCYT = '''
-El edificio CYT fue construido como parte de una importante fase de renovación del campus, impulsada por la Universidad Nacional de Colombia. Su edificación fue posible gracias a una generosa donación de la Organización Luis Carlos Sarmiento Angulo, que entregó el edificio a la Universidad en el año 2008.
-
-Diseñado por el arquitecto Camilo Avellaneda, el CYT se destaca por su avanzada arquitectura bioclimática y sus principios de sostenibilidad. Alberga diversas funciones académicas y de investigación, contribuyendo significativamente a la infraestructura de ciencia y tecnología de la universidad.
-''';
+// Information for CYT - Ciencia y Tecnología Building
+const String infoCYT = 'El edificio CYT (Ciencia y Tecnología) es una estructura moderna del campus de la Universidad Nacional de Colombia, caracterizada por su arquitectura bioclimática y sostenibilidad. Fue posible gracias a una donación de la Organización Luis Carlos Sarmiento Angulo y entregado a la universidad en 2008. Alberga bibliotecas especializadas por áreas del conocimiento, aulas de estudio, auditorio, y servicios de apoyo.';
+const String historyCYT = 'El edificio CYT fue construido como parte de una fase de renovación del campus que incluyó la recuperación de edificios como la Facultad de Economía y la Biblioteca Central. Su construcción fue financiada por una donación de la Organización Luis Carlos Sarmiento Angulo, entregándose a la Universidad Nacional en 2008. Fue diseñado por el arquitecto Camilo Avellaneda, con un enfoque en la arquitectura bioclimática y la sostenibilidad.';
 const Map<String, String> hoursCYT = {
-  'Lunes': '06:00 - 22:00',
-  'Martes': '06:00 - 22:00',
-  'Miércoles': '06:00 - 22:00',
-  'Jueves': '06:00 - 22:00',
-  'Viernes': '06:00 - 22:00',
+  // Placeholder hours, actual hours would need to be confirmed.
+  'Lunes a Viernes': '06:00 - 22:00',
   'Sábado': '07:00 - 18:00',
-  'Domingo': 'Cerrado', // O puedes omitir los días cerrados si lo prefieres
-  'Feriado': 'Cerrado', // Considera un manejo para días feriados
+  'Domingo': 'Cerrado',
+  'Feriado': 'Cerrado',
 };
-const String contactInfoCYT = 'Contacto: Oficina de Administración del Edificio CYT. [Número Real], Correo: [Correo Real]';
+const String contactInfoCYT = 'Universidad Nacional de Colombia - CYT'; // Placeholder, actual contact info needed.
+
 
 final List<Room> roomsCYT = [
-  // --- NIVEL SUBTERRÁNEO ---
-  Room(
-    id: 'cyt-sub-auditorio-entrada',
-    number: 'Entrada Auditorio',
-    name: 'Entrada al Auditorio CYT',
-    floor: 'Subterráneo',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-sub-sillas',
-    number: 'Área de Sillas',
-    name: 'Zona de Espera con Sillas (Auditorio)',
-    floor: 'Subterráneo',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-sub-salida-emergencia',
-    number: 'Salida de Emergencia',
-    name: 'Salida de Emergencia (Subterráneo)',
-    floor: 'Subterráneo',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-sub-auditorio',
-    number: 'Auditorio Principal',
-    name: 'Auditorio Principal CYT',
-    floor: 'Subterráneo',
-    isServiceRoom: false,
-  ),
+  // --- SUBTERRÁNEO / SÓTANO ---
+  Room(id: 'cyt-s-entrada-auditorio', number: 'Entrada Auditorio', name: 'Entrada al Auditorio', floor: 'Subterráneo', isServiceRoom: false, category: 'Auditorios'), // Access to an auditorium
+  Room(id: 'cyt-s-sillas', number: 'Sillas (Auditorio)', name: 'Sillas del Auditorio', floor: 'Subterráneo', isServiceRoom: false, category: 'Auditorios'),
+  Room(id: 'cyt-s-salida-emergencia', number: 'Salida de Emergencia', name: 'Salida de emergencia', floor: 'Subterráneo', isServiceRoom: true, category: 'Servicios'), // General services for safety
 
-  // --- PISO 1 ---
-  Room(
-    id: 'cyt-1-auditorio',
-    number: 'Acceso Auditorio',
-    name: 'Acceso Superior al Auditorio CYT',
-    floor: 'Piso 1',
-    isServiceRoom: true, // Considera si es un acceso o parte de la sala
-  ),
-  Room(
-    id: 'cyt-1-cajero-bancolombia',
-    number: 'Cajero Bancolombia',
-    name: 'Cajero Automático Bancolombia',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-cajero-davivienda',
-    number: 'Cajero Davivienda',
-    name: 'Cajero Automático Davivienda',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-bano-mujeres-der',
-    number: 'Baño Mujeres',
-    name: 'Baño de Mujeres (Derecha)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-bano-hombres-izq',
-    number: 'Baño Hombres',
-    name: 'Baño de Hombres (Izquierda)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-estacion-emergencia',
-    number: 'Estación de Emergencia',
-    name: 'Estación de Emergencia (Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-ascensor',
-    number: 'Ascensor',
-    name: 'Ascensor (Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-punto-informacion',
-    number: 'Punto de Información',
-    name: 'Punto de Información (Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-biblioteca-entrada',
-    number: 'Biblioteca Entrada',
-    name: 'Entrada Biblioteca CYT',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-biblioteca-cargadores',
-    number: 'Puntos de Carga',
-    name: 'Puntos de Carga (Biblioteca Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-biblioteca-sillas',
-    number: 'Área de Sillas',
-    name: 'Área de Sillas (Biblioteca Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-1-biblioteca-tableros',
-    number: 'Tableros de Estudio',
-    name: 'Tableros de Estudio (Biblioteca Piso 1)',
-    floor: 'Piso 1',
-    isServiceRoom: true,
-  ),
+  // --- PRIMER PISO ---
+  Room(id: 'cyt-p1-auditorio', number: 'Auditorio', name: 'Auditorio Principal', floor: 'Piso 1', isServiceRoom: false, category: 'Auditorios'),
+  Room(id: 'cyt-p1-cajero-bancolombia', number: 'Cajero Bancolombia', name: 'Cajero Bancolombia', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'), // Banking service is a general service
+  Room(id: 'cyt-p1-cajero-davivienda', number: 'Cajero Davivienda', name: 'Cajero Davivienda', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'), // Banking service is a general service
+  Room(id: 'cyt-p1-bano-mujeres', number: 'Baño Mujeres P1', name: 'Baño mujeres (derecha)', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p1-bano-hombres', number: 'Baño Hombres P1', name: 'Baño hombres (izquierda)', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p1-estacion-emergencia', number: 'Estación de Emergencia', name: 'Estación de emergencia', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'), // Safety service is a general service
+  Room(id: 'cyt-p1-ascensor', number: 'Ascensor P1', name: 'Ascensor', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p1-punto-informacion', number: 'Punto de Información', name: 'Punto de información', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'), // User service is a general service
+  Room(id: 'cyt-p1-biblioteca-entrada', number: 'Biblioteca - Entrada', name: 'Biblioteca - Entrada', floor: 'Piso 1', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p1-biblioteca-puntos-carga', number: 'Biblioteca - Puntos de Carga', name: 'Biblioteca - Puntos de carga', floor: 'Piso 1', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p1-biblioteca-sillas', number: 'Biblioteca - Sillas', name: 'Biblioteca - Sillas', floor: 'Piso 1', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p1-biblioteca-tableros', number: 'Biblioteca - Tableros', name: 'Biblioteca - Tableros', floor: 'Piso 1', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p1-biblioteca-aula-computadores', number: 'Biblioteca - Aula de Computadores', name: 'Biblioteca - Aula de computadores (uso público)', floor: 'Piso 1', isServiceRoom: false, category: 'Sala de Cómputo'),
+  Room(id: 'cyt-p1-vestier-hombres', number: 'Vestier Hombres', name: 'Vestier de hombres', floor: 'Piso 1', isServiceRoom: true, category: 'Servicios'),
 
-  // --- PISO 2 ---
-  Room(
-    id: 'cyt-2-biblioteca',
-    number: 'Biblioteca General',
-    name: 'Biblioteca CYT',
-    floor: 'Piso 2',
-    isServiceRoom: false,
-  ),
-  Room(
-    id: 'cyt-2-mate-fisica-estadistica',
-    number: 'Área Matemáticas/Física',
-    name: 'Área de Estudio: Matemáticas, Física y Estadística',
-    floor: 'Piso 2',
-    isServiceRoom: false,
-  ),
-  Room(
-    id: 'cyt-2-aula-computadores',
-    number: 'Aula de Computadores',
-    name: 'Aula de Computadores (Uso Público)',
-    floor: 'Piso 2',
-    isServiceRoom: false,
-  ),
-  // Salones del Piso 2 (ejemplo, puedes ajustar los números según los IDs reales)
-  Room(id: 'cyt-2-sal-201', number: 'Salón 201', name: 'Salón de Clases 201', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-202', number: 'Salón 202', name: 'Salón de Clases 202', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-203', number: 'Salón 203', name: 'Salón de Clases 203', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-204', number: 'Salón 204', name: 'Salón de Clases 204', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-205', number: 'Salón 205', name: 'Salón de Clases 205', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-206', number: 'Salón 206', name: 'Salón de Clases 206', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-207', number: 'Salón 207', name: 'Salón de Clases 207', floor: 'Piso 2'),
-  Room(id: 'cyt-2-sal-208', number: 'Salón 208', name: 'Salón de Clases 208 (Grande)', floor: 'Piso 2'),
-  // Cuartos Técnicos (CT)
-  Room(id: 'cyt-2-ct-201', number: 'CT 201', name: 'Cuarto Técnico 201', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-202', number: 'CT 202', name: 'Cuarto Técnico 202', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-203', number: 'CT 203', name: 'Cuarto Técnico 203', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-204', number: 'CT 204', name: 'Cuarto Técnico 204', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-205', number: 'CT 205', name: 'Cuarto Técnico 205', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-206', number: 'CT 206', name: 'Cuarto Técnico 206', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-207', number: 'CT 207', name: 'Cuarto Técnico 207', floor: 'Piso 2', isServiceRoom: true),
-  Room(id: 'cyt-2-ct-208', number: 'CT 208', name: 'Cuarto Técnico 208', floor: 'Piso 2', isServiceRoom: true),
-  Room(
-    id: 'cyt-2-cafeteria',
-    number: 'Cafetería',
-    name: 'Cafetería (Piso 2)',
-    floor: 'Piso 2',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-2-vestier-hombres',
-    number: 'Vestier Hombres',
-    name: 'Vestier de Hombres (Piso 2)',
-    floor: 'Piso 2',
-    isServiceRoom: true,
-  ),
+  // --- SEGUNDO PISO ---
+  Room(id: 'cyt-p2-biblioteca', number: 'Biblioteca P2', name: 'Biblioteca (General)', floor: 'Piso 2', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p2-biblioteca-prestamo-devolucion', number: 'Préstamo y Devolución P2', name: 'Biblioteca - Préstamo y Devolución', floor: 'Piso 2', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p2-biblioteca-catalogo-linea', number: 'Catálogo en Línea P2', name: 'Biblioteca - Catálogo en Línea', floor: 'Piso 2', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p2-biblioteca-consulta-individual', number: 'Consulta Individual P2', name: 'Biblioteca - Consulta Individual', floor: 'Piso 2', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p2-biblioteca-consulta-grupo', number: 'Consulta en Grupo P2', name: 'Biblioteca - Consulta en Grupo', floor: 'Piso 2', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p2-biblioteca-colecciones-matematicas', number: 'Colección Matemáticas', name: 'Biblioteca - Colección Matemáticas', floor: 'Piso 2', isServiceRoom: false, category: 'Centro de Documentación'), // Specialized collection within library
+  Room(id: 'cyt-p2-biblioteca-colecciones-fisica', number: 'Colección Física', name: 'Biblioteca - Colección Física', floor: 'Piso 2', isServiceRoom: false, category: 'Centro de Documentación'), // Specialized collection within library
+  Room(id: 'cyt-p2-biblioteca-colecciones-estadistica', number: 'Colección Estadística', name: 'Biblioteca - Colección Estadística', floor: 'Piso 2', isServiceRoom: false, category: 'Centro de Documentación'), // Specialized collection within library
+  Room(id: 'cyt-p2-consulta-internet-recepcion', number: 'Recepción Internet P2', name: 'Consulta en Internet - Recepción', floor: 'Piso 2', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p2-consulta-internet-impresiones', number: 'Impresiones P2', name: 'Consulta en Internet - Impresiones', floor: 'Piso 2', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p2-aulas-estudio', number: 'Aulas de Estudio P2', name: 'Aulas de Estudio', floor: 'Piso 2', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p2-ascensor', number: 'Ascensor P2', name: 'Ascensor', floor: 'Piso 2', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p2-banos', number: 'Baños P2', name: 'Baños', floor: 'Piso 2', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p2-ct-201', number: 'CT 201', name: 'Aula CT 201 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-202', number: 'CT 202', name: 'Aula CT 202 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-203', number: 'CT 203', name: 'Aula CT 203 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-204', number: 'CT 204', name: 'Aula CT 204 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-205', number: 'CT 205', name: 'Aula CT 205 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-206', number: 'CT 206', name: 'Aula CT 206 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-207', number: 'CT 207', name: 'Aula CT 207 (24 estudiantes, 1 profesor)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p2-ct-208', number: 'CT 208', name: 'Aula CT 208 (un poco más grande)', floor: 'Piso 2', isServiceRoom: false, category: 'Aulas'),
 
-  // --- PISO 3 ---
-  Room(
-    id: 'cyt-3-biblioteca',
-    number: 'Biblioteca General',
-    name: 'Biblioteca CYT',
-    floor: 'Piso 3',
-    isServiceRoom: false,
-  ),
-  // Salones del Piso 3
-  Room(id: 'cyt-3-sal-301', number: 'Salón 301', name: 'Salón de Clases 301', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-302', number: 'Salón 302', name: 'Salón de Clases 302', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-303', number: 'Salón 303', name: 'Salón de Clases 303', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-304', number: 'Salón 304', name: 'Salón de Clases 304', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-305', number: 'Salón 305', name: 'Salón de Clases 305', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-306', number: 'Salón 306', name: 'Salón de Clases 306', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-307', number: 'Salón 307', name: 'Salón de Clases 307', floor: 'Piso 3'),
-  Room(id: 'cyt-3-sal-308', number: 'Salón 308', name: 'Salón de Clases 308 (Grande)', floor: 'Piso 3'),
-  // Cuartos Técnicos (CT)
-  Room(id: 'cyt-3-ct-301', number: 'CT 301', name: 'Cuarto Técnico 301', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-302', number: 'CT 302', name: 'Cuarto Técnico 302', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-303', number: 'CT 303', name: 'Cuarto Técnico 303', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-304', number: 'CT 304', name: 'Cuarto Técnico 304', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-305', number: 'CT 305', name: 'Cuarto Técnico 305', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-306', number: 'CT 306', name: 'Cuarto Técnico 306', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-307', number: 'CT 307', name: 'Cuarto Técnico 307', floor: 'Piso 3', isServiceRoom: true),
-  Room(id: 'cyt-3-ct-308', number: 'CT 308', name: 'Cuarto Técnico 308', floor: 'Piso 3', isServiceRoom: true),
-  Room(
-    id: 'cyt-3-bano-hombres-fondo',
-    number: 'Baño Hombres',
-    name: 'Baño de Hombres (Fondo)',
-    floor: 'Piso 3',
-    isServiceRoom: true,
-  ),
+  // --- TERCER PISO ---
+  Room(id: 'cyt-p3-biblioteca', number: 'Biblioteca P3', name: 'Biblioteca (General)', floor: 'Piso 3', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p3-biblioteca-prestamo-devolucion', number: 'Préstamo y Devolución P3', name: 'Biblioteca - Préstamo y Devolución', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p3-biblioteca-catalogo-linea', number: 'Catálogo en Línea P3', name: 'Biblioteca - Catálogo en Línea', floor: 'Piso 3', isServiceRoom: false, category: 'Centro de Documentación'),
+  Room(id: 'cyt-p3-biblioteca-consulta-individual', number: 'Consulta Individual P3', name: 'Biblioteca - Consulta Individual', floor: 'Piso 3', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p3-biblioteca-consulta-grupo', number: 'Consulta en Grupo P3', name: 'Biblioteca - Consulta en Grupo', floor: 'Piso 3', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p3-biblioteca-colecciones-biologia', number: 'Colección Biología', name: 'Biblioteca - Colección Biología', floor: 'Piso 3', isServiceRoom: false, category: 'Centro de Documentación'), // Specialized collection within library
+  Room(id: 'cyt-p3-biblioteca-colecciones-quimica', number: 'Colección Química', name: 'Biblioteca - Colección Química', floor: 'Piso 3', isServiceRoom: false, category: 'Centro de Documentación'), // Specialized collection within library
+  Room(id: 'cyt-p3-consulta-internet-recepcion', number: 'Recepción Internet P3', name: 'Consulta en Internet - Recepción', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p3-consulta-internet-impresiones', number: 'Impresiones P3', name: 'Consulta en Internet - Impresiones', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p3-aulas-estudio', number: 'Aulas de Estudio P3', name: 'Aulas de Estudio', floor: 'Piso 3', isServiceRoom: false, category: 'Salas de Estudio'),
+  Room(id: 'cyt-p3-ascensor', number: 'Ascensor P3', name: 'Ascensor', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p3-banos', number: 'Baños P3', name: 'Baños', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p3-ct-301', number: 'CT 301', name: 'Aula CT 301 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-302', number: 'CT 302', name: 'Aula CT 302 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-303', number: 'CT 303', name: 'Aula CT 303 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-304', number: 'CT 304', name: 'Aula CT 304 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-305', number: 'CT 305', name: 'Aula CT 305 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-306', number: 'CT 306', name: 'Aula CT 306 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-307', number: 'CT 307', name: 'Aula CT 307 (24 estudiantes, 1 profesor)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-ct-308', number: 'CT 308', name: 'Aula CT 308 (un poco más grande)', floor: 'Piso 3', isServiceRoom: false, category: 'Aulas'),
+  Room(id: 'cyt-p3-bano-hombres-fondo', number: 'Baño Hombres P3 Fondo', name: 'Baño hombres (al fondo)', floor: 'Piso 3', isServiceRoom: true, category: 'Servicios'),
 
-  // --- PISO 4 ---
-  Room(
-    id: 'cyt-4-biblioteca',
-    number: 'Biblioteca General',
-    name: 'Biblioteca CYT',
-    floor: 'Piso 4',
-    isServiceRoom: false,
-  ),
-  Room(
-    id: 'cyt-4-salones-computadores-proyectores',
-    number: 'Salones con Computadores',
-    name: 'Salones de Clase con Computadores y Proyectores',
-    floor: 'Piso 4',
-    isServiceRoom: false,
-  ),
-  // Cuartos Técnicos (CT)
-  Room(id: 'cyt-4-ct-401', number: 'CT 401', name: 'Cuarto Técnico 401', floor: 'Piso 4', isServiceRoom: true),
-  Room(id: 'cyt-4-ct-402', number: 'CT 402', name: 'Cuarto Técnico 402', floor: 'Piso 4', isServiceRoom: true),
-  Room(id: 'cyt-4-ct-403', number: 'CT 403', name: 'Cuarto Técnico 403', floor: 'Piso 4', isServiceRoom: true),
-  Room(id: 'cyt-4-ct-404', number: 'CT 404', name: 'Cuarto Técnico 404', floor: 'Piso 4', isServiceRoom: true),
-  Room(
-    id: 'cyt-4-lab-redes-comunicaciones',
-    number: 'Laboratorio Redes',
-    name: 'Laboratorio de Redes y Comunicaciones',
-    floor: 'Piso 4',
-    isServiceRoom: false,
-  ),
-  Room(
-    id: 'cyt-4-bano-mujeres-fondo',
-    number: 'Baño Mujeres',
-    name: 'Baño de Mujeres (Fondo)',
-    floor: 'Piso 4',
-    isServiceRoom: true,
-  ),
+  // --- CUARTO PISO ---
+  Room(id: 'cyt-p4-biblioteca', number: 'Biblioteca P4', name: 'Biblioteca (General)', floor: 'Piso 4', isServiceRoom: false, category: 'Centro de Documentación'), // Implied by "TODOS LOS PISOS CON BIBLIOTECA DE 1-4"
+  Room(id: 'cyt-p4-ct-401', number: 'CT 401', name: 'Aula CT 401 (con computadores y protectores)', floor: 'Piso 4', isServiceRoom: false, category: 'Aulas Especializadas'), // Assuming "con computadores" makes it specialized
+  Room(id: 'cyt-p4-ct-402', number: 'CT 402', name: 'Aula CT 402 (con computadores y protectores)', floor: 'Piso 4', isServiceRoom: false, category: 'Aulas Especializadas'),
+  Room(id: 'cyt-p4-ct-403', number: 'CT 403', name: 'Aula CT 403 (con computadores y protectores)', floor: 'Piso 4', isServiceRoom: false, category: 'Aulas Especializadas'),
+  Room(id: 'cyt-p4-ct-404', number: 'CT 404', name: 'Aula CT 404 (con computadores y protectores)', floor: 'Piso 4', isServiceRoom: false, category: 'Aulas Especializadas'),
+  Room(id: 'cyt-p4-laboratorio-redes-comunicaciones', number: 'Laboratorio de Redes y Comunicaciones', name: 'Laboratorio de redes y comunicaciones', floor: 'Piso 4', isServiceRoom: false, category: 'Laboratorios'),
+  Room(id: 'cyt-p4-bano-mujeres-fondo', number: 'Baño Mujeres P4 Fondo', name: 'Baño mujeres (al fondo)', floor: 'Piso 4', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p4-ascensor', number: 'Ascensor P4', name: 'Ascensor', floor: 'Piso 4', isServiceRoom: true, category: 'Servicios'),
 
-  // --- PISO 5 ---
-  Room(
-    id: 'cyt-5-terraza-cafeteria',
-    number: 'Terraza Cafetería',
-    name: 'Terraza y Cafetería (en construcción)',
-    floor: 'Piso 5',
-    isServiceRoom: true, // Es un servicio, aunque esté en construcción
-  ),
-  Room(
-    id: 'cyt-5-comedores-profesores',
-    number: 'Comedor Profesores',
-    name: 'Comedor de Profesores',
-    floor: 'Piso 5',
-    isServiceRoom: true,
-  ),
-  Room(
-    id: 'cyt-5-comedores-estudiantes',
-    number: 'Comedor Estudiantes',
-    name: 'Comedor de Estudiantes',
-    floor: 'Piso 5',
-    isServiceRoom: true,
-  ),
+  // --- QUINTO PISO ---
+  Room(id: 'cyt-p5-terraza-cafeteria-construccion', number: 'Terraza-Cafetería (en construcción)', name: 'Terraza - Cafetería (en construcción)', floor: 'Piso 5', isServiceRoom: true, category: 'Servicios'), // Treat cafeteria as a service
+  Room(id: 'cyt-p5-comedores-profesores', number: 'Comedores de Profesores', name: 'Comedores de profesores', floor: 'Piso 5', isServiceRoom: true, category: 'Servicios'), // Comedores are services
+  Room(id: 'cyt-p5-comedores-estudiantes', number: 'Comedores de Estudiantes', name: 'Comedores de estudiantes', floor: 'Piso 5', isServiceRoom: true, category: 'Servicios'), // Comedores are services
+  Room(id: 'cyt-p5-ascensor', number: 'Ascensor P5', name: 'Ascensor', floor: 'Piso 5', isServiceRoom: true, category: 'Servicios'),
+  Room(id: 'cyt-p5-banos', number: 'Baños P5', name: 'Baños', floor: 'Piso 5', isServiceRoom: true, category: 'Servicios'),
+];
+
+final List<Room> specialServicesCYT = [
+  // Any services that are notable but not tied to a specific room, or are building-wide.
+  // Most were covered as rooms.
 ];

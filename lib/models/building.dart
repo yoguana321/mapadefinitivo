@@ -26,6 +26,7 @@ class Building {
   final String? website;
   final int? totalFloors; // <<--- MANTENIDO
   final Color? accentColor; // <<--- MANTENIDO
+  final List<String> tags; // <--- ¡AÑADIDO! La nueva propiedad para etiquetas
 
   final String _searchableContent;
 
@@ -51,16 +52,18 @@ class Building {
     this.website,
     this.totalFloors, // <<--- MANTENIDO
     this.accentColor, // <<--- MANTENIDO
+    this.tags = const [], // <--- ¡AÑADIDO Y CON VALOR POR DEFECTO!
   }) : _searchableContent = _generateSearchableContent(
     name,
     info, // MANTENIDO
     history,
     rooms,
-    specialServices, // <--- AÑADIDO a la generación de contenido buscable
+    specialServices, // <--- AÑADido a la generación de contenido buscable
     hours,
     contactInfo,
     address,
     website,
+    tags, // <--- ¡AÑADIDO aquí también!
   );
 
   String get searchableContent => _searchableContent;
@@ -75,6 +78,7 @@ class Building {
       String? contactInfo,
       String? address,
       String? website,
+      List<String> tags, // <--- ¡AÑADIDO al método generador!
       ) {
     String content = '';
     content += '${name.toLowerCase()} ';
@@ -82,6 +86,17 @@ class Building {
     if (history != null) {
       content += '${history.toLowerCase()} ';
     }
+    // Añadir la categoría principal al contenido buscable
+    // Asumiendo que 'category' es una propiedad de Building, no un parámetro aquí.
+    // Si necesitas la categoría principal para la búsqueda, tendrías que pasarla como parámetro aquí
+    // o hacer que Building.searchableContent sea un getter directo si _searchableContent no existe.
+    // Por ahora, solo añadiremos las tags.
+
+    // Contenido de las tags
+    if (tags.isNotEmpty) {
+      content += '${tags.map((tag) => tag.toLowerCase()).join(' ')} ';
+    }
+
     if (hours != null) {
       hours.forEach((day, time) {
         content += '${day.toLowerCase()} ';
@@ -109,6 +124,9 @@ class Building {
         content += '${room.floor.toLowerCase()} ';
         if (room.description != null) {
           content += '${room.description!.toLowerCase()} ';
+        }
+        if (room.category != null) { // Añadir la categoría de la habitación si existe
+          content += '${room.category!.toLowerCase()} ';
         }
         if (room.capacity != null) {
           content += '${room.capacity.toString().toLowerCase()} ';
@@ -157,6 +175,9 @@ class Building {
         content += '${service.floor.toLowerCase()} ';
         if (service.description != null) {
           content += '${service.description!.toLowerCase()} ';
+        }
+        if (service.category != null) { // Añadir la categoría del servicio si existe
+          content += '${service.category!.toLowerCase()} ';
         }
         if (service.capacity != null) {
           content += '${service.capacity.toString().toLowerCase()} ';
@@ -229,6 +250,7 @@ class Building {
       website: map['website'] as String?,
       totalFloors: map['totalFloors'] as int?, // <<--- MANTENIDO en fromMap
       accentColor: map['accentColor'] != null ? Color(map['accentColor'] as int) : null, // <<--- MANTENIDO en fromMap
+      tags: (map['tags'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [], // <--- ¡AÑADIDO en fromMap!
     );
   }
 
@@ -256,6 +278,7 @@ class Building {
       'website': website,
       'totalFloors': totalFloors, // <<--- MANTENIDO en toMap
       'accentColor': accentColor?.value, // <<--- MANTENIDO en toMap
+      'tags': tags, // <--- ¡AÑADIDO en toMap!
     };
   }
 
@@ -281,6 +304,7 @@ class Building {
     String? website,
     int? totalFloors, // <<--- MANTENIDO en copyWith
     Color? accentColor, // <<--- MANTENIDO en copyWith
+    List<String>? tags, // <--- ¡AÑADIDO en copyWith!
   }) {
     return Building(
       id: id ?? this.id,
@@ -304,6 +328,7 @@ class Building {
       website: website ?? this.website,
       totalFloors: totalFloors ?? this.totalFloors, // <<--- MANTENIDO en copyWith
       accentColor: accentColor ?? this.accentColor, // <<--- MANTENIDO en copyWith
+      tags: tags ?? this.tags, // <--- ¡AÑADIDO en copyWith!
     );
   }
 }

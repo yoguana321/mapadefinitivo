@@ -13,9 +13,9 @@ const Map<String, String> hours411 = {
   'Miércoles': '07:00 - 22:00', // DEJAN ABIERTAS SALAS DE PRACTICA
   'Jueves': '07:00 - 14:00',
   'Viernes': '07:00 - 14:00',
-  'Sábado': 'Cerrado', // Asumiendo cerrado si no se especifica.
-  'Domingo': 'Cerrado', // Asumiendo cerrado.
-  'Feriado': 'Cerrado', // Asumiendo cerrado.
+  'Sábado': 'Cerrado',
+  'Domingo': 'Cerrado',
+  'Feriado': 'Cerrado',
 };
 const String contactInfo411 = 'Contacto: Área Curricular de Ingeniería Eléctrica y Electrónica. \nCorreo electrónico: Por definir. \nTeléfono: Por definir.';
 
@@ -28,7 +28,7 @@ final List<Room> rooms411 = [
     name: 'Almacén (Préstamo de materiales)',
     floor: 'Piso 1',
     isServiceRoom: true,
-    category: 'Almacén',
+    category: 'Servicios', // Cambiado de 'Almacén' a 'Servicios'
   ),
   Room(
     id: '411-1-lab-ensayos-electricos-industriales-102c',
@@ -36,7 +36,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Ensayos Eléctricos e Industriales LABE',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado de 'Laboratorio' a 'Laboratorios'
   ),
   Room(
     id: '411-1-emd-101',
@@ -44,7 +44,7 @@ final List<Room> rooms411 = [
     name: 'Espacio EM&D 101',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Espacio Académico',
+    category: 'Aulas Especializadas', // 'Espacio Académico' es genérico. Si es para prácticas específicas, 'Aulas Especializadas' es mejor.
   ),
   Room(
     id: '411-1-emd-102d',
@@ -52,7 +52,7 @@ final List<Room> rooms411 = [
     name: 'Espacio EM&D 102D',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Espacio Académico',
+    category: 'Aulas Especializadas', // Similar al anterior
   ),
   Room(
     id: '411-1-lab-alta-tension-113',
@@ -60,7 +60,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Alta Tensión',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-electronica-analoga-112',
@@ -68,7 +68,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Electrónica Análoga',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-ingenieria-agricola-100',
@@ -76,7 +76,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio 100 Ingeniería Agrícola',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-automatizacion-maquinas-108',
@@ -84,15 +84,15 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Automatización de Máquinas',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
-    id: '411-1-lab-microprocesadores-107-a', // Adjusted ID for uniqueness
+    id: '411-1-lab-microprocesadores-107-a',
     number: 'Laboratorio 107',
     name: 'Laboratorio de Microprocesadores 107',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-electronica-potencia-115',
@@ -100,7 +100,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Electrónica de Potencia',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-instrumentacion-116',
@@ -108,7 +108,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Instrumentación',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-maquinas-electricas-114',
@@ -116,7 +116,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Máquinas Eléctricas',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-compatibilidad-electromagnetica-118',
@@ -124,7 +124,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Compatibilidad Electromagnética',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-ieee-117',
@@ -132,15 +132,15 @@ final List<Room> rooms411 = [
     name: 'I.E.E.E. (Rama Estudiantil)',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Oficina de Grupo Estudiantil',
+    category: 'Oficinas de Bienestar', // 'Oficina de Grupo Estudiantil' no existe. 'Oficinas de Bienestar' podría aplicarse a grupos estudiantiles o, en su defecto, 'Oficinas Administrativas' o 'Otros Espacios'. Elegí Bienestar como la más cercana si es una "rama" que apoya a estudiantes.
   ),
   Room(
-    id: '411-1-lab-maquinas-herramientas-107-b', // Adjusted ID for uniqueness
+    id: '411-1-lab-maquinas-herramientas-107-b',
     number: 'Laboratorio 107',
     name: 'Laboratorio Máquinas y Herramientas 107',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-metrologia-106',
@@ -148,7 +148,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Metrología',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-transmision-calor-105',
@@ -156,7 +156,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Transmisión de Calor',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-plantas-termicas-energias-renovables-104',
@@ -164,7 +164,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Plantas Térmicas y Energías Renovables',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-motores-103',
@@ -172,7 +172,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Motores',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-lab-metalografia-102',
@@ -180,23 +180,23 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Metalografía',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
-    id: '411-1-lab-mecatronica-101', // Adjusted ID to differentiate from Em&d 101
+    id: '411-1-lab-mecatronica-101',
     number: 'Laboratorio 101',
     name: 'Laboratorio Mecatrónica',
     floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-1-sala-investigacion-educacion-innovacion-204-acceso-1p',
     number: 'Sala 204',
     name: 'Sala 204 de Investigación en Tecnologías para la Educación y la Innovación (Acceso por el Primer Piso)',
-    floor: 'Piso 1', // Explicitly placed on 1st floor as per note, despite 204 number
+    floor: 'Piso 1',
     isServiceRoom: false,
-    category: 'Sala de Investigación',
+    category: 'Salas de Estudio', // 'Sala de Investigación' no existe. Se puede agrupar en 'Salas de Estudio' si el uso principal es para investigación de estudiantes, o 'Salones Especiales' si es más para eventos o grupos. Elegí Salas de Estudio por el enfoque en "educación e innovación".
   ),
 
   // --- SEGUNDO PISO ---
@@ -209,7 +209,7 @@ final List<Room> rooms411 = [
       Professor(id: 'cristian_camilo_triana', name: 'Ing. Cristian Camilo Triana Infante', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido, mapea bien
   ),
   Room(
     id: '411-2-oficina-205-mantilla-barrera',
@@ -221,7 +221,7 @@ final List<Room> rooms411 = [
       Professor(id: 'eduardo_barrera', name: 'Ing. Eduardo Barrera Guadrón', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-oficina-206-mendez-cardenas',
@@ -233,7 +233,7 @@ final List<Room> rooms411 = [
       Professor(id: 'pedro_fabian_cardenas', name: 'Ing. Pedro Fabian Cárdenas Herrera', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-oficina-207-coordinacion-electrica',
@@ -245,7 +245,7 @@ final List<Room> rooms411 = [
       Professor(id: 'fredy_andres_olarte', name: 'Ing. Fredy Andrés Olarte Dussan', department: 'Ingeniería Eléctrica'),
     ],
     isServiceRoom: false,
-    category: 'Coordinación',
+    category: 'Oficinas Académicas', // Cambiado de 'Coordinación' a 'Oficinas Académicas'
   ),
   Room(
     id: '411-2-oficina-208-bacca-varon',
@@ -257,7 +257,7 @@ final List<Room> rooms411 = [
       Professor(id: 'gloria_margarita_varon', name: 'Ing. Gloria Margarita Varón Duran', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-oficina-209-baquero-cortes',
@@ -269,7 +269,7 @@ final List<Room> rooms411 = [
       Professor(id: 'jhon_alexander_cortes', name: 'Ing. Jhon Alexander Cortes Romero', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-oficina-210-sofrony',
@@ -280,7 +280,7 @@ final List<Room> rooms411 = [
       Professor(id: 'jorge_sofrony', name: 'Ing. Jorge Sofrony Esmeral', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-oficina-211-rodriguez-tibaduiza-sanchez',
@@ -293,7 +293,7 @@ final List<Room> rooms411 = [
       Professor(id: 'carlos_eduardo_sanchez', name: 'Ing. Carlos Eduardo Sánchez', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-sala-reuniones-docentes-administrativas',
@@ -301,7 +301,7 @@ final List<Room> rooms411 = [
     name: 'SALA DE REUNIONES DOCENTES ADMINISTRATIVAS (Piso 2)',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Sala de Reuniones',
+    category: 'Sala de Reuniones', // Mantenida, ya mapea bien
   ),
   Room(
     id: '411-2-oficina-212-eslava-camargo',
@@ -313,7 +313,7 @@ final List<Room> rooms411 = [
       Professor(id: 'carlos_ivin_camargo', name: 'Ing. Carlos Ivin Camargo Barefo', department: 'Ingeniería Eléctrica y Electrónica'),
     ],
     isServiceRoom: false,
-    category: 'Oficina de Profesores',
+    category: 'Oficina de Profesores', // Mantenido
   ),
   Room(
     id: '411-2-salon-203c-microelectronica',
@@ -321,7 +321,7 @@ final List<Room> rooms411 = [
     name: 'Salón 203C Sala de Microeléctrica (GMUN)',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Es un laboratorio, cambiado a plural
   ),
   Room(
     id: '411-2-salon-203b-investigacion-desarrollo',
@@ -329,7 +329,7 @@ final List<Room> rooms411 = [
     name: 'Salón 203B Investigación y Desarrollo',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Salas de Estudio', // Si es una sala para investigación y desarrollo de estudiantes o grupos, 'Salas de Estudio' puede aplicar. Si es más un espacio de trabajo colaborativo para proyectos, 'Salones Especiales' también sería una opción.
   ),
   Room(
     id: '411-2-lab-control-203a',
@@ -337,7 +337,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Control 203A',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-2-lab-comunicaciones-200b',
@@ -345,7 +345,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Comunicaciones 200B',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-2-lab-electronica-digital-microprocesadores-202a',
@@ -353,7 +353,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio Electrónica Digital y Microprocesadores 202A',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-2-lab-circuitos-202b',
@@ -361,7 +361,7 @@ final List<Room> rooms411 = [
     name: 'Laboratorio de Circuitos 202B',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Laboratorio',
+    category: 'Laboratorios', // Cambiado
   ),
   Room(
     id: '411-2-sala-fiun-auditorio',
@@ -369,6 +369,6 @@ final List<Room> rooms411 = [
     name: 'Sala FIUN (Auditorio)',
     floor: 'Piso 2',
     isServiceRoom: false,
-    category: 'Auditorio',
+    category: 'Auditorios', // Cambiado de 'Auditorio' a 'Auditorios'
   ),
 ];

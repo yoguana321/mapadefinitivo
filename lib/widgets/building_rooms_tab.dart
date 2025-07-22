@@ -37,7 +37,8 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
       case 'Aulas':
         return Icons.class_outlined;
       case 'Aulas Especializadas':
-        return Icons.laptop_mac_outlined; // Specific icon for computer labs
+      case 'Sala de Cómputo': // Añadir esta categoría aquí
+        return Icons.laptop_mac_outlined;
       case 'Laboratorios':
         return Icons.science_outlined;
       case 'Salas de Estudio':
@@ -47,9 +48,20 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
       case 'Oficinas Administrativas':
       case 'Oficinas Académicas':
       case 'Oficinas de Bienestar':
-        return Icons.corporate_fare_outlined;
+      case 'Oficina de Posgrado': // Añadir estas categorías
+      case 'Oficina de Profesores': // Añadir estas categorías
+      case 'Secretaría':           // Añadir estas categorías
+        return Icons.corporate_fare_outlined; // O Icons.person para profesores, etc.
       case 'Servicios':
-        return Icons.support_agent_outlined;
+        return Icons.room_service_outlined; // Un icono más específico para servicios generales
+      case 'Infraestructura': // Añadir para el 401
+        return Icons.construction_outlined;
+      case 'Sala de Reuniones': // Añadir para el 406
+        return Icons.group_work_outlined;
+      case 'Centro de Documentación': // Añadir para el 406
+        return Icons.library_books_outlined;
+      case 'Sala de Estudiantes': // Añadir para el 406
+        return Icons.group_outlined;
       default:
         return Icons.room_outlined; // General icon
     }
