@@ -16,6 +16,44 @@ import '../widgets/building_rooms_tab.dart';
 import '../widgets/building_special_services_tab.dart';
 import '../services/favorites_service.dart';
 import '../utils/schedule_utils.dart';
+import 'dart:convert';
+import 'dart:io';
+import 'dart:async';
+Future<bool> sendOriginOnlyToESP32({
+  required double currentLat,
+  required double currentLon,
+}) async {
+  try {
+    final socket = await Socket.connect('192.168.0.13', 1234, timeout: Duration(seconds: 2));
+    final message = '$currentLat,$currentLon';
+    socket.write(message);
+    await socket.flush();
+    await socket.close();
+    return true;
+  } catch (e) {
+    print("Error enviando coordenadas al ESP32: $e");
+    return false;
+  }
+}
+
+Future<bool> sendCoordinatesToESP32({
+  required double currentLat,
+  required double currentLon,
+  required double targetLat,
+  required double targetLon,
+}) async {
+  try {
+    final socket = await Socket.connect('192.168.0.13', 1234, timeout: Duration(seconds: 5));
+    final message = '$currentLat,$currentLon,$targetLat,$targetLon';
+    socket.write(message);
+    await socket.flush();
+    await socket.close();
+    return true;
+  } catch (e) {
+    print("Error sending to ESP32: $e");
+    return false;
+  }
+}
 
 void showBuildingInfo(
     BuildContext context,
@@ -253,18 +291,44 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                               padding: const EdgeInsets.symmetric(horizontal: 4.0),
                               child: ElevatedButton.icon(
                                 onPressed: () async {
-                                  if (widget.currentLocation.latitude == 0 && widget.currentLocation.longitude == 0) {
+                                  final lat = widget.currentLocation.latitude;
+                                  final lon = widget.currentLocation.longitude;
+
+                                  if (lat == 0 && lon == 0) {
                                     ScaffoldMessenger.of(context).showSnackBar(
                                       const SnackBar(content: Text('Activa la ubicación para calcular la ruta.')),
                                     );
                                     return;
                                   }
-                                  _calculateRoute(context, widget.currentLocation, _currentBuilding, widget.onRouteCalculated);
+
+                                  // Calcula la ruta en el mapa
+                                  _calculateRoute(
+                                    context,
+                                    widget.currentLocation,
+                                    _currentBuilding,
+                                    widget.onRouteCalculated,
+                                  );
+
+                                  // Envía coordenadas al ESP32
+                                  final success = await sendCoordinatesToESP32(
+                                    currentLat: lat,
+                                    currentLon: lon,
+                                    targetLat: _currentBuilding.latitude,
+                                    targetLon: _currentBuilding.longitude,
+                                  );
+
+                                  if (!success) {
+                                    ScaffoldMessenger.of(context).showSnackBar(
+                                      const SnackBar(content: Text('No se pudo enviar la ruta al ESP32.')),
+                                    );
+                                  }
                                 },
-                                icon: Icon(Icons.directions, color: theme.colorScheme.onPrimary),
+                                icon: const Icon(Icons.directions),
                                 label: Text(
                                   'Cómo llegar',
-                                  style: theme.textTheme.labelLarge?.copyWith(color: theme.colorScheme.onPrimary),
+                                  style: theme.textTheme.labelLarge?.copyWith(
+                                    color: theme.colorScheme.onPrimary,
+                                  ),
                                 ),
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: accentColor,

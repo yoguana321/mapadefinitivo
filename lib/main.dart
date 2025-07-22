@@ -1,14 +1,15 @@
 // main.dart
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
-import 'package:intl/date_symbol_data_local.dart'; // ¡Nueva importación!
+import 'package:intl/date_symbol_data_local.dart';
 import 'screens/splash_screen.dart';
 import 'screens/map_screen.dart';
 import 'widgets/theme_provider.dart';
+import 'package:latlong2/latlong.dart';
 
-void main() async { // ¡Ahora es async!
-  WidgetsFlutterBinding.ensureInitialized(); // Asegura que Flutter esté inicializado
-  await initializeDateFormatting('es', null); // Inicializa los datos de localización para español
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await initializeDateFormatting('es', null);
 
   runApp(
     ChangeNotifierProvider(
@@ -50,7 +51,8 @@ class MyApp extends StatelessWidget {
       initialRoute: '/',
       routes: {
         '/': (context) => const SplashScreen(),
-        '/map': (context) => const MapScreen(),
+        '/map': (context) =>
+            MapScreen(currentLocation: LatLng(4.6382, -74.0840)), // Campus UNAL Bogotá
       },
     );
   }
