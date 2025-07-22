@@ -35,15 +35,13 @@ final List<String> mainBuildingCategories = [
   'Aulas y Oficinas',
   'Auditorios',
   'Bibliotecas',
-  'Comedores', // Si tienes comedores, si no, considera quitarlo
-  'Oficinas', // Mantengo tu nombre original 'Oficinas'
-  'Servicios', // Mantengo tu nombre original 'Servicios'
+  'Comedores',
+  'Oficinas',
+  'Servicios',
   'Bienestar y Deportes',
-  'Laboratorios',
+  'Laboratorios', // Categoría explícita para laboratorios
   'Ciencia y Tecnología',
   'Acceso al Campus',
-  // Asegúrate de que estas categorías coincidan con las 'category' de tus Building,
-  // O con un grupo de 'tags' que representen una categoría.
 ];
 
 // Subcategorías para las Facultades (usadas para el dropdown anidado)
@@ -52,13 +50,13 @@ final Map<String, List<String>> facultySubcategories = {
   'Facultades': [
     'Todos', // Opción para ver todas las facultades cuando se selecciona "Facultades"
     'Ingeniería',
-    'Química', // Ahora 'Química' es una subcategoría de Facultad
-    'Enfermería', // Ahora 'Enfermería' es una subcategoría de Facultad
-    'Ciencias Humanas', // Para Fals Borda
-    'Ciencias Económicas', // Para Edificio 310
-    'Ciencias', // Para Edificio 404 y 564
-    // Agrega aquí todas las facultades específicas que tengas en tus 'tags'
-    // EJEMPLO: 'Medicina', 'Odontología', 'Derecho', 'Artes', 'Agronomía', 'Arquitectura'
+    'Química',
+    'Enfermería',
+    'Ciencias Humanas',
+    'Ciencias Económicas',
+    'Ciencias',
+    // Puedes añadir más facultades aquí según tus edificios:
+    // 'Arquitectura', 'Artes', 'Derecho', 'Medicina', 'Odontología', 'Agronomía', etc.
   ],
 };
 
@@ -70,7 +68,7 @@ final Building building205 = Building(
   latitude: 4.634449,
   longitude: -74.083858,
   shortName: '205-Fals Borda',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.634449, -74.083858),
   icon: Icons.school_outlined,
   imageUrls: [
@@ -85,7 +83,7 @@ final Building building205 = Building(
   specialServices: specialServices205,
   markerColor: Colors.blueGrey.shade700,
   isAccessible: true,
-  tags: ['Sociología', 'Fals Borda', 'Ciencias Humanas', 'Aula', 'Oficina', 'Facultad de Ciencias Humanas'], // Añadido 'Facultad de Ciencias Humanas' como tag
+  tags: ['Sociología', 'Fals Borda', 'Ciencias Humanas', 'Aula', 'Oficina', 'Facultad de Ciencias Humanas'], // Añadido 'Facultad de Ciencias Humanas' como tag clave
 );
 
 final Building building103 = Building(
@@ -94,7 +92,7 @@ final Building building103 = Building(
   latitude: 4.634535,
   longitude: -74.082750,
   shortName: '103-Polideportivo',
-  category: 'Bienestar y Deportes',
+  category: 'Bienestar y Deportes', // Categoría principal
   coords: LatLng(4.634535, -74.082750),
   icon: Icons.sports_gymnastics_outlined,
   imageUrls: [
@@ -108,7 +106,7 @@ final Building building103 = Building(
   specialServices: specialServices103,
   markerColor: Colors.blue.shade700,
   isAccessible: true,
-  tags: ['Deportes', 'Gimnasio', 'Cancha', 'Piscina', 'Bienestar Universitario'], // Añadido 'Bienestar Universitario'
+  tags: ['Deportes', 'Gimnasio', 'Cancha', 'Piscina', 'Bienestar Universitario'],
 );
 
 final Building building451 = Building(
@@ -117,7 +115,7 @@ final Building building451 = Building(
   latitude: 4.637513,
   longitude: -74.083951,
   shortName: '451-Química',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.637513, -74.083951),
   icon: Icons.school_outlined,
   imageUrls: [
@@ -133,7 +131,7 @@ final Building building451 = Building(
   specialServices: specialServices451,
   markerColor: Colors.teal.shade700,
   isAccessible: true,
-  tags: ['Química', 'Laboratorios', 'Facultad de Ciencias', 'Aula', 'Investigación', 'Decanatura Química'], // Tags para Química
+  tags: ['Química', 'Laboratorios', 'Facultad de Ciencias', 'Aula', 'Investigación', 'Decanatura Química'], // Añadido 'Facultad de Ciencias' como tag para alinearse con la categoría 'Ciencias' si es necesario
 );
 
 final Building building228 = Building(
@@ -142,7 +140,7 @@ final Building building228 = Building(
   latitude: 4.635318,
   longitude: -74.084828,
   shortName: '228-Enfermería',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.635318, -74.084828),
   icon: Icons.local_hospital_outlined,
   imageUrls: [
@@ -168,7 +166,7 @@ final Building building214 = Building(
   latitude: 4.633583,
   longitude: -74.084016,
   shortName: 'Edificio 214',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.633583, -74.084016),
   icon: Icons.agriculture_outlined,
   imageUrls: [
@@ -191,7 +189,7 @@ final Building building401 = Building(
   latitude: 4.637285408330863,
   longitude: -74.0828508734894,
   shortName: '401 - El Viejo',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.637288, -74.082766),
   icon: Icons.school,
   imageUrls: [
@@ -215,7 +213,7 @@ final Building building404 = Building(
   latitude: 4.637727019949239,
   longitude: -74.08244855272129,
   shortName: '404 - Yu Takeuchi',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.637783, -74.082551),
   icon: Icons.science_outlined,
   imageUrls: [
@@ -237,7 +235,7 @@ final Building building409 = Building(
   latitude: 4.638593,
   longitude: -74.081800,
   shortName: 'Edificio 409',
-  category: 'Laboratorio',
+  category: 'Laboratorio', // **Categoría principal ahora es 'Laboratorio'**
   coords: LatLng(4.638593, -74.081800),
   icon: Icons.science_outlined,
   imageUrls: [
@@ -252,7 +250,7 @@ final Building building409 = Building(
   specialServices: specialServices409,
   markerColor: Colors.cyan.shade700,
   isAccessible: true,
-  tags: ['Hidráulica', 'Laboratorio de Ingeniería', 'Investigación', 'Ingeniería Civil', 'Facultad de Ingeniería'], // Tags para 409
+  tags: ['Hidráulica', 'Laboratorio', 'Ingeniería', 'Investigación', 'Ingeniería Civil', 'Facultad de Ingeniería'], // **Tags ajustados: 'Laboratorio' genérico, 'Ingeniería' para el filtro de facultad**
 );
 
 final Building building453 = Building(
@@ -261,7 +259,7 @@ final Building building453 = Building(
   latitude: 4.638534102540316,
   longitude: -74.08369625638383,
   shortName: '453 - Guillermina Uribe BC',
-  category: 'Aulas y Oficinas',
+  category: 'Aulas y Oficinas', // Categoría principal
   coords: LatLng(4.638467, -74.083820),
   icon: Icons.business,
   imageUrls: [
@@ -283,7 +281,7 @@ final Building buildingCYT = Building(
   latitude: 4.638033035156299,
   longitude: -74.08468415090802,
   shortName: 'CYT',
-  category: 'Ciencia y Tecnología',
+  category: 'Ciencia y Tecnología', // Categoría principal
   coords: LatLng(4.638037, -74.084622),
   icon: Icons.science,
   imageUrls: [
@@ -297,18 +295,18 @@ final Building buildingCYT = Building(
   rooms: roomsCYT,
   markerColor: Colors.deepOrange.shade700,
   isAccessible: true,
-  tags: ['Ciencias', 'Ingeniería', 'Matemáticas', 'Física', 'Estadística', 'Biología', 'Química', 'Aulas', 'Laboratorios', 'Sostenibilidad', 'Auditorio', 'Cafetería', 'Comedor'], // Tags para CYT
+  tags: ['Ciencias', 'Ingeniería', 'Matemáticas', 'Física', 'Estadística', 'Biología', 'Química', 'Aulas', 'Laboratorios', 'Sostenibilidad', 'Auditorio', 'Cafetería', 'Comedor', 'Edificio de Investigación'], // Tags para CYT
 );
 
 final Building building411 = Building(
   id: '411',
-  name: '411 - Laboratorios DE INGENIERÍA',
+  name: '411 - Laboratorios de Ingeniería Electrónica y Mecánica', // Nombre más específico
   latitude: 4.639241422613168,
   longitude: -74.08261348560043,
-  shortName: '411 - lab de Ing.',
-  category: 'Laboratorio',
+  shortName: '411 - Lab Ing.',
+  category: 'Laboratorio', // **Categoría principal ahora es 'Laboratorio'**
   coords: LatLng(4.639266, -74.082567),
-  icon: Icons.engineering,
+  icon: Icons.engineering, // Icono de ingeniería o ciencia
   imageUrls: [
     'assets/images/411.jpg',
   ],
@@ -319,7 +317,7 @@ final Building building411 = Building(
   rooms: rooms411,
   markerColor: Colors.green.shade700,
   isAccessible: true,
-  tags: ['Laboratorio de Ingeniería', 'Ingeniería', 'Materiales', 'Investigación', 'Facultad de Ingeniería'], // Tags para 411
+  tags: ['Laboratorio', 'Ingeniería', 'Ingeniería Electrónica', 'Ingeniería Mecánica', 'Materiales', 'Investigación', 'Facultad de Ingeniería'], // **Tags ajustados para filtrar por 'Laboratorio' e 'Ingeniería'**
 );
 
 final Building building412 = Building(
@@ -328,7 +326,7 @@ final Building building412 = Building(
   latitude: 4.638824368769169,
   longitude: -74.08313919853724,
   shortName: '412 - Ing. Química',
-  category: 'Laboratorio',
+  category: 'Laboratorio', // **Categoría principal ahora es 'Laboratorio'**
   coords: LatLng(4.638906, -74.083144),
   icon: Icons.science_outlined,
   imageUrls: [
@@ -341,7 +339,7 @@ final Building building412 = Building(
   rooms: rooms412,
   markerColor: Colors.lightGreen.shade700,
   isAccessible: true,
-  tags: ['Ingeniería Química', 'Laboratorio', 'Investigación', 'Química', 'Facultad de Ciencias'], // Tags para 412
+  tags: ['Laboratorio', 'Ingeniería Química', 'Investigación', 'Química', 'Facultad de Ciencias'], // **Tags ajustados: 'Laboratorio' genérico, 'Química' y 'Facultad de Ciencias' para el filtro**
 );
 
 final Building auditorioLeonDeGreiff = Building(
@@ -350,7 +348,7 @@ final Building auditorioLeonDeGreiff = Building(
   latitude: 4.635742883986345,
   longitude: -74.08230380511843,
   shortName: 'Auditorio León de Greiff',
-  category: 'Auditorio',
+  category: 'Auditorio', // Categoría principal
   coords: LatLng(4.635708, -74.082302),
   icon: Icons.music_note,
   imageUrls: [
@@ -372,7 +370,7 @@ final Building auditorioLeonDeGreiff = Building(
   rooms: roomsAuditorioLeon,
   markerColor: Colors.red.shade700,
   isAccessible: true,
-  tags: ['Conciertos', 'Eventos', 'Presentaciones', 'Música', 'Cultura', 'Espacio Cultural'], // Tags para León de Greiff
+  tags: ['Conciertos', 'Eventos', 'Presentaciones', 'Música', 'Cultura', 'Espacio Cultural', 'Auditorio'], // Asegurado que 'Auditorio' está en tags
 );
 
 final Building building406 = Building(
@@ -381,7 +379,7 @@ final Building building406 = Building(
   latitude: 4.638300377692954,
   longitude: -74.0824579174865,
   shortName: '406 - IEI',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.638438, -74.082522),
   icon: Icons.architecture,
   imageUrls: [
@@ -394,16 +392,16 @@ final Building building406 = Building(
   rooms: rooms406,
   markerColor: Colors.cyan.shade700,
   isAccessible: true,
-  tags: ['IEI', 'Ingeniería', 'Facultad de Ingeniería', 'Investigación', 'Electrónica'], // Tags para 406
+  tags: ['IEI', 'Ingeniería', 'Facultad de Ingeniería', 'Investigación', 'Electrónica', 'Sistemas', 'Mecatrónica'], // Tags para 406
 );
 
 final Building building407 = Building(
   id: '407',
-  name: '407 - Postgrado en materiales',
+  name: '407 - Postgrado en Materiales y Producción', // Nombre más específico
   latitude: 4.639034412612558,
   longitude: -74.08212749221583,
   shortName: '407 - Posgrado',
-  category: 'Oficinas',
+  category: 'Oficinas', // Categoría principal
   coords: LatLng(4.639192, -74.082074),
   icon: Icons.school_outlined,
   imageUrls: [
@@ -416,7 +414,7 @@ final Building building407 = Building(
   rooms: rooms407,
   markerColor: Colors.purple.shade700,
   isAccessible: true,
-  tags: ['Posgrado', 'Materiales', 'Investigación', 'Docencia', 'Oficina', 'Facultad de Ingeniería'], // Tags para 407
+  tags: ['Posgrado', 'Materiales', 'Producción', 'Investigación', 'Docencia', 'Oficina', 'Facultad de Ingeniería'], // Tags para 407
 );
 
 final Building bibliotecaCentral = Building(
@@ -425,7 +423,7 @@ final Building bibliotecaCentral = Building(
   latitude: 4.635341559247392,
   longitude: -74.0832473319507,
   shortName: 'Biblioteca Central Gabriel G.',
-  category: 'Biblioteca',
+  category: 'Biblioteca', // Categoría principal
   coords: LatLng(4.635299, -74.083259),
   icon: Icons.local_library,
   imageUrls: [
@@ -438,7 +436,7 @@ final Building bibliotecaCentral = Building(
   rooms: roomsBibCentral,
   markerColor: Colors.teal.shade700,
   isAccessible: true,
-  tags: ['Libros', 'Estudio', 'Invidentes', 'Investigación', 'Historia', 'Archivos', 'Literatura', 'Arte', 'Arquitectura', 'Videoteca', 'Fonoteca', 'Computadores', 'Salas de Grupo', 'Servicios Estudiantiles'], // Tags para Biblioteca Central
+  tags: ['Libros', 'Estudio', 'Invidentes', 'Investigación', 'Historia', 'Archivos', 'Literatura', 'Arte', 'Arquitectura', 'Videoteca', 'Fonoteca', 'Computadores', 'Salas de Grupo', 'Servicios Estudiantiles', 'Biblioteca'], // Asegurado que 'Biblioteca' está en tags
 );
 
 final Building building310 = Building(
@@ -447,7 +445,7 @@ final Building building310 = Building(
   latitude: 4.637090964604831,
   longitude: -74.0808573104446,
   shortName: '310 - Economía',
-  category: 'Facultad',
+  category: 'Facultad', // Categoría principal
   coords: LatLng(4.637245, -74.080835),
   icon: Icons.business_center_outlined,
   imageUrls: [
@@ -460,16 +458,16 @@ final Building building310 = Building(
   rooms: rooms310,
   markerColor: Colors.teal.shade700,
   isAccessible: true,
-  tags: ['Economía', 'Facultad de Ciencias Económicas', 'Administración', 'Contaduría', 'Aula', 'Oficina', 'Decanatura Ciencias Económicas'], // Tags para 310
+  tags: ['Economía', 'Administración', 'Contaduría', 'Facultad de Ciencias Económicas', 'Aula', 'Oficina', 'Decanatura Ciencias Económicas'], // Tags para 310
 );
 
 final Building building564 = Building(
   id: '564',
-  name: '564 - EDIFICIO AULAS DE CIENCIAS',
+  name: '564 - EDIFICIO AULAS DE CIENCIAS (Gloria Amparo Galeano Garcés)', // Nombre completo
   latitude: 4.636417,
   longitude: -74.086880,
-  shortName: '564 - Gloria Amparo Galeano Garcés',
-  category: 'Aulas y Oficinas',
+  shortName: '564 - Gloria Amparo G.',
+  category: 'Facultad', // Cambiado a 'Facultad' si contiene decanaturas o es un edificio principal de una facultad. Si es solo aulas genéricas, 'Aulas y Oficinas' está bien. Lo dejé como 'Facultad' para asociarlo a 'Ciencias'.
   coords: LatLng(4.636417, -74.086880),
   icon: Icons.science_outlined,
   imageUrls: ['assets/images/564.jpg'],
@@ -480,7 +478,7 @@ final Building building564 = Building(
   rooms: rooms564,
   markerColor: Colors.purple.shade700,
   isAccessible: true,
-  tags: ['Ciencias', 'Aulas', 'Gloria Amparo Galeano Garcés', 'Matemáticas', 'Física', 'Biología', 'Química', 'Laboratorios', 'Facultad de Ciencias'], // Tags para 564
+  tags: ['Ciencias', 'Aulas', 'Gloria Amparo Galeano Garcés', 'Matemáticas', 'Física', 'Biología', 'Química', 'Laboratorios', 'Facultad de Ciencias'], // Tags para 564. 'Laboratorios' añadido.
 );
 
 // --- Entradas y Salidas del Campus ---
@@ -504,7 +502,7 @@ final Building entranceCarrera45 = Building(
   specialServices: [],
   markerColor: Colors.orange,
   isAccessible: true,
-  tags: ['Entrada', 'Salida', 'Carrera 45', 'Acceso Peatonal', 'Acceso Vehicular'],
+  tags: ['Entrada', 'Salida', 'Carrera 45', 'Acceso Peatonal', 'Acceso Vehicular', 'Campus'],
 );
 
 final Building entranceCalle26 = Building(
@@ -527,7 +525,7 @@ final Building entranceCalle26 = Building(
   specialServices: [],
   markerColor: Colors.orange,
   isAccessible: true,
-  tags: ['Entrada', 'Salida', 'Transmilenio', 'Calle 26', 'Ciudad Universitaria', 'Lotería de Bogotá', 'Acceso Peatonal', 'Acceso Vehicular'],
+  tags: ['Entrada', 'Salida', 'Transmilenio', 'Calle 26', 'Ciudad Universitaria', 'Lotería de Bogotá', 'Acceso Peatonal', 'Acceso Vehicular', 'Campus'],
 );
 
 final Building entranceCalle53 = Building(
@@ -550,7 +548,7 @@ final Building entranceCalle53 = Building(
   specialServices: [],
   markerColor: Colors.orange,
   isAccessible: true,
-  tags: ['Entrada', 'Salida', 'Calle 53', 'Icontec', 'Cubo Colsubsidio', 'Acceso Peatonal'],
+  tags: ['Entrada', 'Salida', 'Calle 53', 'Icontec', 'Cubo Colsubsidio', 'Acceso Peatonal', 'Campus'],
 );
 
 // Lista total de todos los edificios para usar en el mapa
