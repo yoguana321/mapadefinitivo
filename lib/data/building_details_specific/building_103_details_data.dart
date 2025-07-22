@@ -9,7 +9,7 @@ const Map<String, String> hours103 = {
   'Miércoles': '06:00 - 22:00',
   'Jueves': '06:00 - 22:00',
   'Viernes': '06:00 - 22:00',
-  'Sábado': '07:00 - 18:00',
+  'Sábado': '07:00 - 14:00',
   'Domingo': 'Cerrado',
 };
 const String contactInfo103 = 'Contacto: Oficina de Acompañamiento Integral: aaintegral@unal.edu.co';

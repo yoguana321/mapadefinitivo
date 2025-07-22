@@ -4,8 +4,12 @@ import '/models/professor.dart';
 const String info409 = 'El Edificio 409, conocido como el Laboratorio de Hidráulica, es un espacio fundamental para la investigación y las prácticas de la Facultad de Ingeniería. Cuenta con laboratorios especializados, aulas de pregrado y posgrado, y oficinas para profesores.';
 const String history409 = 'Historia pendiente. Se necesita información sobre la construcción y evolución del Edificio 409.';
 const Map<String, String> hours409 = {
-  'Lunes a Viernes': '06:00 - 22:00',
-  'Sábado': '07:00 - 18:00',
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 14:00',
   'Domingo': 'Cerrado',
 };
 const String contactInfo409 = 'Contacto: Departamento de Ingeniería Civil y Agrícola. \nTeléfono: Por definir.';

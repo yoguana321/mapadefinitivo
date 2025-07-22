@@ -4,8 +4,12 @@ import '/models/professor.dart';
 const String info451 = 'El Edificio 451, sede de la Facultad de Química, es un importante centro de investigación y docencia. Alberga una amplia gama de laboratorios especializados, aulas de clase, oficinas de docentes y espacios para seminarios.';
 const String history451 = 'Es parte del patrimonio arquitectónico de la universidad y ha sido objeto de proyectos de conservación y activación cultural. El edificio fue concebido como sede para laboratorios, aulas y espacios de investigación en química, botánica y zoología, heredando la tradición científica de José Celestino Mutis.';
 const Map<String, String> hours451 = {
-  'Lunes a Viernes': '06:00 - 22:00',
-  'Sábado': '07:00 - 18:00',
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 14:00',
   'Domingo': 'Cerrado',
 };
 const String contactInfo451 = 'Contacto: Secretaría del Departamento de Química. \nTeléfono: Por definir.';

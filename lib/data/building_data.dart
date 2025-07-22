@@ -238,9 +238,8 @@ final Building building409 = Building(
   category: 'Laboratorio', // **Categoría principal ahora es 'Laboratorio'**
   coords: LatLng(4.638593, -74.081800),
   icon: Icons.science_outlined,
-  imageUrls: [
-    'assets/buildings/409/409.jpg',
-    'assets/buildings/409/409_2.jpg',
+  imageUrls: ['assets/images/409.jpg',
+    'assets/images/409_2.jpg',
   ],
   info: info409,
   history: history409,

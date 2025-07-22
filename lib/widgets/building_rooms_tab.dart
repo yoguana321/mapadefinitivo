@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import '../models/building.dart';
 import '../models/room.dart';
 import '../widgets/common_info_widgets.dart'; // Para InfoRow
-import '../widgets/edit_room_sheet.dart'; // Para el sheet de edición
+// import '../widgets/edit_room_sheet.dart'; // ¡ELIMINAR ESTA LÍNEA!
 // Importa las utilidades de horario
 import '../utils/schedule_utils.dart'; // Aunque no se usa directamente aquí para horario de sala, es buena práctica mantenerla si tu app la usa
 
@@ -12,7 +12,7 @@ class BuildingRoomsTab extends StatefulWidget {
   final List<Room> rooms;
   final ScrollController scrollController;
   final Color accentColor;
-  final ValueChanged<Room> onRoomUpdated;
+  // final ValueChanged<Room> onRoomUpdated; // ¡ELIMINAR ESTA LÍNEA!
 
   const BuildingRoomsTab({
     Key? key,
@@ -20,7 +20,7 @@ class BuildingRoomsTab extends StatefulWidget {
     required this.rooms,
     required this.scrollController,
     required this.accentColor,
-    required this.onRoomUpdated,
+    // required this.onRoomUpdated, // ¡ELIMINAR ESTA LÍNEA!
   }) : super(key: key);
 
   @override
@@ -37,7 +37,7 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
       case 'Aulas':
         return Icons.class_outlined;
       case 'Aulas Especializadas':
-      case 'Sala de Cómputo': // Añadir esta categoría aquí
+      case 'Sala de Cómputo':
         return Icons.laptop_mac_outlined;
       case 'Laboratorios':
         return Icons.science_outlined;
@@ -48,53 +48,54 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
       case 'Oficinas Administrativas':
       case 'Oficinas Académicas':
       case 'Oficinas de Bienestar':
-      case 'Oficina de Posgrado': // Añadir estas categorías
-      case 'Oficina de Profesores': // Añadir estas categorías
-      case 'Secretaría':           // Añadir estas categorías
-        return Icons.corporate_fare_outlined; // O Icons.person para profesores, etc.
+      case 'Oficina de Posgrado':
+      case 'Oficina de Profesores':
+      case 'Secretaría':
+        return Icons.corporate_fare_outlined;
       case 'Servicios':
-        return Icons.room_service_outlined; // Un icono más específico para servicios generales
-      case 'Infraestructura': // Añadir para el 401
+        return Icons.room_service_outlined;
+      case 'Infraestructura':
         return Icons.construction_outlined;
-      case 'Sala de Reuniones': // Añadir para el 406
+      case 'Sala de Reuniones':
         return Icons.group_work_outlined;
-      case 'Centro de Documentación': // Añadir para el 406
+      case 'Centro de Documentación':
         return Icons.library_books_outlined;
-      case 'Sala de Estudiantes': // Añadir para el 406
+      case 'Sala de Estudiantes':
         return Icons.group_outlined;
       default:
-        return Icons.room_outlined; // General icon
+        return Icons.room_outlined;
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Obtén el tema actual aquí
+
     if (widget.rooms.isEmpty) {
       return ListView(
         controller: widget.scrollController,
         padding: const EdgeInsets.all(16.0),
         children: [
-          Text(
-            'No hay información disponible para esta sección.',
-            style: Theme.of(context).textTheme.bodyLarge,
-            textAlign: TextAlign.center,
+          Center( // Añadido Center para centrar el texto
+            child: Text(
+              'No hay información disponible para esta sección.',
+              style: theme.textTheme.bodyLarge?.copyWith(
+                color: theme.colorScheme.onSurface.withOpacity(0.7), // Usa onSurface para el color del texto
+              ),
+              textAlign: TextAlign.center,
+            ),
           ),
         ],
       );
     }
 
     // --- LOGIC FOR GROUPING AND SORTING ---
-    // (This logic remains largely the same, but now it's just for the *single* floor
-    // represented by widget.rooms, assuming widget.rooms already contains rooms for one floor)
-
-    // Group rooms on the current "floor" (which is represented by widget.rooms) by category
     final Map<String, List<Room>> roomsByCategory = {};
     for (var room in widget.rooms) {
-      final category = room.category ?? 'Otros Espacios'; // Default category if not specified
+      final category = room.category ?? 'Otros Espacios';
       roomsByCategory.putIfAbsent(category, () => []).add(room);
     }
 
-    // Sort categories for consistent display within this floor
     final List<String> sortedCategories = roomsByCategory.keys.toList();
     const categoryOrder = [
       'Auditorios',
@@ -112,19 +113,17 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
     sortedCategories.sort((a, b) {
       int indexA = categoryOrder.indexOf(a);
       int indexB = categoryOrder.indexOf(b);
-      if (indexA == -1 && indexB == -1) return a.compareTo(b); // Fallback alphabetical
+      if (indexA == -1 && indexB == -1) return a.compareTo(b);
       if (indexA == -1) return 1;
       if (indexB == -1) return -1;
       return indexA.compareTo(indexB);
     });
 
-    return ListView( // Changed from ListView.builder to a simple ListView
+    return ListView(
       controller: widget.scrollController,
       padding: const EdgeInsets.all(16.0),
-      // No itemCount or itemBuilder needed for ListView directly
       children: sortedCategories.map((category) {
         final roomsInThisCategory = roomsByCategory[category]!;
-        // Sort rooms within each category numerically by their 'number' field, then by name
         roomsInThisCategory.sort((a, b) {
           final numA = int.tryParse((a.number ?? '').replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
           final numB = int.tryParse((b.number ?? '').replaceAll(RegExp(r'[^0-9]'), '')) ?? 0;
@@ -137,35 +136,36 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
           return (a.name ?? '').compareTo(b.name ?? '');
         });
 
-        // Use a Card to contain each category's rooms for a nice visual separation
         return Card(
-          margin: const EdgeInsets.only(bottom: 16.0), // Margin between categories
+          margin: const EdgeInsets.only(bottom: 16.0),
           elevation: 2,
           shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-          child: Padding( // Add padding inside the category card
+          // El color de fondo de la Card ya se ajusta con el tema automáticamente si no lo sobrescribes.
+          child: Padding(
             padding: const EdgeInsets.all(16.0),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text( // Category Title
+                Text(
                   category,
                   style: TextStyle(
-                    fontSize: 18, // Slightly larger for main category
+                    fontSize: 18,
                     fontWeight: FontWeight.bold,
-                    color: widget.accentColor, // Use accent color for category titles
+                    color: widget.accentColor, // Este color suele ser un color primario, por lo que está bien.
                   ),
                 ),
-                const Divider(height: 20, thickness: 1), // Separator for category
+                Divider(height: 20, thickness: 1, color: theme.dividerColor), // Asegura que el divisor también se ajuste al tema
                 ...roomsInThisCategory.map((room) {
-                  const double infoRowIndent = 28.0; // Consistent indent
+                  const double infoRowIndent = 28.0;
 
                   return Card(
-                    elevation: 0, // No shadow for inner room cards
-                    margin: const EdgeInsets.only(bottom: 8.0, top: 8.0), // Margin between rooms
+                    elevation: 0,
+                    margin: const EdgeInsets.only(bottom: 8.0, top: 8.0),
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(8),
-                      side: BorderSide(color: Colors.grey[300]!, width: 0.8),
+                      side: BorderSide(color: theme.colorScheme.outlineVariant, width: 0.8), // Usar color de esquema para el borde
                     ),
+                    // El color de fondo de esta Card interior también se ajusta automáticamente.
                     child: Padding(
                       padding: const EdgeInsets.all(12.0),
                       child: Column(
@@ -187,7 +187,7 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                                         style: TextStyle(
                                           fontSize: 15,
                                           fontWeight: FontWeight.w500,
-                                          color: Colors.blueGrey[800],
+                                          color: theme.colorScheme.onSurface, // CAMBIO AQUÍ: Usar onSurface para el texto principal
                                         ),
                                         overflow: TextOverflow.ellipsis,
                                       ),
@@ -195,25 +195,7 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                                   ],
                                 ),
                               ),
-                              IconButton(
-                                icon: Icon(Icons.edit, size: 20, color: widget.accentColor),
-                                onPressed: () {
-                                  showModalBottomSheet(
-                                    context: context,
-                                    isScrollControlled: true,
-                                    builder: (context) => EditRoomSheet(
-                                      room: room,
-                                      accentColor: widget.accentColor,
-                                      onRoomUpdated: (updatedRoom) {
-                                        widget.onRoomUpdated(updatedRoom);
-                                        // This will trigger a rebuild of the parent, which should
-                                        // then pass the updated list to this tab.
-                                        Navigator.pop(context);
-                                      },
-                                    ),
-                                  );
-                                },
-                              ),
+                              // ELIMINAMOS EL ICONO DE LÁPIZ DE EDICIÓN Y SU onPressed
                             ],
                           ),
                           // Room details (InfoRow and custom paddings)
@@ -222,7 +204,9 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                               padding: const EdgeInsets.only(top: 4.0, left: infoRowIndent),
                               child: Text(
                                 room.description!,
-                                style: Theme.of(context).textTheme.bodySmall,
+                                style: theme.textTheme.bodySmall?.copyWith( // CAMBIO AQUÍ: Usar theme en lugar de Theme.of(context)
+                                  color: theme.colorScheme.onSurface.withOpacity(0.7), // Un poco más tenue
+                                ),
                               ),
                             ),
                           if (room.capacity != null)
@@ -266,12 +250,17 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                                 children: [
                                   Text(
                                     'Horario:',
-                                    style: Theme.of(context).textTheme.bodySmall?.copyWith(fontWeight: FontWeight.bold),
+                                    style: theme.textTheme.bodySmall?.copyWith( // CAMBIO AQUÍ: Usar theme
+                                      fontWeight: FontWeight.bold,
+                                      color: theme.colorScheme.onSurface, // Título del horario
+                                    ),
                                   ),
                                   ...room.scheduleMap!.entries.map((e) =>
                                       Text(
                                         '  ${e.key}: ${e.value}',
-                                        style: Theme.of(context).textTheme.bodySmall,
+                                        style: theme.textTheme.bodySmall?.copyWith( // CAMBIO AQUÍ: Usar theme
+                                          color: theme.colorScheme.onSurface.withOpacity(0.8), // Texto del horario
+                                        ),
                                       ),
                                   ).toList(),
                                 ],
@@ -286,7 +275,10 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                                   padding: EdgeInsets.only(left: infoRowIndent),
                                   child: Text(
                                     'Profesores a Cargo:',
-                                    style: Theme.of(context).textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold, color: widget.accentColor),
+                                    style: theme.textTheme.titleSmall?.copyWith(
+                                      fontWeight: FontWeight.bold,
+                                      color: widget.accentColor, // Se mantiene el color de acento
+                                    ),
                                   ),
                                 ),
                                 ...room.professors!.map((professor) => Padding(
@@ -294,7 +286,9 @@ class _BuildingRoomsTabState extends State<BuildingRoomsTab> {
                                   child: Text(
                                     '${professor.name ?? ''} - ${professor.department ?? ''}' +
                                         (professor.email != null ? ' (${professor.email})' : ''),
-                                    style: Theme.of(context).textTheme.bodyMedium,
+                                    style: theme.textTheme.bodyMedium?.copyWith( // CAMBIO AQUÍ: Usar theme
+                                      color: theme.colorScheme.onSurface.withOpacity(0.8), // Texto de profesores
+                                    ),
                                   ),
                                 )).toList(),
                               ],

@@ -3,7 +3,15 @@ import '/models/professor.dart';
 
 const String info453 = 'El Edificio GUILLERMINA URIBE BONE, conocido como Aulas de Ingeniería, es un centro académico dedicado a la enseñanza e investigación en diversas ramas de la ingeniería. Alberga aulas, laboratorios especializados, oficinas de dirección y docencia, y espacios para actividades académicas y administrativas.';
 const String history453 = 'Nombrado en honor a GUILLERMINA URIBE BONE, la primera mujer egresada de la Facultad de Ingeniería de Bogotá. Su construcción se llevó a cabo entre 1969 y 1970 bajo la dirección del arquitecto Francisco Rojas Sánchez, con modificaciones posteriores en 1981 para mejorar su funcionalidad.';
-const Map<String, String> hours453 = {}; // No hours provided in the text
+const Map<String, String> hours453 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 18:00',
+  'Domingo': 'Cerrado',
+}; // No hours provided in the text
 const String contactInfo453 = 'Departamentos de Ingeniería (Eléctrica, Sistemas, Química, Civil, Mecánica). Coordinación de Mantenimiento.'; // Inferred from "Direcciones" and "Coordinaciones" sections
 
 

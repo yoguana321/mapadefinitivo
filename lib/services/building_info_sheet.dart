@@ -128,6 +128,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     );
   }
 
+  // --- START OF CHANGES ---
+  // Estos métodos ya no son necesarios si no hay edición de habitaciones/servicios.
+  // Los eliminamos o los comentamos completamente.
+  /*
   void _updateRoomInBuilding(Room updatedRoom) {
     setState(() {
       List<Room> updatedRoomsList = [];
@@ -155,6 +159,9 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
     });
     widget.onBuildingUpdated(_currentBuilding);
   }
+  */
+  // --- END OF CHANGES ---
+
 
   @override
   Widget build(BuildContext context) {
@@ -316,7 +323,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                       TabBar(
                         isScrollable: true,
                         labelColor: accentColor,
-                        unselectedLabelColor: theme.textTheme.bodyLarge?.color,
+                        // --- START OF CHANGES ---
+                        // Usar onSurface para un mejor contraste en modo oscuro.
+                        unselectedLabelColor: theme.colorScheme.onSurface,
+                        // --- END OF CHANGES ---
                         indicatorColor: accentColor,
                         tabs: tabLabels,
                       ),
@@ -337,7 +347,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                                 building: _currentBuilding,
                                 scrollController: scrollController,
                                 accentColor: accentColor,
-                                onRoomUpdated: _updateSpecialServiceInBuilding,
+                                // --- START OF CHANGES ---
+                                // Eliminamos el callback onRoomUpdated ya que no se editarán.
+                                // onRoomUpdated: _updateSpecialServiceInBuilding,
+                                // --- END OF CHANGES ---
                               );
                             } else {
                               // Esto maneja ahora las pestañas de 'áreas' (antes 'pisos')
@@ -349,7 +362,10 @@ class _BuildingInfoSheetContentState extends State<_BuildingInfoSheetContent> {
                                 rooms: areaRooms, // Envía las rooms del área
                                 scrollController: scrollController,
                                 accentColor: accentColor,
-                                onRoomUpdated: _updateRoomInBuilding,
+                                // --- START OF CHANGES ---
+                                // Eliminamos el callback onRoomUpdated ya que no se editarán.
+                                // onRoomUpdated: _updateRoomInBuilding,
+                                // --- END OF CHANGES ---
                               );
                             }
                           }).toList(),

@@ -1,12 +1,12 @@
 // lib/widgets/common_info_widgets.dart
 import 'package:flutter/material.dart';
-import 'package:url_launcher/url_launcher.dart'; // Para _buildInfoRow con enlaces
+import 'package:url_launcher/url_launcher.dart';
 
 // Widget para secciones de información con título, icono y contenido
 class InfoSection extends StatelessWidget {
   final String title;
-  final Widget content; // Cambiado a Widget para mayor flexibilidad
-  final IconData? icon; // Icono opcional
+  final Widget content;
+  final IconData? icon;
   final Color accentColor;
 
   const InfoSection({
@@ -19,6 +19,13 @@ class InfoSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // InfoSection ya usaba accentColor para el título, lo cual está bien si accentColor es un color de tema.
+    // Si quisieras que el título se adaptara al tema oscuro con onSurface, sería:
+    // final theme = Theme.of(context);
+    // style: theme.textTheme.titleMedium?.copyWith(
+    //   fontWeight: FontWeight.bold,
+    //   color: theme.colorScheme.onSurface, // O accentColor si quieres que sea consistente
+    // ),
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -32,7 +39,7 @@ class InfoSection extends StatelessWidget {
               title,
               style: Theme.of(context).textTheme.titleMedium?.copyWith(
                 fontWeight: FontWeight.bold,
-                color: accentColor,
+                color: accentColor, // Se mantiene accentColor, asumiendo que es un color de acento visible en ambos modos
               ),
             ),
           ],
@@ -47,31 +54,32 @@ class InfoSection extends StatelessWidget {
 // Widget para filas individuales de información (icono, etiqueta, valor)
 class InfoRow extends StatelessWidget {
   final IconData icon;
-  final String label; // Etiqueta, e.g., 'Contacto'
-  final String value; // Valor, e.g., '310-123-4567'
-  final Color color; // Color del icono y etiqueta
-  final bool isLink; // Si el valor es un enlace clickeable
-  final double iconIndent; // <--- ADDED: Indent for the whole row
+  final String label;
+  final String value;
+  final Color color; // Este color se pasa para el icono, y antes se usaba para la etiqueta.
+  final bool isLink;
+  final double iconIndent;
 
   const InfoRow({
     Key? key,
     required this.icon,
     required this.label,
     required this.value,
-    required this.color,
+    required this.color, // `color` se usará para el icono
     this.isLink = false,
-    this.iconIndent = 0.0, // <--- ADDED: Default value
+    this.iconIndent = 0.0,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context); // Obtén el tema actual para acceder a ColorScheme
+
     return Padding(
-      // Apply iconIndent to the left padding
-      padding: EdgeInsets.fromLTRB(iconIndent, 4.0, 0.0, 4.0), // Use iconIndent here
+      padding: EdgeInsets.fromLTRB(iconIndent, 4.0, 0.0, 4.0),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: 20, color: color), // Usamos 'color' para el icono
+          Icon(icon, size: 20, color: color), // El icono usa el color que le pasas (accentColor)
           const SizedBox(width: 12),
           Expanded(
             child: Column(
@@ -79,15 +87,17 @@ class InfoRow extends StatelessWidget {
               children: [
                 Text(
                   label,
-                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                  style: theme.textTheme.bodySmall?.copyWith( // CAMBIO AQUÍ: Usar theme.textTheme y onSurface
                     fontWeight: FontWeight.bold,
-                    color: color, // Usa color para la etiqueta
+                    color: theme.colorScheme.onSurface, // CAMBIO CRUCIAL: Usa onSurface para la etiqueta
                   ),
                 ),
                 isLink
                     ? GestureDetector(
                   onTap: () async {
-                    final url = Uri.parse(value.startsWith('http') ? value : 'https://$value');
+                    // Si el enlace es un email, se usa mailto:. Si no, asume https://
+                    final urlString = value.contains('@') ? 'mailto:$value' : (value.startsWith('http') ? value : 'https://$value');
+                    final url = Uri.parse(urlString);
                     if (await canLaunchUrl(url)) {
                       await launchUrl(url);
                     } else {
@@ -98,15 +108,17 @@ class InfoRow extends StatelessWidget {
                   },
                   child: Text(
                     value,
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      color: Colors.blue, // Enlaces azules
+                    style: theme.textTheme.bodyMedium?.copyWith( // CAMBIO AQUÍ: Usar theme.textTheme y primary
+                      color: theme.colorScheme.primary, // CAMBIO CRUCIAL: Usa el color primario del tema para enlaces
                       decoration: TextDecoration.underline,
                     ),
                   ),
                 )
                     : Text(
                   value,
-                  style: Theme.of(context).textTheme.bodyMedium,
+                  style: theme.textTheme.bodyMedium?.copyWith( // CAMBIO AQUÍ: Usar theme.textTheme y onSurface
+                    color: theme.colorScheme.onSurface.withOpacity(0.8), // Texto normal, un poco más tenue
+                  ),
                 ),
               ],
             ),

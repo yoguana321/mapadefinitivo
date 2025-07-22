@@ -6,10 +6,13 @@ const String infoBibCentral = 'La Biblioteca Central Gabriel García Márquez es
 const String historyBibCentral = 'La idea de una biblioteca central para la Universidad Nacional de Colombia se remonta a 1962, tras un estudio de Paul S. Miles que recomendó centralizar las veintiún bibliotecas de la universidad. En 1964, el Consejo Superior Universitario dispuso su creación, cediendo el antiguo edificio de la Facultad de Filosofía y Letras. Los trabajos de construcción iniciaron en 1968, con los planos elaborados por un equipo de arquitectos dirigido por Alberto Estrada y asesorado por el bibliotecólogo John Venstra. En 1971, el 1 de marzo, la biblioteca comenzó a funcionar en sus actuales instalaciones. Abrió sus puertas al público el 10 de mayo de 2001 bajo el nombre de Biblioteca Pública Parque El Tunal, y el 18 de junio de 2014, fue renombrada Biblioteca Central Gabriel García Márquez en honor al Premio Nobel de Literatura colombiano.';
 const Map<String, String> hoursBibCentral = {
   // These hours are placeholders. For official hours, please consult the university's or library's official website.
-  'Lunes a Viernes': '06:00 - 22:00',
-  'Sábado': '07:00 - 18:00',
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 14:00',
   'Domingo': 'Cerrado',
-  'Feriado': 'Cerrado',
 };
 const String contactInfoBibCentral = 'Universidad Nacional de Colombia, Ciudad Universitaria de Bogotá - Contacto: [Información de contacto real de la biblioteca]';
 

@@ -1,5 +1,5 @@
 // lib/models/room.dart
-import 'package:flutter/material.dart';
+import 'package:flutter/material.dart'; // No necesitas esto en un modelo, pero no causa daño.
 import 'professor.dart'; // Asegúrate de tener este archivo para el modelo Professor
 
 class Room {
@@ -16,6 +16,8 @@ class Room {
   final bool? isAccessible; // Indica si es accesible para personas con movilidad reducida
   final Map<String, String>? scheduleMap; // Horario de la sala como Map<String, String>
   final String? category;
+  final List<String> features;
+
   Room({
     required this.id,
     required this.number,
@@ -30,6 +32,7 @@ class Room {
     this.isAccessible,
     this.scheduleMap,
     this.category,
+    this.features = const [],
   });
 
   // Factory constructor para crear una instancia de Room desde un Map
@@ -38,6 +41,7 @@ class Room {
       id: map['id'] as String,
       number: map['number'] as String,
       name: map['name'] as String?,
+      // --- REMOVED THE "render" TYPO HERE ---
       floor: map['floor'] as String,
       description: map['description'] as String?,
       capacity: map['capacity'] as int?,
@@ -53,6 +57,8 @@ class Room {
             (key, value) => MapEntry(key, value as String),
       )
           : null,
+      category: map['category'] as String?,
+      features: (map['features'] as List<dynamic>?)?.map((e) => e as String).toList() ?? const [],
     );
   }
 
@@ -71,6 +77,8 @@ class Room {
       'isServiceRoom': isServiceRoom,
       'isAccessible': isAccessible,
       'scheduleMap': scheduleMap,
+      'category': category,
+      'features': features,
     };
   }
 
@@ -88,6 +96,8 @@ class Room {
     bool? isServiceRoom,
     bool? isAccessible,
     Map<String, String>? scheduleMap,
+    String? category,
+    List<String>? features,
   }) {
     return Room(
       id: id ?? this.id,
@@ -102,6 +112,8 @@ class Room {
       isServiceRoom: isServiceRoom ?? this.isServiceRoom,
       isAccessible: isAccessible ?? this.isAccessible,
       scheduleMap: scheduleMap ?? this.scheduleMap,
+      category: category ?? this.category,
+      features: features ?? this.features,
     );
   }
 }

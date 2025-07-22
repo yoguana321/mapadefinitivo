@@ -5,11 +5,13 @@ import '/models/professor.dart';
 const String infoCYT = 'El edificio CYT (Ciencia y Tecnología) es una estructura moderna del campus de la Universidad Nacional de Colombia, caracterizada por su arquitectura bioclimática y sostenibilidad. Fue posible gracias a una donación de la Organización Luis Carlos Sarmiento Angulo y entregado a la universidad en 2008. Alberga bibliotecas especializadas por áreas del conocimiento, aulas de estudio, auditorio, y servicios de apoyo.';
 const String historyCYT = 'El edificio CYT fue construido como parte de una fase de renovación del campus que incluyó la recuperación de edificios como la Facultad de Economía y la Biblioteca Central. Su construcción fue financiada por una donación de la Organización Luis Carlos Sarmiento Angulo, entregándose a la Universidad Nacional en 2008. Fue diseñado por el arquitecto Camilo Avellaneda, con un enfoque en la arquitectura bioclimática y la sostenibilidad.';
 const Map<String, String> hoursCYT = {
-  // Placeholder hours, actual hours would need to be confirmed.
-  'Lunes a Viernes': '06:00 - 22:00',
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
   'Sábado': '07:00 - 18:00',
   'Domingo': 'Cerrado',
-  'Feriado': 'Cerrado',
 };
 const String contactInfoCYT = 'Universidad Nacional de Colombia - CYT'; // Placeholder, actual contact info needed.
 

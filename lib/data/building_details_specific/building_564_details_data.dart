@@ -3,7 +3,15 @@ import '/models/professor.dart';
 
 const String info564 = 'El Edificio Aulas de Ciencias Gloria Galeano Garcés, diseñado por el arquitecto Guillermo Fisher, fue concebido para ampliar los espacios de instrucción académica, específicamente para clases magistrales de la Facultad de Ciencias de la Universidad Nacional. Su diseño arquitectónico circular fomenta la interacción y colaboración grupal, y destaca por su impronta sostenible y gestión eficiente que permitió un notable ahorro de presupuesto y entrega anticipada.';
 const String history564 = 'Nombrado en honor a Gloria Galeano Garcés. Fue construido con un diseño que prioriza la interacción académica y la sostenibilidad, logrando ser entregado un mes antes de lo estipulado gracias a una eficiente gestión.';
-const Map<String, String> hours564 = {}; // No specific hours provided in the text
+const Map<String, String> hours564 = {
+  'Lunes': '06:00 - 22:00',
+  'Martes': '06:00 - 22:00',
+  'Miércoles': '06:00 - 22:00',
+  'Jueves': '06:00 - 22:00',
+  'Viernes': '06:00 - 22:00',
+  'Sábado': '07:00 - 14:00',
+  'Domingo': 'Cerrado',
+}; // No specific hours provided in the text
 const String contactInfo564 = 'Facultad de Ciencias UNAL Sede Bogotá'; // Inferred from the text
 
 
