@@ -43,7 +43,7 @@ Future<bool> sendCoordinatesToESP32({
   required double targetLon,
 }) async {
   try {
-    final socket = await Socket.connect('192.168.0.13', 1234, timeout: Duration(seconds: 5));
+    final socket = await Socket.connect('10.203.170.16', 1234, timeout: Duration(seconds: 5));
     final message = '$currentLat,$currentLon,$targetLat,$targetLon';
     socket.write(message);
     await socket.flush();
