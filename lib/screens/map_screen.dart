@@ -14,17 +14,57 @@ import '../widgets/search_results_list.dart';
 import 'package:geolocator/geolocator.dart';
 import 'dart:async';
 import '../services/routing_service.dart';
+import 'dart:async';
+import 'dart:io';
+
+Timer? locationSender;
+void _sendOriginToESP(LatLng origin) async {
+  try {
+    final socket = await Socket.connect('192.168.0.13', 1234, timeout: const Duration(seconds: 2));
+    final message = '${origin.latitude},${origin.longitude}';
+    socket.write(message);
+    await socket.flush();
+    await socket.close();
+  } catch (e) {
+    print("Error al enviar a ESP32: $e");
+  }
+}
+
+void startSendingLocationContinuously(LatLng? currentLocation) {
+  if (currentLocation == null) return;
+
+  Timer.periodic(const Duration(seconds: 2), (timer) async {
+    try {
+      final socket = await Socket.connect('192.168.0.13', 1234, timeout: Duration(seconds: 2));
+      final message = '${currentLocation.latitude},${currentLocation.longitude},0.0,0.0';
+      socket.write(message);
+      await socket.flush();
+      await socket.close();
+      print('Ubicación enviada: $message');
+    } catch (e) {
+      print("Error al enviar ubicación: $e");
+    }
+  });
+}
+
+
 
 class MapScreen extends StatefulWidget {
+  final LatLng? currentLocation;
   final Building? initialBuilding;
 
-  const MapScreen({super.key, this.initialBuilding});
+  const MapScreen({
+    super.key,
+    required this.currentLocation,
+    this.initialBuilding,
+  });
 
   @override
   State<MapScreen> createState() => _MapScreenState();
 }
 
 class _MapScreenState extends State<MapScreen> {
+  Timer? _locationSenderTimer;
   List<LatLng> _routeLine = [];
   LatLng? _currentLocation;
   final MapController mapController = MapController();
@@ -46,15 +86,19 @@ class _MapScreenState extends State<MapScreen> {
   @override
   void initState() {
     super.initState();
+
+    // 1. Escucha la ubicación del usuario
     _listenToLocation();
-    // Manejo del edificio inicial
+
+    // 2. Si hay un edificio inicial, muévelo y abre la hoja de información
     if (widget.initialBuilding != null) {
       WidgetsBinding.instance.addPostFrameCallback((_) async {
         if (_currentLocation == null) {
-          // Si _currentLocation es nulo, se usará LatLng(0,0) como fallback,
-          // puedes mejorar esto para esperar la ubicación o tener un manejo más robusto.
+          // Si la ubicación aún no está disponible, se usa LatLng(0,0) como fallback
         }
+
         mapController.move(widget.initialBuilding!.coords, 18);
+
         showBuildingInfo(
           context,
           widget.initialBuilding!,
@@ -71,6 +115,25 @@ class _MapScreenState extends State<MapScreen> {
       });
     }
 
+    // 3. ENVÍA la coordenada de ORIGEN cada segundo al ESP32
+    _locationSenderTimer = Timer.periodic(Duration(seconds: 1), (_) async {
+      if (_currentLocation != null) {
+        final lat = _currentLocation!.latitude;
+        final lon = _currentLocation!.longitude;
+
+        if (lat != 0 && lon != 0) {
+          final success = await sendOriginOnlyToESP32(
+            currentLat: lat,
+            currentLon: lon,
+          );
+          if (!success) {
+            print("Fallo al enviar coordenadas al ESP32");
+          }
+        }
+      }
+    });
+
+    // 4. Escucha eventos del mapa (zoom, rotación, movimiento)
     mapController.mapEventStream.listen((event) {
       if (event is MapEventMove || event is MapEventMoveEnd || event is MapEventRotate || event is MapEventRotateEnd) {
         setState(() {
@@ -80,10 +143,16 @@ class _MapScreenState extends State<MapScreen> {
         });
       }
     });
+
+    // 5. Actualiza la lista de edificios visibles/filtrados
     _updateFilteredBuildings();
+
+    // 6. Maneja el foco del campo de búsqueda
     _searchFocusNode.addListener(() {
-      if (!_searchFocusNode.hasFocus && _searchController.text.isEmpty && _isSearchVisible) {
-        // Puedes agregar lógica aquí si quieres hacer algo cuando el campo de búsqueda pierde el foco y está vacío
+      if (!_searchFocusNode.hasFocus &&
+          _searchController.text.isEmpty &&
+          _isSearchVisible) {
+        // Puedes agregar lógica aquí si deseas ocultar la búsqueda automáticamente
       }
     });
   }
@@ -153,6 +222,7 @@ class _MapScreenState extends State<MapScreen> {
 
   @override
   void dispose() {
+    _locationSenderTimer?.cancel();
     _positionStream?.cancel();
     mapController.dispose();
     _searchController.dispose();
